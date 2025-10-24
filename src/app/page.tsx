@@ -1,18 +1,30 @@
-import { useState, useEffect } from 'react';
-import { TimelineMarker } from './components/TimelineMarker';
-import { StorySection } from './components/StorySection';
-import { SourceCard } from './components/SourceCard';
-import { ThemeSwitcher } from './components/ThemeSwitcher';
-import { Theme, themes } from './lib/themes';
+'use client';
 
-// Load Google Fonts for Editorial and Investigation themes
-const fontLink = document.createElement('link');
-fontLink.href = 'https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap';
-fontLink.rel = 'stylesheet';
-document.head.appendChild(fontLink);
+import { useEffect, useState } from 'react';
+import { TimelineMarker } from '@/components/TimelineMarker';
+import { StorySection } from '@/components/StorySection';
+import { SourceCard } from '@/components/SourceCard';
+import { ThemeSwitcher } from '@/components/ThemeSwitcher';
+import type { Theme } from '@/lib/themes';
+import { themes } from '@/lib/themes';
 
-// Data model: Each event has date, title, body, and sources
-const timelineData = [
+type TimelineSource = {
+  title: string;
+  summary: string;
+  type: 'pdf' | 'photo' | 'audio' | 'document';
+  content?: string;
+  url?: string;
+};
+
+type TimelineEvent = {
+  id: string;
+  date: string;
+  title: string;
+  body: string;
+  sources: TimelineSource[];
+};
+
+const timelineData: TimelineEvent[] = [
   {
     id: 'event-1',
     date: 'June 5, 2025',
@@ -22,7 +34,7 @@ const timelineData = [
       {
         title: 'The Original Letter',
         summary: 'Handwritten on cream-colored stationery',
-        type: 'document' as const,
+        type: 'document',
         content: 'A handwritten letter on high-quality paper stock, dated June 5, 2025. The penmanship is deliberate and formal.',
         url: '#',
       },
@@ -37,7 +49,7 @@ const timelineData = [
       {
         title: 'City Archives, 1985',
         summary: 'The old reading room where it all started',
-        type: 'photo' as const,
+        type: 'photo',
         content: 'Photograph of the city archives reading room, showing rows of filing cabinets and microfilm readers from the 1980s.',
         url: '#',
       },
@@ -52,7 +64,7 @@ const timelineData = [
       {
         title: 'Photograph from 1952',
         summary: 'Three figures standing before the house',
-        type: 'photo' as const,
+        type: 'photo',
         content: 'Black and white photograph showing three individuals in front of a two-story house. The photo is slightly faded but remarkably well-preserved.',
         url: '#',
       },
@@ -67,7 +79,7 @@ const timelineData = [
       {
         title: 'Audio Recording',
         summary: 'Interview transcript, August 15, 2025',
-        type: 'audio' as const,
+        type: 'audio',
         content: 'A 45-minute interview recorded on digital audio. The subject speaks slowly but clearly about events from over seventy years ago.',
         url: '#',
       },
@@ -77,26 +89,26 @@ const timelineData = [
     id: 'event-5',
     date: 'September 1, 2025',
     title: 'The Truth Emerges',
-    body: 'The story she told changed everything. What he thought was a simple mystery revealed itself to be part of a much larger narrative—one that had been carefully hidden for seventy years. The letter wasn\'t just a message; it was a confession.',
+    body: "The story she told changed everything. What he thought was a simple mystery revealed itself to be part of a much larger narrative—one that had been carefully hidden for seventy years. The letter wasn't just a message; it was a confession.",
     sources: [
       {
         title: 'The Second Letter',
         summary: 'Written in 1986, never sent',
-        type: 'document' as const,
+        type: 'document',
         content: 'A second letter, found among the subject\'s personal effects. This one was never mailed, but it corroborates the key details of the story.',
         url: '#',
       },
       {
         title: 'The House, Present Day',
         summary: 'As it stands now, unchanged',
-        type: 'photo' as const,
+        type: 'photo',
         content: 'Modern photograph of the same house from the 1952 photo. The structure remains remarkably similar.',
         url: '#',
       },
       {
         title: 'Handwritten Note',
         summary: 'Found tucked inside the second letter',
-        type: 'document' as const,
+        type: 'document',
         content: 'A small note card with additional context and names of other potential witnesses.',
         url: '#',
       },
@@ -104,25 +116,27 @@ const timelineData = [
   },
 ];
 
-export default function App() {
+export default function TimelinePage() {
   const [activeSection, setActiveSection] = useState<string>('event-1');
   const [currentTheme, setCurrentTheme] = useState<Theme>('archiveLight');
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = timelineData.map(event => {
-        const element = document.getElementById(event.id);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return {
-            id: event.id,
-            top: Math.abs(rect.top - 200),
-          };
-        }
-        return null;
-      }).filter(Boolean);
+      const sections = timelineData
+        .map((event) => {
+          const element = document.getElementById(event.id);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            return {
+              id: event.id,
+              top: Math.abs(rect.top - 200),
+            };
+          }
+          return null;
+        })
+        .filter(Boolean) as { id: string; top: number }[];
 
-      const closest = sections.sort((a, b) => a!.top - b!.top)[0];
+      const closest = sections.sort((a, b) => a.top - b.top)[0];
       if (closest) {
         setActiveSection(closest.id);
       }
@@ -141,7 +155,6 @@ export default function App() {
 
   return (
     <div className={`min-h-screen theme-bg ${themes[currentTheme].className}`}>
-      {/* Header */}
       <header className="theme-surface theme-border border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-6">
           <div className="flex items-start justify-between gap-4">
@@ -154,7 +167,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* Hero Section */}
       <div className="theme-surface theme-border border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
           <h2 className="theme-text-primary mb-4">The Letter That Changed Everything</h2>
@@ -164,7 +176,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* Column Labels - Desktop Only */}
       <div className="hidden md:block theme-bg theme-border border-b">
         <div className="max-w-7xl mx-auto px-8 py-3">
           <div className="grid grid-cols-[15%_60%_25%] gap-4">
@@ -181,12 +192,10 @@ export default function App() {
         </div>
       </div>
 
-      {/* Main Timeline Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-16">
         <div className="space-y-12 md:space-y-20">
-          {timelineData.map((event, index) => (
+          {timelineData.map((event) => (
             <div key={event.id} className="flex flex-col md:grid md:grid-cols-[15%_60%_25%] gap-4 md:gap-4 md:items-start">
-              {/* Timeline Column - Mobile: inline with story, Desktop: separate column */}
               <div className="md:pt-1">
                 <TimelineMarker
                   date={event.date}
@@ -195,7 +204,6 @@ export default function App() {
                 />
               </div>
 
-              {/* Story Column */}
               <div>
                 <StorySection
                   id={event.id}
@@ -205,11 +213,10 @@ export default function App() {
                 />
               </div>
 
-              {/* Source Records Column */}
               <div className="space-y-3 mt-4 md:mt-0">
-                {event.sources.map((source, sourceIndex) => (
+                {event.sources.map((source, index) => (
                   <SourceCard
-                    key={sourceIndex}
+                    key={`${event.id}-${source.title}-${index}`}
                     title={source.title}
                     summary={source.summary}
                     type={source.type}
@@ -222,7 +229,6 @@ export default function App() {
           ))}
         </div>
 
-        {/* Summary Section */}
         <div className="flex flex-col md:grid md:grid-cols-[15%_60%_25%] gap-4 items-start mt-12 md:mt-20 pt-12 md:pt-20 theme-border border-t">
           <div className="hidden md:block" />
           <div className="hidden md:block" />
@@ -248,7 +254,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* Developer Notes */}
       <div className="theme-border border-t" style={{ backgroundColor: 'var(--theme-bg)', opacity: 0.95 }}>
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-6">
           <h3 className="text-sm theme-text-primary mb-2">Developer Notes</h3>

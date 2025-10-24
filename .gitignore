@@ -24,6 +24,7 @@ yarn.lock
 /dist
 /out
 /.parcel-cache
+/.next
 
 # Environment variables
 .env
@@ -52,5 +53,3 @@ coverage/
 # yarn.lock
 # package-lock.json
 # pnpm-lock.yaml
-
-# Ca
