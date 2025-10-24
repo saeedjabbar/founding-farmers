@@ -257,13 +257,13 @@ export const themeColors: Record<Theme, ThemeColors> = {
     accent: '#b8b6b0',
   },
   editorialRedLight: {
-    bg: '#f4f3f0',
+    bg: '#f8f8f8',
     text: '#1a1a1a',
     accent: '#c41e3a',
   },
   editorialRedDark: {
-    bg: '#1a1814',
-    text: '#f4f3f0',
+    bg: '#1c1c1c',
+    text: '#e5e5e5',
     accent: '#ff4d6a',
   },
   investigationLight: {

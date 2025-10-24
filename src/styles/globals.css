@@ -574,38 +574,38 @@ html {
 
 /* ============================================ */
 /* THEME: EDITORIAL RED LIGHT                   */
-/* Classic Editorial with Red Accents           */
+/* Archive Light Styling Variant                */
 /* ============================================ */
 .theme-editorial-red-light {
-  --theme-bg: #f4f3f0;
-  --theme-surface: #faf9f7;
-  --theme-border: #d8d6d0;
+  --theme-bg: #f8f8f8;
+  --theme-surface: #ffffff;
+  --theme-border: #d4d4d4;
   --theme-text-primary: #1a1a1a;
-  --theme-text-secondary: #2a2a2a;
-  --theme-text-muted: #6a6a6a;
+  --theme-text-secondary: #4a4a4a;
+  --theme-text-muted: #737373;
   --theme-accent: #c41e3a;
   --theme-accent-hover: #a01830;
-  --theme-marker-inactive: #b8b6b0;
-  --theme-marker-line: #d8d6d0;
-  --theme-font-family: "EB Garamond", Garamond, "Cormorant Garamond", "Libre Baskerville", Baskerville, Georgia, "Times New Roman", Times, serif;
+  --theme-marker-inactive: #a3a3a3;
+  --theme-marker-line: #e5e5e5;
+  --theme-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* ============================================ */
 /* THEME: EDITORIAL RED DARK                    */
-/* Dark Editorial with Red Accents              */
+/* Archive Dark Styling Variant                 */
 /* ============================================ */
 .theme-editorial-red-dark {
-  --theme-bg: #1a1814;
-  --theme-surface: #242220;
-  --theme-border: #3e3c38;
-  --theme-text-primary: #f4f3f0;
-  --theme-text-secondary: #d8d6d0;
-  --theme-text-muted: #a8a6a0;
+  --theme-bg: #1c1c1c;
+  --theme-surface: #262626;
+  --theme-border: #404040;
+  --theme-text-primary: #e5e5e5;
+  --theme-text-secondary: #a3a3a3;
+  --theme-text-muted: #737373;
   --theme-accent: #ff4d6a;
   --theme-accent-hover: #ff7088;
-  --theme-marker-inactive: #5a5854;
-  --theme-marker-line: #3e3c38;
-  --theme-font-family: "EB Garamond", Garamond, "Cormorant Garamond", "Libre Baskerville", Baskerville, Georgia, "Times New Roman", Times, serif;
+  --theme-marker-inactive: #525252;
+  --theme-marker-line: #404040;
+  --theme-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* ============================================ */
@@ -731,9 +731,7 @@ html {
 /* EDITORIAL THEME TYPOGRAPHY                   */
 /* ============================================ */
 .theme-editorial-light .story-content p,
-.theme-editorial-dark .story-content p,
-.theme-editorial-red-light .story-content p,
-.theme-editorial-red-dark .story-content p {
+.theme-editorial-dark .story-content p {
   text-align: justify;
   hyphens: auto;
   letter-spacing: 0.01em;
@@ -741,9 +739,7 @@ html {
 }
 
 .theme-editorial-light .story-content h2,
-.theme-editorial-dark .story-content h2,
-.theme-editorial-red-light .story-content h2,
-.theme-editorial-red-dark .story-content h2 {
+.theme-editorial-dark .story-content h2 {
   font-variant: small-caps;
   letter-spacing: 0.05em;
   font-weight: 400;
