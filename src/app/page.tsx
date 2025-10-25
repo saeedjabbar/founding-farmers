@@ -65,7 +65,7 @@ export default function HomePage() {
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-14">
         <section>
-          <div className="divide-y theme-border">
+          <div>
             {storyListings.map((story) => {
               const body = (
                 <div className="space-y-3">
