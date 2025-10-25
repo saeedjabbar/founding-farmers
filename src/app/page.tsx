@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { SiteHeader } from '@/components/SiteHeader';
-import type { Theme } from '@/lib/themes';
 import { themes } from '@/lib/themes';
+import { useEditorialTheme } from '@/lib/useEditorialTheme';
 
 type StoryListing = {
   id: string;
@@ -58,11 +57,11 @@ const storyListings: StoryListing[] = [
 ];
 
 export default function HomePage() {
-  const [currentTheme, setCurrentTheme] = useState<Theme>('archiveLight');
+  const { theme, isDark, toggleTheme } = useEditorialTheme();
 
   return (
-    <div className={`min-h-screen theme-bg ${themes[currentTheme].className}`}>
-      <SiteHeader currentTheme={currentTheme} onThemeChange={setCurrentTheme} />
+    <div className={`min-h-screen theme-bg ${themes[theme].className}`}>
+      <SiteHeader isDark={isDark} onToggleTheme={toggleTheme} />
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-14">
         <section>

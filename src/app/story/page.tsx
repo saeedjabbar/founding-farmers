@@ -5,8 +5,8 @@ import { TimelineMarker } from '@/components/TimelineMarker';
 import { StorySection } from '@/components/StorySection';
 import { SourceCard } from '@/components/SourceCard';
 import { SiteHeader } from '@/components/SiteHeader';
-import type { Theme } from '@/lib/themes';
 import { themes } from '@/lib/themes';
+import { useEditorialTheme } from '@/lib/useEditorialTheme';
 
 type TimelineSource = {
   title: string;
@@ -126,7 +126,7 @@ const storyMeta = {
 
 export default function TimelinePage() {
   const [activeSection, setActiveSection] = useState<string>('event-1');
-  const [currentTheme, setCurrentTheme] = useState<Theme>('archiveLight');
+  const { theme, isDark, toggleTheme } = useEditorialTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -162,8 +162,8 @@ export default function TimelinePage() {
   };
 
   return (
-    <div className={`min-h-screen theme-bg ${themes[currentTheme].className}`}>
-      <SiteHeader currentTheme={currentTheme} onThemeChange={setCurrentTheme} />
+    <div className={`min-h-screen theme-bg ${themes[theme].className}`}>
+      <SiteHeader isDark={isDark} onToggleTheme={toggleTheme} />
 
       <div className="theme-surface theme-border border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">

@@ -2,16 +2,15 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ThemeSwitcher } from '@/components/ThemeSwitcher';
+import { Moon, Sun } from 'lucide-react';
 import { navItems } from '@/lib/navigation';
-import type { Theme } from '@/lib/themes';
 
 type SiteHeaderProps = {
-  currentTheme: Theme;
-  onThemeChange: (theme: Theme) => void;
+  isDark: boolean;
+  onToggleTheme: () => void;
 };
 
-export function SiteHeader({ currentTheme, onThemeChange }: SiteHeaderProps) {
+export function SiteHeader({ isDark, onToggleTheme }: SiteHeaderProps) {
   const pathname = usePathname();
   const isStoriesPath = pathname === '/' || pathname.startsWith('/story');
 
@@ -57,7 +56,22 @@ export function SiteHeader({ currentTheme, onThemeChange }: SiteHeaderProps) {
             </nav>
           </div>
 
-          <ThemeSwitcher currentTheme={currentTheme} onThemeChange={onThemeChange} />
+          <div className="flex items-center pt-1 md:pt-0">
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              aria-pressed={isDark}
+              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="flex items-center gap-2 rounded-full theme-surface theme-border border px-3 py-1.5 text-xs uppercase tracking-[0.2em] transition-opacity duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-[var(--theme-bg)] hover:opacity-80"
+            >
+              {isDark ? (
+                <Moon className="h-3.5 w-3.5" aria-hidden />
+              ) : (
+                <Sun className="h-3.5 w-3.5" aria-hidden />
+              )}
+              <span>{isDark ? 'Dark' : 'Light'}</span>
+            </button>
+          </div>
         </div>
       </div>
     </header>
