@@ -1,13 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { TimelineMarker } from '@/components/TimelineMarker';
 import { StorySection } from '@/components/StorySection';
 import { SourceCard } from '@/components/SourceCard';
-import { ThemeSwitcher } from '@/components/ThemeSwitcher';
-import { navItems } from '@/lib/navigation';
+import { SiteHeader } from '@/components/SiteHeader';
 import type { Theme } from '@/lib/themes';
 import { themes } from '@/lib/themes';
 
@@ -130,8 +127,6 @@ const storyMeta = {
 export default function TimelinePage() {
   const [activeSection, setActiveSection] = useState<string>('event-1');
   const [currentTheme, setCurrentTheme] = useState<Theme>('archiveLight');
-  const pathname = usePathname();
-  const isStoriesPath = pathname === '/' || pathname.startsWith('/story');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -168,43 +163,7 @@ export default function TimelinePage() {
 
   return (
     <div className={`min-h-screen theme-bg ${themes[currentTheme].className}`}>
-      <header className="theme-surface theme-border border-b">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-6">
-          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-            <div className="flex flex-col gap-6">
-              <Link
-                href="/"
-                className="theme-text-primary inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-[var(--theme-bg)] transition-opacity duration-150 hover:opacity-80 text-lg md:text-xl font-semibold leading-tight"
-              >
-                The Founding Farmers
-              </Link>
-              <p className="text-xs theme-text-muted mt-1">
-                Free and open community news forum founded in Marlboro, NY, providing information and news about Southern Ulster County.
-              </p>
-
-              <nav aria-label="Primary" className="flex flex-wrap items-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.3em]">
-                {navItems.map((item) => {
-                  const isActive = item.href === '/' ? isStoriesPath : pathname.startsWith(item.href) && item.href !== '/';
-
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      aria-current={isActive ? 'page' : undefined}
-                      className={`transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-[var(--theme-bg)] ${
-                        isActive ? 'theme-text-primary font-semibold' : 'theme-text-muted'
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-            <ThemeSwitcher currentTheme={currentTheme} onThemeChange={setCurrentTheme} />
-          </div>
-        </div>
-      </header>
+      <SiteHeader currentTheme={currentTheme} onThemeChange={setCurrentTheme} />
 
       <div className="theme-surface theme-border border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
