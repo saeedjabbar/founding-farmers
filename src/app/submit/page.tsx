@@ -38,14 +38,14 @@ export default function SubmitPage() {
             </div>
 
             <div>
-              <label htmlFor="tip-contact" className="sr-only">
-                Contact (optional)
+              <label htmlFor="tip-email" className="sr-only">
+                Email (optional)
               </label>
               <input
-                id="tip-contact"
-                name="contact"
-                type="text"
-                placeholder="Contact (optional)"
+                id="tip-email"
+                name="email"
+                type="email"
+                placeholder="Email (optional)"
                 className="w-full rounded-2xl border theme-border bg-transparent px-4 py-3 text-sm theme-text-primary placeholder:theme-text-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--theme-bg)]"
                 autoComplete="email"
               />
