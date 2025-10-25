@@ -68,8 +68,8 @@ export default function HomePage() {
     <div className={`min-h-screen theme-bg ${themes[currentTheme].className}`}>
       <header className="theme-surface theme-border border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-6">
-          <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-            <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+            <div className="flex flex-col gap-6">
               <div>
                 <h1 className="theme-text-primary text-lg md:text-xl font-semibold leading-tight">
                   The Founding Farmers
@@ -79,7 +79,7 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <nav aria-label="Primary" className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.3em]">
+              <nav aria-label="Primary" className="flex flex-wrap items-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.3em]">
                 {navItems.map((item) => {
                   const isActive = item.href === '/' ? isStoriesPath : pathname.startsWith(item.href) && item.href !== '/';
 

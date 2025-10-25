@@ -162,8 +162,8 @@ export default function TimelinePage() {
     <div className={`min-h-screen theme-bg ${themes[currentTheme].className}`}>
       <header className="theme-surface theme-border border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 md:py-6">
-          <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-            <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+            <div className="flex flex-col gap-6">
               <Link
                 href="/"
                 className="theme-text-primary inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-[var(--theme-bg)] transition-opacity duration-150 hover:opacity-80 text-lg md:text-xl font-semibold leading-tight"
@@ -174,7 +174,7 @@ export default function TimelinePage() {
                 Free and open community news forum founded in Marlboro, NY, providing information and news about Southern Ulster County.
               </p>
 
-              <nav aria-label="Primary" className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.3em]">
+              <nav aria-label="Primary" className="flex flex-wrap items-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.3em]">
                 {navItems.map((item) => {
                   const isActive = item.href === '/' ? isStoriesPath : pathname.startsWith(item.href) && item.href !== '/';
 
