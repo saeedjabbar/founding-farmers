@@ -119,6 +119,14 @@ const timelineData: TimelineEvent[] = [
   },
 ];
 
+const storyMeta = {
+  author: 'Jane Doe',
+  publishedOn: {
+    display: 'September 20, 2025',
+    value: '2025-09-20',
+  },
+};
+
 export default function TimelinePage() {
   const [activeSection, setActiveSection] = useState<string>('event-1');
   const [currentTheme, setCurrentTheme] = useState<Theme>('archiveLight');
@@ -200,10 +208,19 @@ export default function TimelinePage() {
 
       <div className="theme-surface theme-border border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
-          <h2 className="theme-text-primary mb-4">The Letter That Changed Everything</h2>
+          <h2 className="theme-text-primary text-lg mb-4">The Letter That Changed Everything</h2>
           <p className="theme-text-secondary max-w-3xl leading-relaxed">
             Sometimes the most profound mysteries arrive in the simplest packages. This is the story of one man's search for truth, told chronologically through the documents, photographs, and moments that defined his journey.
           </p>
+          <div className="mt-6 flex flex-col gap-2 text-sm theme-text-muted md:flex-row md:items-center md:gap-6">
+            <span>
+              By <span className="theme-text-primary">{storyMeta.author}</span>
+            </span>
+            <span>
+              Published On{' '}
+              <time dateTime={storyMeta.publishedOn.value}>{storyMeta.publishedOn.display}</time>
+            </span>
+          </div>
         </div>
       </div>
 
