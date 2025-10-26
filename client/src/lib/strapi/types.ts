@@ -44,7 +44,7 @@ export interface StoryDocument {
   title: string;
   slug: string;
   blurb: string;
-  author?: string | null;
+  authorName?: string | null;
   location?: string | null;
   publishedDate?: string | null;
   publishedAt?: string | null;
@@ -73,7 +73,7 @@ export interface Story {
   title: string;
   slug: string;
   blurb: string;
-  author?: string | null;
+  authorName: string;
   location: string;
   publishedDate?: string | null;
   publishedAt?: string | null;

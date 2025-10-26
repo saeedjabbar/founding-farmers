@@ -89,6 +89,7 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
   }, [entries, activeSection]);
 
   const metaDate = formatMetaDate(story.publishedDate ?? story.publishedAt ?? undefined);
+  const hasAuthor = story.authorName && story.authorName !== 'Unknown';
 
   const scrollTo = (anchor: string) => {
     const el = document.getElementById(anchor);
@@ -105,7 +106,7 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
         <header className="theme-surface theme-border border-b">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 space-y-6">
             <div className="space-y-3">
-              <p className="text-xs uppercase tracking-[0.32em] theme-text-muted">{story.author ? 'Feature Story' : 'Investigation'}</p>
+              <p className="text-xs uppercase tracking-[0.32em] theme-text-muted">{hasAuthor ? 'Feature Story' : 'Investigation'}</p>
               <h1 className="theme-text-primary text-xl uppercase tracking-[0.08em] leading-snug">{story.title}</h1>
             </div>
 
@@ -125,9 +126,9 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
             <p className="theme-text-secondary leading-relaxed max-w-3xl">{story.blurb}</p>
 
             <div className="flex flex-col gap-2 text-sm theme-text-muted md:flex-row md:items-center md:gap-6">
-              {story.author && (
+              {hasAuthor && (
                 <span>
-                  By <span className="theme-text-primary">{story.author}</span>
+                  By <span className="theme-text-primary">{story.authorName}</span>
                 </span>
               )}
               {metaDate && (

@@ -15,6 +15,7 @@
   - [x] `stories` with fields: `title`, `slug`, `blurb`, `author`, `published_at`, `heroMedia?`, `timelineEntries` (repeatable component).
   - [x] `records` with fields: `title`, `slug`, `shortBlurb`, `longDescription`, `mediaAsset (media)`, `mediaType (enum)`, `sourceUrl`, `relatedStories` (m2m).
 - [x] Ensure `timelineEntry` component includes `entryDate (date)`, `headline`, `body`, `records (relation -> records)`.
+- [x] Source author display from hidden `authorName` field automatically populated from the publishing user's username.
 - [ ] Configure default & authenticated roles so public API only exposes published content.
 - [ ] Seed or migrate initial content fixtures for QA using the existing Strapi admin.
 

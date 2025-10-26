@@ -87,9 +87,9 @@ export function StoryListPage({ stories }: StoryListPageProps) {
                           <p className="text-sm md:text-base theme-text-secondary leading-relaxed max-w-3xl">
                             {story.blurb}
                           </p>
-                          {story.author && (
+                          {story.authorName && story.authorName !== 'Unknown' && (
                             <p className="text-xs theme-text-muted">
-                              By <span className="theme-text-primary">{story.author}</span>
+                              By <span className="theme-text-primary">{story.authorName}</span>
                             </p>
                           )}
                         </div>

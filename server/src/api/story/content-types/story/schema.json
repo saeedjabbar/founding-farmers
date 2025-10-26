@@ -24,8 +24,16 @@
       "type": "text",
       "required": true
     },
-    "author": {
-      "type": "string"
+    "authorName": {
+      "type": "string",
+      "pluginOptions": {
+        "content-manager": {
+          "visible": false
+        },
+        "content-type-builder": {
+          "visible": false
+        }
+      }
     },
     "location": {
       "type": "enumeration",
