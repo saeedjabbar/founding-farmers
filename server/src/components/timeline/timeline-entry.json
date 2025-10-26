@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_timeline_timeline_entries",
+  "info": {
+    "displayName": "Timeline Entry",
+    "description": "Milestone within a story timeline with linked source records"
+  },
+  "attributes": {
+    "entryDate": {
+      "type": "date",
+      "required": true
+    },
+    "headline": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "richtext",
+      "required": true
+    },
+    "records": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::record.record"
+    }
+  }
+}

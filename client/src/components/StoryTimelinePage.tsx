@@ -1,0 +1,200 @@
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
+import { TimelineMarker } from '@/components/TimelineMarker';
+import { StorySection } from '@/components/StorySection';
+import { SourceCard } from '@/components/SourceCard';
+import { SiteHeader } from '@/components/SiteHeader';
+import { themes } from '@/lib/themes';
+import { useEditorialTheme } from '@/lib/useEditorialTheme';
+import type { Story } from '@/lib/strapi/types';
+
+interface StoryTimelinePageProps {
+  story: Story;
+}
+
+function formatTimelineDate(date: string): string {
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) {
+    return date;
+  }
+
+  return parsed.toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function formatMetaDate(date?: string | null): { display: string; iso?: string } | null {
+  if (!date) return null;
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) {
+    return { display: date };
+  }
+
+  return {
+    display: parsed.toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }),
+    iso: parsed.toISOString().split('T')[0],
+  };
+}
+
+export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
+  const { theme, isDark, toggleTheme } = useEditorialTheme();
+  const entries = useMemo(
+    () =>
+      story.timelineEntries.map((entry, index) => ({
+        ...entry,
+        anchorId: `timeline-entry-${index}-${entry.id}`,
+        displayDate: formatTimelineDate(entry.entryDate),
+      })),
+    [story.timelineEntries]
+  );
+
+  const [activeSection, setActiveSection] = useState<string>(entries[0]?.anchorId ?? '');
+
+  useEffect(() => {
+    if (entries.length) {
+      setActiveSection(entries[0].anchorId);
+    }
+  }, [entries]);
+
+  useEffect(() => {
+    if (!entries.length) return;
+
+    const handleScroll = () => {
+      const nearest = entries
+        .map((entry) => {
+          const element = document.getElementById(entry.anchorId);
+          if (!element) return null;
+          const rect = element.getBoundingClientRect();
+          return { id: entry.anchorId, offset: Math.abs(rect.top - 200) };
+        })
+        .filter(Boolean) as { id: string; offset: number }[];
+
+      if (!nearest.length) return;
+      nearest.sort((a, b) => a.offset - b.offset);
+      if (nearest[0].id !== activeSection) {
+        setActiveSection(nearest[0].id);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [entries, activeSection]);
+
+  const metaDate = formatMetaDate(story.publishedDate ?? story.publishedAt ?? undefined);
+
+  const scrollTo = (anchor: string) => {
+    const el = document.getElementById(anchor);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  return (
+    <div className={`min-h-screen theme-bg ${themes[theme].className}`}>
+      <SiteHeader isDark={isDark} onToggleTheme={toggleTheme} />
+
+      <article>
+        <header className="theme-surface theme-border border-b">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 space-y-6">
+            <div className="space-y-3">
+              <p className="text-xs uppercase tracking-[0.32em] theme-text-muted">{story.author ? 'Feature Story' : 'Investigation'}</p>
+              <h1 className="theme-text-primary text-xl uppercase tracking-[0.08em] leading-snug">{story.title}</h1>
+            </div>
+
+            {story.heroMedia?.url && (
+              <div className="relative w-full aspect-[16/9] md:aspect-[5/2] rounded-lg overflow-hidden border border-[var(--theme-border)]">
+                <Image
+                  src={story.heroMedia.url}
+                  alt={story.heroMedia.alternativeText ?? story.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 1280px"
+                  priority
+                />
+              </div>
+            )}
+
+            <p className="theme-text-secondary leading-relaxed max-w-3xl">{story.blurb}</p>
+
+            <div className="flex flex-col gap-2 text-sm theme-text-muted md:flex-row md:items-center md:gap-6">
+              {story.author && (
+                <span>
+                  By <span className="theme-text-primary">{story.author}</span>
+                </span>
+              )}
+              {metaDate && (
+                <span>
+                  Published{' '}
+                  <time dateTime={metaDate.iso}>{metaDate.display}</time>
+                </span>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {entries.length > 0 && (
+          <section className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-16">
+            <div className="hidden md:grid md:grid-cols-[15%_60%_25%] gap-4 theme-text-muted text-[10px] uppercase tracking-wider mb-8">
+              <span>Timeline</span>
+              <span>Story Text</span>
+              <span>Source Records</span>
+            </div>
+
+            <div className="space-y-12 md:space-y-20">
+              {entries.map((entry) => (
+                <div
+                  key={entry.anchorId}
+                  className="flex flex-col md:grid md:grid-cols-[15%_60%_25%] gap-4 md:items-start"
+                >
+                  <div className="md:pt-1">
+                    <TimelineMarker
+                      date={entry.displayDate}
+                      isActive={activeSection === entry.anchorId}
+                      onClick={() => scrollTo(entry.anchorId)}
+                    />
+                  </div>
+
+                  <div>
+                    <StorySection
+                      id={entry.anchorId}
+                      title={entry.headline}
+                      body={entry.body}
+                    />
+                  </div>
+
+                  <div className="space-y-3 mt-4 md:mt-0">
+                    {entry.records.length === 0 && (
+                      <div className="theme-border theme-surface border rounded-lg shadow-sm px-4 py-3 text-xs theme-text-muted">
+                        No source records attached to this milestone yet.
+                      </div>
+                    )}
+                    {entry.records.map((record) => (
+                      <SourceCard
+                        key={record.id}
+                        title={record.title}
+                        summary={record.shortBlurb ?? ''}
+                        content={record.longDescription ?? undefined}
+                        url={record.sourceUrl ?? undefined}
+                        mediaType={record.mediaType ?? undefined}
+                        mediaAsset={record.mediaAsset}
+                        recordSlug={record.slug}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </article>
+    </div>
+  );
+}

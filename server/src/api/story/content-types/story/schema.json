@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "stories",
+  "info": {
+    "singularName": "story",
+    "pluralName": "stories",
+    "displayName": "Story",
+    "description": "Editorial story with timeline milestones and source records"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "blurb": {
+      "type": "text",
+      "required": true
+    },
+    "author": {
+      "type": "string"
+    },
+    "publishedDate": {
+      "type": "date"
+    },
+    "heroMedia": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "timelineEntries": {
+      "type": "component",
+      "repeatable": true,
+      "component": "timeline.timeline-entry",
+      "required": true,
+      "min": 1
+    }
+  }
+}

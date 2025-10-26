@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "records",
+  "info": {
+    "singularName": "record",
+    "pluralName": "records",
+    "displayName": "Record",
+    "description": "Reusable archival record referenced by timeline entries"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "shortBlurb": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "longDescription": {
+      "type": "richtext"
+    },
+    "mediaAsset": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "mediaType": {
+      "type": "enumeration",
+      "enum": [
+        "image",
+        "video",
+        "audio",
+        "pdf",
+        "document"
+      ]
+    },
+    "sourceUrl": {
+      "type": "string"
+    },
+    "publishDate": {
+      "type": "date"
+    }
+  }
+}

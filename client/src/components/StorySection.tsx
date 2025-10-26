@@ -2,12 +2,11 @@ import { motion } from 'motion/react';
 
 interface StorySectionProps {
   id: string;
-  date: string;
   title: string;
   body: string;
 }
 
-export function StorySection({ id, date, title, body }: StorySectionProps) {
+export function StorySection({ id, title, body }: StorySectionProps) {
   return (
     <motion.div
       id={id}
@@ -18,7 +17,10 @@ export function StorySection({ id, date, title, body }: StorySectionProps) {
       className="space-y-3 story-content"
     >
       <h2 className="theme-text-primary text-lg">{title}</h2>
-      <p className="theme-text-secondary leading-relaxed">{body}</p>
+      <div
+        className="theme-text-secondary leading-relaxed space-y-3 story-content"
+        dangerouslySetInnerHTML={{ __html: body }}
+      />
     </motion.div>
   );
 }

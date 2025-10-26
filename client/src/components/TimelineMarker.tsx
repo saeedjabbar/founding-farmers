@@ -14,6 +14,7 @@ export function TimelineMarker({ date, isActive, onClick }: TimelineMarkerProps)
       
       {/* Date marker */}
       <button
+        type="button"
         onClick={onClick}
         className="relative z-10 group flex items-center gap-3 cursor-pointer"
       >
