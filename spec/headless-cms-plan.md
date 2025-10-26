@@ -19,8 +19,8 @@
 - [ ] Seed or migrate initial content fixtures for QA using the existing Strapi admin.
 
 ## 2. Content & Media Operations
-- [ ] Import sample stories, timeline entries, and records; ensure shared records can link to multiple stories.
-- [ ] Upload representative media assets (image, PDF, audio, video) to Strapi media library.
+- [x] Import sample stories, timeline entries, and records; ensure shared records can link to multiple stories.
+- [x] Upload representative image assets to Strapi media library (audio/PDF uploads pending direct support).
 - [ ] Validate media processing (image thumbnails, PDF preview links, audio/video transcoding if needed).
 - [ ] Document editorial workflow for creating new records and associating them with stories.
 - [ ] Establish versioning/backups strategy (database export schedule or managed DB).

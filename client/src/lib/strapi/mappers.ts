@@ -56,6 +56,7 @@ export function mapStory(document: StoryDocument): Story {
     slug: document.slug,
     blurb: document.blurb,
     author: document.author ?? undefined,
+    location: document.location ?? 'Marlborough',
     publishedDate: document.publishedDate ?? undefined,
     publishedAt: document.publishedAt ?? undefined,
     heroMedia,

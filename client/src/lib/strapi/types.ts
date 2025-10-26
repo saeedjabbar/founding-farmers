@@ -45,6 +45,7 @@ export interface StoryDocument {
   slug: string;
   blurb: string;
   author?: string | null;
+  location?: string | null;
   publishedDate?: string | null;
   publishedAt?: string | null;
   heroMedia?: StrapiMedia | null;
@@ -73,6 +74,7 @@ export interface Story {
   slug: string;
   blurb: string;
   author?: string | null;
+  location: string;
   publishedDate?: string | null;
   publishedAt?: string | null;
   heroMedia?: StrapiMedia | null;

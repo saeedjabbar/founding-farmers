@@ -23,12 +23,19 @@ const iconMap: Record<NonNullable<MediaType>, typeof FileText> = {
   document: File,
 };
 
-function renderMediaPreview(mediaType?: MediaType, mediaAsset?: StrapiMedia | null) {
-  if (!mediaType || !mediaAsset?.url) return null;
+function renderMediaPreview(
+  mediaType?: MediaType,
+  mediaAsset?: StrapiMedia | null,
+  fallbackUrl?: string
+) {
+  if (!mediaType) return null;
 
-  const alt = mediaAsset.alternativeText ?? mediaAsset.name ?? 'Source media';
+  const assetUrl = mediaAsset?.url ?? fallbackUrl;
+  if (!assetUrl) return null;
 
-  if (mediaType === 'image') {
+  const alt = mediaAsset?.alternativeText ?? mediaAsset?.name ?? 'Source media';
+
+  if (mediaType === 'image' && mediaAsset?.url) {
     return (
       <div className="relative w-full h-48 md:h-40 rounded-md overflow-hidden border border-[var(--theme-border)]">
         <Image
@@ -48,7 +55,7 @@ function renderMediaPreview(mediaType?: MediaType, mediaAsset?: StrapiMedia | nu
         controls
         preload="metadata"
         className="w-full mt-2"
-        src={mediaAsset.url}
+        src={assetUrl}
       >
         Your browser does not support the audio tag.
       </audio>
@@ -62,7 +69,7 @@ function renderMediaPreview(mediaType?: MediaType, mediaAsset?: StrapiMedia | nu
         preload="metadata"
         className="w-full rounded-md mt-2 border border-[var(--theme-border)]"
       >
-        <source src={mediaAsset.url} type={mediaAsset.mime ?? undefined} />
+        <source src={assetUrl} type={mediaAsset?.mime ?? undefined} />
         Your browser does not support the video tag.
       </video>
     );
@@ -72,13 +79,13 @@ function renderMediaPreview(mediaType?: MediaType, mediaAsset?: StrapiMedia | nu
     return (
       <div className="mt-2">
         <object
-          data={mediaAsset.url}
-          type={mediaAsset.mime ?? 'application/pdf'}
+          data={assetUrl}
+          type={mediaAsset?.mime ?? 'application/pdf'}
           className="w-full h-56 rounded-md border border-[var(--theme-border)]"
         >
           <p className="text-xs theme-text-secondary">
             PDF preview unavailable.{' '}
-            <a href={mediaAsset.url} target="_blank" rel="noopener noreferrer" className="theme-accent underline">
+            <a href={assetUrl} target="_blank" rel="noopener noreferrer" className="theme-accent underline">
               Download the document
             </a>
             .
@@ -96,6 +103,7 @@ export function SourceCard({ title, summary, content, url, mediaType, mediaAsset
   const iconKey = mediaType ?? 'document';
   const Icon = iconMap[iconKey] ?? File;
   const accordionId = `source-card-${title.replace(/\s+/g, '-').toLowerCase()}`;
+  const previewUrl = mediaAsset?.url ?? url;
 
   return (
     <motion.div
@@ -138,7 +146,7 @@ export function SourceCard({ title, summary, content, url, mediaType, mediaAsset
           >
             <div className="px-4 py-3 theme-bg">
               {content && <p className="text-xs theme-text-secondary mb-3">{content}</p>}
-              {renderMediaPreview(mediaType, mediaAsset)}
+              {renderMediaPreview(mediaType, mediaAsset, previewUrl)}
               {url && (
                 <a
                   href={url}

@@ -68,7 +68,10 @@ export function StoryListPage({ stories }: StoryListPageProps) {
                           </div>
                         )}
                         <div className="space-y-3">
-                          <div className="flex items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] theme-text-muted">
+                          <div className="flex flex-wrap items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] theme-text-muted">
+                            <span className="theme-text-primary tracking-[0.3em]">
+                              {story.location}
+                            </span>
                             {publishedOn ? (
                               <time dateTime={story.publishedDate ?? story.publishedAt ?? undefined}>{publishedOn}</time>
                             ) : (

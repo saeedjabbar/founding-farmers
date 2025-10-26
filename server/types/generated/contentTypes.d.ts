@@ -495,6 +495,11 @@ export interface ApiStoryStory extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::story.story'> &
       Schema.Attribute.Private;
+    location: Schema.Attribute.Enumeration<
+      ['Marlborough', 'Hudson Valley', 'Berkshires', 'Crescent City']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'Marlborough'>;
     publishedAt: Schema.Attribute.DateTime;
     publishedDate: Schema.Attribute.Date;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;

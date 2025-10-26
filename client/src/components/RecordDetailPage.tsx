@@ -11,9 +11,12 @@ interface RecordDetailPageProps {
 }
 
 function renderMedia(record: SourceRecord) {
-  if (!record.mediaType || !record.mediaAsset?.url) return null;
+  if (!record.mediaType) return null;
 
-  if (record.mediaType === 'image') {
+  const assetUrl = record.mediaAsset?.url ?? record.sourceUrl ?? undefined;
+  if (!assetUrl) return null;
+
+  if (record.mediaType === 'image' && record.mediaAsset?.url) {
     return (
       <div className="relative w-full h-80 md:h-[420px] rounded-lg overflow-hidden border border-[var(--theme-border)]">
         <Image
@@ -33,7 +36,7 @@ function renderMedia(record: SourceRecord) {
         controls
         preload="metadata"
         className="w-full rounded-md border border-[var(--theme-border)]"
-        src={record.mediaAsset.url}
+        src={assetUrl}
       >
         Your browser does not support the audio tag.
       </audio>
@@ -47,7 +50,7 @@ function renderMedia(record: SourceRecord) {
         preload="metadata"
         className="w-full rounded-md border border-[var(--theme-border)]"
       >
-        <source src={record.mediaAsset.url} type={record.mediaAsset.mime ?? undefined} />
+        <source src={assetUrl} type={record.mediaAsset?.mime ?? undefined} />
         Your browser does not support the video tag.
       </video>
     );
@@ -55,14 +58,14 @@ function renderMedia(record: SourceRecord) {
 
   if (record.mediaType === 'pdf') {
     return (
-      <object
-        data={record.mediaAsset.url}
-        type={record.mediaAsset.mime ?? 'application/pdf'}
+        <object
+        data={assetUrl}
+        type={record.mediaAsset?.mime ?? 'application/pdf'}
         className="w-full h-[600px] rounded-md border border-[var(--theme-border)]"
       >
         <p className="text-xs theme-text-secondary">
           PDF preview unavailable.{' '}
-          <a href={record.mediaAsset.url} target="_blank" rel="noopener noreferrer" className="theme-accent underline">
+          <a href={assetUrl} target="_blank" rel="noopener noreferrer" className="theme-accent underline">
             Download the document
           </a>
           .
@@ -122,8 +125,18 @@ export function RecordDetailPage({ record }: RecordDetailPageProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block theme-text-secondary hover:text-[var(--theme-accent)]"
-              >
+                >
                 Download media asset
+              </a>
+            )}
+            {!record.mediaAsset?.url && record.sourceUrl && (
+              <a
+                href={record.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block theme-text-secondary hover:text-[var(--theme-accent)]"
+              >
+                Open external media
               </a>
             )}
           </div>

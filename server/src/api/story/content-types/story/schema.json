@@ -27,6 +27,17 @@
     "author": {
       "type": "string"
     },
+    "location": {
+      "type": "enumeration",
+      "enum": [
+        "Marlborough",
+        "Hudson Valley",
+        "Berkshires",
+        "Crescent City"
+      ],
+      "default": "Marlborough",
+      "required": true
+    },
     "publishedDate": {
       "type": "date"
     },

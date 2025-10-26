@@ -1,7 +1,7 @@
 # Frontend Integration Notes
 
 ## Data Fetching
-- [ ] Add `STRAPI_BASE_URL` and `STRAPI_API_TOKEN` placeholders in `client/.env.local` and document requirements.
+- [x] Add `STRAPI_BASE_URL` and `STRAPI_API_TOKEN` placeholders in `client/.env.local` and document requirements.
 - [x] Implement `client/src/lib/strapi/client.ts` exposing `fetchFromStrapi<T>()` with automatic draft/published param support.
 - [x] Create strongly typed mappers in `client/src/lib/strapi/mappers.ts` for:
   - [x] `StoryDocument` → `Story` (includes `timelineEntries` with populated `records`).
