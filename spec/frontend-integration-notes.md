@@ -32,6 +32,7 @@
   - [x] PDF/doc via link + embed fallback.
 - [x] Ensure accordion/dropdown interaction reveals media preview and long description.
 - [x] Provide accessible labels and `aria-controls` for toggles and media players.
+- [x] Add optional story summary card rendering at timeline bottom with paragraph/bulleted content.
 
 ## Theming & UX
 - [ ] Validate timeline and source cards across `editorialRedLight` and `editorialRedDark`.

@@ -511,6 +511,9 @@ export interface ApiStoryStory extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     publishedDate: Schema.Attribute.Date;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    summaryCard: Schema.Attribute.Component<'story.summary-card', false>;
+    summaryEnabled: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     timelineEntries: Schema.Attribute.Component<
       'timeline.timeline-entry',
       true

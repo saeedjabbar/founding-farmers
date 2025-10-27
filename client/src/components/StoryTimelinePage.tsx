@@ -165,11 +165,7 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
                   </div>
 
                   <div>
-                    <StorySection
-                      id={entry.anchorId}
-                      title={entry.headline}
-                      body={entry.body}
-                    />
+                    <StorySection id={entry.anchorId} title={entry.headline} body={entry.body} />
                   </div>
 
                   <div className="space-y-3 mt-4 md:mt-0">
@@ -193,6 +189,38 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
                   </div>
                 </div>
               ))}
+            </div>
+          </section>
+        )}
+
+        {story.summary && (
+          <section className="max-w-7xl mx-auto px-4 md:px-8 pb-10 md:pb-16">
+            <div className="md:grid md:grid-cols-[15%_60%_25%] gap-4 items-start">
+              <div className="hidden md:block" />
+              <div className="hidden md:block" />
+              <div className="w-full">
+                <div className="theme-border theme-surface border rounded-lg shadow-sm p-4 space-y-3">
+                  <h4 className="text-sm theme-text-primary uppercase tracking-[0.18em]">
+                    {story.summary.heading}
+                  </h4>
+                  {story.summary.body && (
+                    <div
+                      className="text-xs theme-text-secondary leading-relaxed space-y-3 summary-content"
+                      dangerouslySetInnerHTML={{ __html: story.summary.body }}
+                    />
+                  )}
+                  {story.summary.bullets && story.summary.bullets.length > 0 && (
+                    <ul className="text-xs theme-text-secondary space-y-1.5">
+                      {story.summary.bullets.map((item, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-[var(--theme-accent)] mt-[2px]">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
             </div>
           </section>
         )}

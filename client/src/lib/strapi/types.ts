@@ -50,6 +50,8 @@ export interface StoryDocument {
   publishedAt?: string | null;
   heroMedia?: StrapiMedia | null;
   timelineEntries?: TimelineEntryComponent[] | null;
+  summaryEnabled?: boolean | null;
+  summaryCard?: SummaryCardDocument | null;
 }
 
 export interface StrapiListResponse<T> {
@@ -79,6 +81,7 @@ export interface Story {
   publishedAt?: string | null;
   heroMedia?: StrapiMedia | null;
   timelineEntries: TimelineEntry[];
+  summary?: SummaryCard | null;
 }
 
 export interface TimelineEntry {
@@ -99,4 +102,16 @@ export interface SourceRecord {
   mediaAsset?: StrapiMedia | null;
   sourceUrl?: string | null;
   publishDate?: string | null;
+}
+
+export interface SummaryCardDocument {
+  heading?: string | null;
+  body?: string | null;
+  bulletsText?: string | null;
+}
+
+export interface SummaryCard {
+  heading: string;
+  body?: string | null;
+  bullets?: string[];
 }

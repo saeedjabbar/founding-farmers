@@ -12,6 +12,7 @@ const STORY_POPULATE: StrapiQueryParams = {
       },
     },
     heroMedia: true,
+    summaryCard: true,
   },
 };
 

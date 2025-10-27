@@ -45,7 +45,6 @@ export function StoryListPage({ stories }: StoryListPageProps) {
             <div>
               {stories.map((story) => {
                 const publishedOn = formatDisplayDate(story.publishedDate ?? story.publishedAt);
-                const isPublished = Boolean(story.publishedAt);
                 const hero = story.heroMedia?.url;
 
                 return (

@@ -62,6 +62,15 @@
       "component": "timeline.timeline-entry",
       "required": true,
       "min": 1
+    },
+    "summaryEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "summaryCard": {
+      "type": "component",
+      "component": "story.summary-card",
+      "repeatable": false
     }
   }
 }

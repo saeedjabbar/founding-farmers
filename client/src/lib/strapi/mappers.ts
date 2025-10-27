@@ -4,6 +4,7 @@ import type {
   SourceRecord,
   Story,
   StoryDocument,
+  SummaryCard,
   TimelineEntry,
   TimelineEntryComponent,
 } from './types';
@@ -42,6 +43,34 @@ function mapTimelineEntry(component: TimelineEntryComponent): TimelineEntry {
   };
 }
 
+function mapSummary(document: StoryDocument): SummaryCard | null {
+  if (!document.summaryEnabled || !document.summaryCard) {
+    return null;
+  }
+
+  const heading = document.summaryCard.heading?.trim() || 'Summary';
+  const bulletsArray =
+    document.summaryCard.bulletsText
+      ?.split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0) ?? [];
+
+  const rawBody = document.summaryCard.body?.trim() ?? '';
+  const bodyText = rawBody.replace(/<[^>]*>/g, '').trim();
+  const hasBody = bodyText.length > 0;
+  const hasBullets = bulletsArray.length > 0;
+
+  if (!hasBody && !hasBullets) {
+    return null;
+  }
+
+  return {
+    heading,
+    body: hasBody ? rawBody : undefined,
+    bullets: hasBullets ? bulletsArray : undefined,
+  };
+}
+
 export function mapStory(document: StoryDocument): Story {
   const heroMedia = document.heroMedia
     ? { ...document.heroMedia, url: getStrapiAssetUrl(document.heroMedia.url) ?? document.heroMedia.url }
@@ -61,5 +90,6 @@ export function mapStory(document: StoryDocument): Story {
     publishedAt: document.publishedAt ?? undefined,
     heroMedia,
     timelineEntries,
+    summary: mapSummary(document),
   };
 }

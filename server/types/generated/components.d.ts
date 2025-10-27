@@ -1,5 +1,18 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface StorySummaryCard extends Struct.ComponentSchema {
+  collectionName: 'components_story_summary_cards';
+  info: {
+    description: 'Optional story summary containing narrative and bullet highlights';
+    displayName: 'Summary Card';
+  };
+  attributes: {
+    body: Schema.Attribute.RichText;
+    bulletsText: Schema.Attribute.Text & Schema.Attribute.DefaultTo<''>;
+    heading: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Summary'>;
+  };
+}
+
 export interface TimelineTimelineEntry extends Struct.ComponentSchema {
   collectionName: 'components_timeline_timeline_entries';
   info: {
@@ -17,6 +30,7 @@ export interface TimelineTimelineEntry extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'story.summary-card': StorySummaryCard;
       'timeline.timeline-entry': TimelineTimelineEntry;
     }
   }
