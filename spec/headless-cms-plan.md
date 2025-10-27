@@ -12,7 +12,7 @@
 - [ ] Enable or verify GraphQL/REST plugins required for the frontend integration.
 - [x] Define or update reusable components for Timeline Entry and Source Record references.
 - [x] Adjust collection types as needed:
-  - [x] `stories` with fields: `title`, `slug`, `blurb`, hidden `authorName`, `published_at`, `heroMedia?`, `timelineEntries` (repeatable component).
+  - [x] `stories` with fields: `title`, `slug`, `blurb`, hidden `authorName`, `published_at`, `heroMedia?`, `timelineEntries` (repeatable component), optional `summaryEnabled` toggle, and embedded `summaryCard` (heading, rich text body, newline-separated bullets).
   - [x] `records` with fields: `title`, `slug`, `shortBlurb`, `longDescription`, `mediaAsset (media)`, `mediaType (enum)`, `sourceUrl`, `relatedStories` (m2m).
 - [x] Ensure `timelineEntry` component includes `entryDate (date)`, `headline`, `body`, `records (relation -> records)`.
 - [x] Auto-populate hidden `authorName` for all roles via lifecycle (after create/update) and bootstrap backfill (username → name → email prefix fallback).
@@ -23,7 +23,7 @@
 - [x] Import sample stories, timeline entries, and records; ensure shared records can link to multiple stories.
 - [x] Upload representative image assets to Strapi media library (audio/PDF uploads pending direct support).
 - [ ] Validate media processing (image thumbnails, PDF preview links, audio/video transcoding if needed).
-- [ ] Document editorial workflow for creating new records and associating them with stories.
+- [ ] Document editorial workflow for creating new records and associating them with stories, including guidance for the story summary toggle (leave disabled by default; enable when body/bullets are provided).
 - [ ] Establish versioning/backups strategy (database export schedule or managed DB).
 
 ## 3. Next.js Data Layer Integration

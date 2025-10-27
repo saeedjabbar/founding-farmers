@@ -10,6 +10,7 @@
 - `src/components/` – reusable components; primitives live in `components/ui/`. Notable shared pieces:
   - `SiteHeader.tsx` – renders masthead/nav plus the light/dark toggle.
   - `TimelineMarker`, `StorySection`, `SourceCard` – story timeline UI.
+  - `StoryTimelinePage` also renders an optional summary card fed by Strapi.
 - `src/lib/` – shared logic. `useEditorialTheme.ts` locks the experience to the Editorial Red palette and syncs with system preferences plus the header toggle.
 - `src/styles/` and `src/app/globals.css` – global layers, tokens, and theme class definitions.
 - Documentation and supporting copy live under `src/guidelines/`.
@@ -29,6 +30,7 @@
 - PascalCase component filenames, camelCase hooks/utilities, and align file names with their default export.
 - Keep imports grouped (React → third-party → local). Use Tailwind classes; prefer extracting repeated patterns to components or utilities.
 - When tagging forms or interactive elements, ensure proper labels and `aria-*` attributes for accessibility.
+- Treat Strapi content as the single source of truth: story authors display via the hidden `authorName` field (automatically populated by lifecycle hooks) and the optional summary card is controlled by `summaryEnabled` plus `summaryCard` (heading, rich paragraph, newline-separated bullets).
 
 ## Testing & QA
 - Automated tests are not yet configured. If introducing tests, colocate them under `src/__tests__/` using Vitest + React Testing Library.
