@@ -106,7 +106,14 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
         <header className="theme-surface theme-border border-b">
           <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 space-y-6">
             <div className="space-y-3">
-              <p className="text-xs uppercase tracking-[0.32em] theme-text-muted">{hasAuthor ? 'Feature Story' : 'Investigation'}</p>
+              <p className="text-xs uppercase tracking-[0.32em] theme-text-muted">
+                <span className="text-[var(--theme-accent)]">{story.location}</span>
+                {metaDate && (
+                  <span className="mx-3 text-[var(--theme-text-muted)]">
+                    {metaDate.display}
+                  </span>
+                )}
+              </p>
               <h1 className="theme-text-primary text-xl uppercase tracking-[0.08em] leading-snug">{story.title}</h1>
             </div>
 
@@ -129,12 +136,6 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
               {hasAuthor && (
                 <span>
                   By <span className="theme-text-primary">{story.authorName}</span>
-                </span>
-              )}
-              {metaDate && (
-                <span>
-                  Published{' '}
-                  <time dateTime={metaDate.iso}>{metaDate.display}</time>
                 </span>
               )}
             </div>

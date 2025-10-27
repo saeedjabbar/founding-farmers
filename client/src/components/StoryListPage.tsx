@@ -69,17 +69,12 @@ export function StoryListPage({ stories }: StoryListPageProps) {
                         )}
                         <div className="space-y-3">
                           <div className="flex flex-wrap items-center gap-3 text-[11px] md:text-xs uppercase tracking-[0.25em] theme-text-muted">
-                            <span className="theme-text-primary tracking-[0.3em]">
-                              {story.location}
+                            <span className="text-[var(--theme-accent)] tracking-[0.3em]">
+                              [{story.location}]
                             </span>
-                            {publishedOn ? (
+                            {publishedOn && (
                               <time dateTime={story.publishedDate ?? story.publishedAt ?? undefined}>{publishedOn}</time>
-                            ) : (
-                              <span>Draft</span>
                             )}
-                            <span className={`tracking-[0.32em] ${isPublished ? 'theme-accent' : 'theme-text-muted'}`}>
-                              {isPublished ? 'Published' : 'In Progress'}
-                            </span>
                           </div>
                           <h3 className="text-lg md:text-xl uppercase tracking-[0.08em] theme-text-primary leading-snug">
                             {story.title}
