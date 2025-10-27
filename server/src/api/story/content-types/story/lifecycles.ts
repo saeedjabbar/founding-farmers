@@ -1,9 +1,9 @@
-const SUPER_ADMIN_CODE = 'strapi-super-admin';
-
 type UserLike = {
+  id?: number | string;
   username?: string;
   firstname?: string;
   lastname?: string;
+  email?: string;
   roles?: Array<{ code: string }>;
 };
 
@@ -26,6 +26,12 @@ type StoryLifecycleEvent = {
       user?: UserLike;
     };
   };
+  result?: {
+    createdBy?: UserLike;
+    updatedBy?: UserLike;
+    id: number | string;
+    authorName?: string;
+  };
 };
 
 function resolveActingUser(event: StoryLifecycleEvent): UserLike | undefined {
@@ -38,7 +44,7 @@ function resolveActingUser(event: StoryLifecycleEvent): UserLike | undefined {
   );
 }
 
-function resolveDisplayName(user: UserLike | undefined): string | undefined {
+function resolveDisplayNameFields(user: UserLike | undefined): string | undefined {
   if (!user) {
     return undefined;
   }
@@ -52,30 +58,67 @@ function resolveDisplayName(user: UserLike | undefined): string | undefined {
     return fullName;
   }
 
+  if (user.email) {
+    const localPart = user.email.split('@')[0];
+    if (localPart.length > 0) {
+      return localPart;
+    }
+  }
+
   return undefined;
 }
 
-function ensureAuthorName(event: StoryLifecycleEvent) {
-  const { params } = event;
-  if (!params?.data) {
-    return;
+async function updateAuthorName(params: { data?: Record<string, any> }, user: UserLike | undefined) {
+  if (!params.data) return;
+
+  const displayName =
+    resolveDisplayNameFields(user) ??
+    (user?.id
+      ? await fetchDisplayNameById(user.id)
+      : undefined);
+
+  if (displayName) {
+    params.data.authorName = displayName;
   }
+}
 
-  const actingUser = resolveActingUser(event);
-  const displayName = resolveDisplayName(actingUser);
-
-  if (!displayName) {
-    return;
+async function fetchDisplayNameById(id: number | string): Promise<string | undefined> {
+  try {
+    const user = await strapi.entityService.findOne('admin::user', id, {
+      fields: ['username', 'firstname', 'lastname', 'email'],
+    });
+    return resolveDisplayNameFields(user);
+  } catch (error) {
+    strapi.log.warn(`Unable to resolve author name for admin user ${id}: ${error?.message ?? error}`);
+    return undefined;
   }
-
-  params.data.authorName = displayName;
 }
 
 export default {
-  beforeCreate(event: StoryLifecycleEvent) {
-    ensureAuthorName(event);
+  async afterCreate(event: StoryLifecycleEvent) {
+    await ensureAuthorNameAfter(event);
   },
-  beforeUpdate(event: StoryLifecycleEvent) {
-    ensureAuthorName(event);
+  async afterUpdate(event: StoryLifecycleEvent) {
+    await ensureAuthorNameAfter(event);
   },
 };
+
+async function ensureAuthorNameAfter(event: StoryLifecycleEvent) {
+  const { result } = event;
+  if (!result) return;
+
+  const actingUser = result.updatedBy ?? result.createdBy;
+  const displayName =
+    resolveDisplayNameFields(actingUser) ??
+    (actingUser?.id ? await fetchDisplayNameById(actingUser.id) : undefined);
+
+  if (!displayName) return;
+
+  const currentAuthor = result.authorName;
+  if (currentAuthor === displayName) return;
+
+  await strapi.db.query('api::story.story').update({
+    where: { id: result.id },
+    data: { authorName: displayName },
+  });
+}

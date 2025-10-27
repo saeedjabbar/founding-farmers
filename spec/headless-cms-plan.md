@@ -12,10 +12,10 @@
 - [ ] Enable or verify GraphQL/REST plugins required for the frontend integration.
 - [x] Define or update reusable components for Timeline Entry and Source Record references.
 - [x] Adjust collection types as needed:
-  - [x] `stories` with fields: `title`, `slug`, `blurb`, `author`, `published_at`, `heroMedia?`, `timelineEntries` (repeatable component).
+  - [x] `stories` with fields: `title`, `slug`, `blurb`, hidden `authorName`, `published_at`, `heroMedia?`, `timelineEntries` (repeatable component).
   - [x] `records` with fields: `title`, `slug`, `shortBlurb`, `longDescription`, `mediaAsset (media)`, `mediaType (enum)`, `sourceUrl`, `relatedStories` (m2m).
 - [x] Ensure `timelineEntry` component includes `entryDate (date)`, `headline`, `body`, `records (relation -> records)`.
-- [x] Source author display from hidden `authorName` field automatically populated from the publishing user's username.
+- [x] Auto-populate hidden `authorName` for all roles via lifecycle (after create/update) and bootstrap backfill (username → name → email prefix fallback).
 - [ ] Configure default & authenticated roles so public API only exposes published content.
 - [ ] Seed or migrate initial content fixtures for QA using the existing Strapi admin.
 
