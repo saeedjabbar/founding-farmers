@@ -1,9 +1,10 @@
 # Agent Guidelines
 
 ## Framework & Tooling
-- The project runs on **Next.js 14 (App Router)** with TypeScript. Pages live under `src/app/**/page.tsx` and share layout/state through `src/app/layout.tsx`.
+- The project runs on **Next.js 16 (App Router)** with TypeScript. Pages live under `src/app/**/page.tsx` and share layout/state through `src/app/layout.tsx`.
+- Next.js 16 now delivers route props as `Promise` objects; server components should `await params`/`searchParams` before use.
 - Tailwind CSS (configured in `tailwind.config.js`) provides utility-first styling; prefer using existing custom properties (`theme-*` classes) instead of hard-coded colors.
-- Motion/animation helpers come from `motion` and UI primitives from Radix. Icons use `lucide-react`.
+- Motion/animation helpers come from `motion` and UI primitives from Radix. Icons use `lucide-react`. PDF previews rely on `react-pdf`.
 
 ## Project Structure
 - `src/app/` – route segments (`page.tsx`), layout, and Next metadata (including `icon.png`).

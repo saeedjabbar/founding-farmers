@@ -22,6 +22,7 @@
 - [x] Implement `/stories/[slug]/page.tsx` rendering the timeline using `TimelineMarker`, `StorySection`, and `SourceCard`.
 - [x] Implement optional `/records/[slug]/page.tsx` for deep links to individual records.
 - [x] Wire `SiteHeader` component to all new routes and pass `useEditorialTheme` data.
+- [ ] When adding new dynamic routes in Next.js 16, remember `params`/`searchParams` arrive as `Promise` values and must be awaited before use.
 
 ## Components & Rendering
 - [x] Ensure `SourceCard` accepts expanded data: `longDescription`, `mediaAsset`, `mediaType`, `sourceUrl`.
@@ -29,7 +30,7 @@
   - [x] Images via `<Image>`.
   - [x] Audio via `<audio controls>`.
   - [x] Video via `<video controls>`.
-  - [x] PDF/doc via link + embed fallback.
+  - [x] PDF/doc via `react-pdf` preview with download fallback.
 - [x] Ensure accordion/dropdown interaction reveals media preview and long description.
 - [x] Provide accessible labels and `aria` attributes for toggles and media players.
 - [x] Add optional story summary card rendering at timeline bottom. Summary pulls from Strapi `summaryEnabled` + `summaryCard` (enter bullets as newline-separated text; frontend renders accent bullets).

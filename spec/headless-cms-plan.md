@@ -34,11 +34,13 @@
 - [x] Build single story loader (`/stories/[slug]`) that resolves timeline entries and populated records.
 - [x] Add `/records/[slug]` route if standalone record pages are required.
 - [x] Implement ISR or revalidation strategy for published updates.
+- [ ] Note for Next.js 16: dynamic route loaders must `await params`/`searchParams` because they are provided as `Promise` values.
 
 ## 4. UI Composition & Theming
 - [x] Wire `SiteHeader` with `useEditorialTheme` on new story and record routes.
 - [x] Create Story timeline page using existing `TimelineMarker`, `StorySection`, and `SourceCard` components.
 - [x] Extend `SourceCard` to support expandable media preview (image, audio player, video embed, PDF viewer).
+- [x] Use `react-pdf` for inline document previews while keeping a downloadable fallback link.
 - [x] Ensure media types map to appropriate UI primitives (Radix Accordion, custom audio/video players).
 - [x] Add “View Source” external link and track `aria` attributes for accessibility.
 - [ ] Validate styling against editorial light/dark themes and update Tailwind tokens if gaps exist.
