@@ -16,16 +16,20 @@ export function mapRecord(document: RecordDocument | null | undefined): SourceRe
     ? { ...document.mediaAsset, url: getStrapiAssetUrl(document.mediaAsset.url) ?? document.mediaAsset.url }
     : undefined;
 
+  const rawDescription = document.description ?? '';
+  const trimmedDescription = rawDescription.trim();
+
   return {
     id: String(document.documentId ?? document.id),
     title: document.title,
     slug: document.slug,
-    shortBlurb: document.shortBlurb ?? undefined,
-    longDescription: document.longDescription ?? undefined,
+    description: trimmedDescription.length > 0 ? rawDescription : undefined,
     mediaType: document.mediaType ?? undefined,
     mediaAsset,
     sourceUrl: document.sourceUrl ?? undefined,
     publishDate: document.publishDate ?? document.publishedAt ?? undefined,
+    publishedAt: document.publishedAt ?? undefined,
+    createdAt: document.createdAt ?? undefined,
   };
 }
 

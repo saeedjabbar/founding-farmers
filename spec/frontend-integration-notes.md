@@ -33,6 +33,7 @@
 - [x] Ensure accordion/dropdown interaction reveals media preview and long description.
 - [x] Provide accessible labels and `aria` attributes for toggles and media players.
 - [x] Add optional story summary card rendering at timeline bottom. Summary pulls from Strapi `summaryEnabled` + `summaryCard` (enter bullets as newline-separated text; frontend renders accent bullets).
+- [x] Style `/records/[slug]` detail page to present top summary/metadata card plus media panel; media renders according to type (image, audio, video, PDF) with accent-styled summary actions.
 
 ## Theming & UX
 - [ ] Validate timeline and source cards across `editorialRedLight` and `editorialRedDark`.

@@ -178,8 +178,8 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
                       <SourceCard
                         key={record.id}
                         title={record.title}
-                        summary={record.shortBlurb ?? ''}
-                        content={record.longDescription ?? undefined}
+                        summary={record.description ?? ''}
+                        content={record.description ?? undefined}
                         url={record.sourceUrl ?? undefined}
                         mediaType={record.mediaType ?? undefined}
                         mediaAsset={record.mediaAsset}

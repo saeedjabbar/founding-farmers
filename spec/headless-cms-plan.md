@@ -13,7 +13,7 @@
 - [x] Define or update reusable components for Timeline Entry and Source Record references.
 - [x] Adjust collection types as needed:
   - [x] `stories` with fields: `title`, `slug`, `blurb`, hidden `authorName`, `published_at`, `heroMedia?`, `timelineEntries` (repeatable component), optional `summaryEnabled` toggle, and embedded `summaryCard` (heading, rich text body, newline-separated bullets).
-  - [x] `records` with fields: `title`, `slug`, `shortBlurb`, `longDescription`, `mediaAsset (media)`, `mediaType (enum)`, `sourceUrl`, `relatedStories` (m2m).
+  - [x] `records` with fields: `title`, `slug`, rich-text `description`, `mediaAsset (media)`, `mediaType (enum)`, `sourceUrl`, `publishDate`.
 - [x] Ensure `timelineEntry` component includes `entryDate (date)`, `headline`, `body`, `records (relation -> records)`.
 - [x] Auto-populate hidden `authorName` for all roles via lifecycle (after create/update) and bootstrap backfill (username → name → email prefix fallback).
 - [ ] Configure default & authenticated roles so public API only exposes published content.

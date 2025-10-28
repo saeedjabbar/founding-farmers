@@ -21,13 +21,14 @@ export interface RecordDocument {
   documentId?: string;
   title: string;
   slug: string;
-  shortBlurb?: string | null;
-  longDescription?: string | null;
+  description?: string | null;
   mediaAsset?: StrapiMedia | null;
   mediaType?: MediaType | null;
   sourceUrl?: string | null;
   publishDate?: string | null;
   publishedAt?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
 }
 
 export interface TimelineEntryComponent {
@@ -96,12 +97,13 @@ export interface SourceRecord {
   id: string;
   title: string;
   slug: string;
-  shortBlurb?: string | null;
-  longDescription?: string | null;
+  description?: string | null;
   mediaType?: MediaType | null;
   mediaAsset?: StrapiMedia | null;
   sourceUrl?: string | null;
   publishDate?: string | null;
+  publishedAt?: string | null;
+  createdAt?: string | null;
 }
 
 export interface SummaryCardDocument {

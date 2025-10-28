@@ -445,13 +445,13 @@ export interface ApiRecordRecord extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    description: Schema.Attribute.RichText;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::record.record'
     > &
       Schema.Attribute.Private;
-    longDescription: Schema.Attribute.RichText;
     mediaAsset: Schema.Attribute.Media<
       'images' | 'files' | 'videos' | 'audios'
     > &
@@ -461,10 +461,6 @@ export interface ApiRecordRecord extends Struct.CollectionTypeSchema {
     >;
     publishDate: Schema.Attribute.Date;
     publishedAt: Schema.Attribute.DateTime;
-    shortBlurb: Schema.Attribute.String &
-      Schema.Attribute.SetMinMaxLength<{
-        maxLength: 160;
-      }>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     sourceUrl: Schema.Attribute.String;
     title: Schema.Attribute.String & Schema.Attribute.Required;

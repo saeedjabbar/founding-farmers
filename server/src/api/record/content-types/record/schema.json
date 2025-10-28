@@ -20,11 +20,7 @@
       "targetField": "title",
       "required": true
     },
-    "shortBlurb": {
-      "type": "string",
-      "maxLength": 160
-    },
-    "longDescription": {
+    "description": {
       "type": "richtext"
     },
     "mediaAsset": {
