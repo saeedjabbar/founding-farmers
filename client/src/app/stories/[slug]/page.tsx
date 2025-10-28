@@ -5,11 +5,12 @@ import { getStoryBySlug, getStories } from '@/lib/strapi/queries';
 export const revalidate = 60;
 
 interface StoryPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export default async function StoryPage({ params }: StoryPageProps) {
-  const story = await getStoryBySlug(params.slug);
+  const { slug } = await params;
+  const story = await getStoryBySlug(slug);
 
   if (!story) {
     notFound();
