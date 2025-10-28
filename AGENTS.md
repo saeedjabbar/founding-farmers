@@ -34,6 +34,7 @@
 - Keep imports grouped (React → third-party → local). Use Tailwind classes; prefer extracting repeated patterns to components or utilities.
 - When tagging forms or interactive elements, ensure proper labels and `aria-*` attributes for accessibility.
 - Treat Strapi content as the single source of truth: story authors display via the hidden `authorName` field (automatically populated by lifecycle hooks) and the optional summary card is controlled by `summaryEnabled` plus `summaryCard` (heading, rich paragraph, newline-separated bullets).
+- All Strapi rich narrative fields must use the Blocks editor (JSON) going forward; do not introduce Markdown-based rich text.
 - Strapi media lives under `http(s)://<host>:1337/uploads/*`. Inline previews currently pass `unoptimized` to `next/image`; update `next.config.mjs` if the Strapi URL changes in higher environments.
 
 ## Testing & QA

@@ -7,7 +7,7 @@ export interface StorySummaryCard extends Struct.ComponentSchema {
     displayName: 'Summary Card';
   };
   attributes: {
-    body: Schema.Attribute.RichText;
+    body: Schema.Attribute.Blocks;
     bulletsText: Schema.Attribute.Text & Schema.Attribute.DefaultTo<''>;
     heading: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Summary'>;
   };
@@ -20,7 +20,7 @@ export interface TimelineTimelineEntry extends Struct.ComponentSchema {
     displayName: 'Timeline Entry';
   };
   attributes: {
-    body: Schema.Attribute.RichText & Schema.Attribute.Required;
+    body: Schema.Attribute.Blocks & Schema.Attribute.Required;
     entryDate: Schema.Attribute.Date & Schema.Attribute.Required;
     headline: Schema.Attribute.String & Schema.Attribute.Required;
     records: Schema.Attribute.Relation<'manyToMany', 'api::record.record'>;

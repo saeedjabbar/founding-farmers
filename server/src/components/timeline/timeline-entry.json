@@ -14,7 +14,7 @@
       "required": true
     },
     "body": {
-      "type": "richtext",
+      "type": "blocks",
       "required": true
     },
     "records": {

@@ -10,7 +10,7 @@
       "default": "Summary"
     },
     "body": {
-      "type": "richtext"
+      "type": "blocks"
     },
     "bulletsText": {
       "type": "text",

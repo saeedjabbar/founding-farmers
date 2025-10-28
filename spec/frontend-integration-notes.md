@@ -25,7 +25,8 @@
 - [x] When adding new dynamic routes in Next.js 16, remember `params`/`searchParams` arrive as `Promise` values and must be awaited before use (adjusted on `/stories/[slug]`).
 
 ## Components & Rendering
-- [x] Ensure `SourceCard` accepts expanded data: `longDescription`, `mediaAsset`, `mediaType`, `sourceUrl`.
+- [x] Ensure `SourceCard` accepts expanded data: `longDescription`, `mediaAsset`, `mediaType`, `sourceUrl` (long narrative content comes through as Blocks JSON, never Markdown).
+- [x] Centralize Blocks rendering via `StrapiRichText` so all rich text fields consume the JSON Blocks schema.
 - [x] Extend media rendering utilities to handle:
   - [x] Images via `<Image>` (timeline cards use `unoptimized` to avoid local Strapi proxy issues; update `next.config.mjs` if the CDN host changes).
   - [x] Audio via `<audio controls>`.
@@ -33,7 +34,7 @@
   - [x] PDF/doc via `react-pdf` preview with download fallback (source cards default to single-page viewer with pager; record detail pages render all pages).
 - [x] Ensure accordion/dropdown interaction reveals media preview and long description.
 - [x] Provide accessible labels and `aria` attributes for toggles and media players.
-- [x] Add optional story summary card rendering at timeline bottom. Summary pulls from Strapi `summaryEnabled` + `summaryCard` (enter bullets as newline-separated text; frontend renders accent bullets).
+- [x] Add optional story summary card rendering at timeline bottom. Summary pulls from Strapi `summaryEnabled` + `summaryCard` (enter bullets as newline-separated text; body authored with Blocks editor, frontend renders via `StrapiRichText`).
 - [x] Style `/records/[slug]` detail page to present top summary/metadata card plus media panel; media renders according to type (image, audio, video, PDF) with accent-styled summary actions.
 
 ## Theming & UX

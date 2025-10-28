@@ -1,9 +1,11 @@
 import { motion } from 'motion/react';
+import type { BlocksContent } from '@strapi/blocks-react-renderer';
+import { StrapiRichText } from '@/components/StrapiRichText';
 
 interface StorySectionProps {
   id: string;
   title: string;
-  body: string;
+  body: BlocksContent;
 }
 
 export function StorySection({ id, title, body }: StorySectionProps) {
@@ -17,10 +19,7 @@ export function StorySection({ id, title, body }: StorySectionProps) {
       className="space-y-3 story-content"
     >
       <h2 className="theme-text-primary text-lg">{title}</h2>
-      <div
-        className="theme-text-secondary leading-relaxed space-y-3 story-content"
-        dangerouslySetInnerHTML={{ __html: body }}
-      />
+      <StrapiRichText content={body} className="theme-text-secondary story-content text-sm" />
     </motion.div>
   );
 }

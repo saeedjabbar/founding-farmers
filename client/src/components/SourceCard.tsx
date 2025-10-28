@@ -3,13 +3,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown, FileText, Image as ImageIcon, Mic, File, Film } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import type { BlocksContent } from '@strapi/blocks-react-renderer';
 import type { MediaType, StrapiMedia } from '@/lib/strapi/types';
 import { PdfViewer } from '@/components/PdfViewer';
+import { StrapiRichText } from '@/components/StrapiRichText';
 
 interface SourceCardProps {
   title: string;
   summary: string;
-  content?: string;
+  content?: BlocksContent | null;
   url?: string;
   mediaType?: MediaType;
   mediaAsset?: StrapiMedia | null;
@@ -149,7 +151,7 @@ export function SourceCard({ title, summary, content, url, mediaType, mediaAsset
               <ChevronDown className="w-4 h-4 theme-text-muted flex-shrink-0" />
             </motion.div>
           </div>
-          <p className="text-xs theme-text-muted mt-1">{summary}</p>
+          {summary && <p className="text-xs theme-text-muted mt-1">{summary}</p>}
         </div>
       </button>
       
@@ -164,7 +166,14 @@ export function SourceCard({ title, summary, content, url, mediaType, mediaAsset
             id={accordionId}
           >
             <div className="px-4 py-3 theme-bg">
-              {content && <p className="text-xs theme-text-secondary mb-3">{content}</p>}
+              {content && (
+                <StrapiRichText
+                  content={content}
+                  className="text-xs theme-text-secondary space-y-2 mb-3"
+                  paragraphClassName="leading-relaxed"
+                  listClassName="pl-4 space-y-1.5"
+                />
+              )}
               {renderMediaPreview(mediaType, mediaAsset, previewUrl, title)}
               {url && (
                 <a

@@ -1,3 +1,4 @@
+import type { BlocksContent } from '@strapi/blocks-react-renderer';
 import { getStrapiAssetUrl } from './client';
 import type {
   RecordDocument,
@@ -8,6 +9,29 @@ import type {
   TimelineEntry,
   TimelineEntryComponent,
 } from './types';
+import { blocksToPlainText, hasBlocksContent } from './richText';
+
+function normalizeBlocks(content?: BlocksContent | null): BlocksContent | undefined {
+  if (!content || content.length === 0) {
+    return undefined;
+  }
+
+  const normalized = content.map((node) => {
+    if (!node) return node;
+    if (node.type === 'image' && node.image?.url) {
+      return {
+        ...node,
+        image: {
+          ...node.image,
+          url: getStrapiAssetUrl(node.image.url) ?? node.image.url,
+        },
+      };
+    }
+    return node;
+  });
+
+  return hasBlocksContent(normalized) ? normalized : undefined;
+}
 
 export function mapRecord(document: RecordDocument | null | undefined): SourceRecord | null {
   if (!document) return null;
@@ -16,14 +40,15 @@ export function mapRecord(document: RecordDocument | null | undefined): SourceRe
     ? { ...document.mediaAsset, url: getStrapiAssetUrl(document.mediaAsset.url) ?? document.mediaAsset.url }
     : undefined;
 
-  const rawDescription = document.description ?? '';
-  const trimmedDescription = rawDescription.trim();
+  const description = normalizeBlocks(document.description);
+  const descriptionText = blocksToPlainText(description);
 
   return {
     id: String(document.documentId ?? document.id),
     title: document.title,
     slug: document.slug,
-    description: trimmedDescription.length > 0 ? rawDescription : undefined,
+    description: description ?? undefined,
+    descriptionText: descriptionText.length > 0 ? descriptionText : undefined,
     mediaType: document.mediaType ?? undefined,
     mediaAsset,
     sourceUrl: document.sourceUrl ?? undefined,
@@ -42,7 +67,7 @@ function mapTimelineEntry(component: TimelineEntryComponent): TimelineEntry {
     id: String(component.id),
     entryDate: component.entryDate,
     headline: component.headline,
-    body: component.body,
+    body: normalizeBlocks(component.body) ?? [],
     records,
   };
 }
@@ -59,9 +84,8 @@ function mapSummary(document: StoryDocument): SummaryCard | null {
       .map((line) => line.trim())
       .filter((line) => line.length > 0) ?? [];
 
-  const rawBody = document.summaryCard.body?.trim() ?? '';
-  const bodyText = rawBody.replace(/<[^>]*>/g, '').trim();
-  const hasBody = bodyText.length > 0;
+  const bodyBlocks = normalizeBlocks(document.summaryCard.body);
+  const hasBody = hasBlocksContent(bodyBlocks);
   const hasBullets = bulletsArray.length > 0;
 
   if (!hasBody && !hasBullets) {
@@ -70,7 +94,7 @@ function mapSummary(document: StoryDocument): SummaryCard | null {
 
   return {
     heading,
-    body: hasBody ? rawBody : undefined,
+    body: hasBody ? bodyBlocks : undefined,
     bullets: hasBullets ? bulletsArray : undefined,
   };
 }

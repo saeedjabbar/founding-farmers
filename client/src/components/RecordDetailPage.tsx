@@ -5,6 +5,7 @@ import { useEditorialTheme } from '@/lib/useEditorialTheme';
 import { SiteHeader } from '@/components/SiteHeader';
 import { PdfViewer } from '@/components/PdfViewer';
 import type { SourceRecord } from '@/lib/strapi/types';
+import { StrapiRichText } from '@/components/StrapiRichText';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -166,9 +167,9 @@ export function RecordDetailPage({ record }: RecordDetailPageProps) {
                 {record.title}
               </h1>
               {record.description && (
-                <div
+                <StrapiRichText
+                  content={record.description}
                   className="theme-text-secondary text-sm leading-relaxed max-w-2xl space-y-3 record-rich-text"
-                  dangerouslySetInnerHTML={{ __html: record.description }}
                 />
               )}
             </div>

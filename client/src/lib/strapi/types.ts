@@ -1,3 +1,5 @@
+import type { BlocksContent } from '@strapi/blocks-react-renderer';
+
 export type StrapiID = number | string;
 
 export type MediaType = 'image' | 'video' | 'audio' | 'pdf' | 'document';
@@ -21,7 +23,7 @@ export interface RecordDocument {
   documentId?: string;
   title: string;
   slug: string;
-  description?: string | null;
+  description?: BlocksContent | null;
   mediaAsset?: StrapiMedia | null;
   mediaType?: MediaType | null;
   sourceUrl?: string | null;
@@ -35,7 +37,7 @@ export interface TimelineEntryComponent {
   id: StrapiID;
   entryDate: string;
   headline: string;
-  body: string;
+  body: BlocksContent;
   records?: RecordDocument[] | null;
 }
 
@@ -89,7 +91,7 @@ export interface TimelineEntry {
   id: string;
   entryDate: string;
   headline: string;
-  body: string;
+  body: BlocksContent;
   records: SourceRecord[];
 }
 
@@ -97,7 +99,8 @@ export interface SourceRecord {
   id: string;
   title: string;
   slug: string;
-  description?: string | null;
+  description?: BlocksContent | null;
+  descriptionText?: string | null;
   mediaType?: MediaType | null;
   mediaAsset?: StrapiMedia | null;
   sourceUrl?: string | null;
@@ -108,12 +111,12 @@ export interface SourceRecord {
 
 export interface SummaryCardDocument {
   heading?: string | null;
-  body?: string | null;
+  body?: BlocksContent | null;
   bulletsText?: string | null;
 }
 
 export interface SummaryCard {
   heading: string;
-  body?: string | null;
+  body?: BlocksContent | null;
   bullets?: string[];
 }

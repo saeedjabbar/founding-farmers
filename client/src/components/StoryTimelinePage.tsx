@@ -6,6 +6,7 @@ import { TimelineMarker } from '@/components/TimelineMarker';
 import { StorySection } from '@/components/StorySection';
 import { SourceCard } from '@/components/SourceCard';
 import { SiteHeader } from '@/components/SiteHeader';
+import { StrapiRichText } from '@/components/StrapiRichText';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
 import type { Story } from '@/lib/strapi/types';
@@ -178,8 +179,8 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
                       <SourceCard
                         key={record.id}
                         title={record.title}
-                        summary={record.description ?? ''}
-                        content={record.description ?? undefined}
+                        summary={record.descriptionText ?? ''}
+                        content={record.description ?? null}
                         url={record.sourceUrl ?? undefined}
                         mediaType={record.mediaType ?? undefined}
                         mediaAsset={record.mediaAsset}
@@ -204,9 +205,11 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
                     {story.summary.heading}
                   </h4>
                   {story.summary.body && (
-                    <div
-                      className="text-xs theme-text-secondary leading-relaxed space-y-3 summary-content"
-                      dangerouslySetInnerHTML={{ __html: story.summary.body }}
+                    <StrapiRichText
+                      content={story.summary.body}
+                      className="text-xs theme-text-secondary space-y-2 summary-content"
+                      paragraphClassName="leading-relaxed"
+                      listClassName="pl-4 space-y-1.5"
                     />
                   )}
                   {story.summary.bullets && story.summary.bullets.length > 0 && (
