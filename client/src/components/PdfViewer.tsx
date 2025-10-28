@@ -19,12 +19,14 @@ export interface PdfViewerProps {
   downloadUrl?: string;
   title?: string;
   className?: string;
+  renderAllPages?: boolean;
 }
 
-export function PdfViewer({ fileUrl, downloadUrl, title, className }: PdfViewerProps) {
+export function PdfViewer({ fileUrl, downloadUrl, title, className, renderAllPages = false }: PdfViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>();
   const [numPages, setNumPages] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
     const element = containerRef.current;
@@ -69,6 +71,7 @@ export function PdfViewer({ fileUrl, downloadUrl, title, className }: PdfViewerP
 
   const handleLoadSuccess = (doc: PDFDocumentProxy) => {
     setNumPages(doc.numPages);
+    setCurrentPage(1);
   };
 
   const documentOptions = useMemo(
@@ -94,26 +97,64 @@ export function PdfViewer({ fileUrl, downloadUrl, title, className }: PdfViewerP
             className="flex flex-col items-center gap-6 py-6 px-4"
             options={documentOptions}
           >
-            {Array.from({ length: numPages }, (_, index) => (
-              <Page
-                key={`page_${index + 1}`}
-                pageNumber={index + 1}
-                width={containerWidth ? Math.min(containerWidth - 32, 960) : undefined}
-                renderAnnotationLayer={false}
-                renderTextLayer
-                className="shadow-sm"
-                loading={null}
-              />
-            ))}
+            {renderAllPages
+              ? Array.from({ length: numPages }, (_, index) => (
+                  <Page
+                    key={`page_${index + 1}`}
+                    pageNumber={index + 1}
+                    width={containerWidth ? Math.min(containerWidth - 32, 960) : undefined}
+                    renderAnnotationLayer={false}
+                    renderTextLayer
+                    className="shadow-sm"
+                    loading={null}
+                  />
+                ))
+              : numPages > 0 && (
+                  <Page
+                    key={`page_${currentPage}`}
+                    pageNumber={currentPage}
+                    width={containerWidth ? Math.min(containerWidth - 32, 960) : undefined}
+                    renderAnnotationLayer={false}
+                    renderTextLayer
+                    className="shadow-sm"
+                    loading={null}
+                  />
+                )}
           </Document>
         </div>
       </div>
 
       {numPages > 0 && (
-        <p className="text-xs uppercase tracking-[0.2em] theme-text-muted">
-          {numPages} page{numPages === 1 ? '' : 's'}
-          {title ? ` in ${title}` : ''}
-        </p>
+        <div className="flex flex-col gap-2 text-xs theme-text-muted">
+          {!renderAllPages && numPages > 1 && (
+            <div className="flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage <= 1}
+                className="px-3 py-1 rounded border border-[var(--theme-border)] theme-text-secondary hover:text-[var(--theme-accent)] disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              <span className="tracking-[0.18em] uppercase">
+                Page {currentPage} of {numPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => setCurrentPage((prev) => Math.min(numPages, prev + 1))}
+                disabled={currentPage >= numPages}
+                className="px-3 py-1 rounded border border-[var(--theme-border)] theme-text-secondary hover:text-[var(--theme-accent)] disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
+          )}
+
+          <p className="uppercase tracking-[0.2em]">
+            {numPages} page{numPages === 1 ? '' : 's'}
+            {title ? ` in ${title}` : ''}
+          </p>
+        </div>
       )}
     </div>
   );

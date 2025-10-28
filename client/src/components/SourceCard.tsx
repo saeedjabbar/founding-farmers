@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ChevronDown, FileText, Image as ImageIcon, Mic, File, Film } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { MediaType, StrapiMedia } from '@/lib/strapi/types';
+import { PdfViewer } from '@/components/PdfViewer';
 
 interface SourceCardProps {
   title: string;
@@ -24,9 +25,10 @@ const iconMap: Record<NonNullable<MediaType>, typeof FileText> = {
 };
 
 function renderMediaPreview(
-  mediaType?: MediaType,
-  mediaAsset?: StrapiMedia | null,
-  fallbackUrl?: string
+  mediaType: MediaType | undefined,
+  mediaAsset: StrapiMedia | null | undefined,
+  fallbackUrl: string | undefined,
+  title: string
 ) {
   if (!mediaType) return null;
 
@@ -34,6 +36,11 @@ function renderMediaPreview(
   if (!assetUrl) return null;
 
   const alt = mediaAsset?.alternativeText ?? mediaAsset?.name ?? 'Source media';
+  const normalizedMime = mediaAsset?.mime?.toLowerCase();
+  const isPdfMedia =
+    mediaType === 'pdf' ||
+    normalizedMime?.includes('pdf') ||
+    assetUrl.toLowerCase().endsWith('.pdf');
 
   if (mediaType === 'image' && mediaAsset?.url) {
     return (
@@ -75,7 +82,18 @@ function renderMediaPreview(
     );
   }
 
-  if (mediaType === 'pdf') {
+  if (isPdfMedia) {
+    return (
+      <PdfViewer
+        fileUrl={assetUrl}
+        downloadUrl={assetUrl}
+        title={title}
+        className="mt-2"
+      />
+    );
+  }
+
+  if (mediaType === 'document') {
     return (
       <div className="mt-2">
         <object
@@ -146,7 +164,7 @@ export function SourceCard({ title, summary, content, url, mediaType, mediaAsset
           >
             <div className="px-4 py-3 theme-bg">
               {content && <p className="text-xs theme-text-secondary mb-3">{content}</p>}
-              {renderMediaPreview(mediaType, mediaAsset, previewUrl)}
+              {renderMediaPreview(mediaType, mediaAsset, previewUrl, title)}
               {url && (
                 <a
                   href={url}

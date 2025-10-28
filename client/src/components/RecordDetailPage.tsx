@@ -105,6 +105,7 @@ function renderMedia(record: SourceRecord) {
         fileUrl={assetUrl}
         downloadUrl={downloadUrl}
         title={record.title}
+        renderAllPages
       />
     );
   }
