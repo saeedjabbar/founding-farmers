@@ -3,6 +3,7 @@
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
 import { SiteHeader } from '@/components/SiteHeader';
+import { PdfViewer } from '@/components/PdfViewer';
 import type { SourceRecord } from '@/lib/strapi/types';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -56,6 +57,12 @@ function renderMedia(record: SourceRecord) {
 
   const assetUrl = record.mediaAsset?.url ?? record.sourceUrl ?? undefined;
   if (!assetUrl) return null;
+  const downloadUrl = record.mediaAsset?.url ?? record.sourceUrl ?? undefined;
+  const mime = record.mediaAsset?.mime?.toLowerCase();
+  const isPdfMedia =
+    record.mediaType === 'pdf' ||
+    mime?.includes('pdf') ||
+    assetUrl.toLowerCase().endsWith('.pdf');
 
   if (record.mediaType === 'image' && record.mediaAsset?.url) {
     return (
@@ -92,7 +99,17 @@ function renderMedia(record: SourceRecord) {
     );
   }
 
-  if (record.mediaType === 'pdf') {
+  if (isPdfMedia) {
+    return (
+      <PdfViewer
+        fileUrl={assetUrl}
+        downloadUrl={downloadUrl}
+        title={record.title}
+      />
+    );
+  }
+
+  if (record.mediaType === 'document') {
     return (
       <object
         data={assetUrl}
