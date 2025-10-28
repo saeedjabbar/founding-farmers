@@ -5,6 +5,7 @@ import { ChevronDown, FileText, Image as ImageIcon, Mic, File, Film } from 'luci
 import { motion, AnimatePresence } from 'motion/react';
 import type { BlocksContent } from '@strapi/blocks-react-renderer';
 import type { MediaType, StrapiMedia } from '@/lib/strapi/types';
+import { AudioPlayer } from '@/components/AudioPlayer';
 import { PdfViewer } from '@/components/PdfViewer';
 import { StrapiRichText } from '@/components/StrapiRichText';
 
@@ -61,14 +62,13 @@ function renderMediaPreview(
 
   if (mediaType === 'audio') {
     return (
-      <audio
-        controls
-        preload="metadata"
-        className="w-full mt-2"
+      <AudioPlayer
         src={assetUrl}
-      >
-        Your browser does not support the audio tag.
-      </audio>
+        type={mediaAsset?.mime}
+        className="mt-2"
+        preload="metadata"
+        size="compact"
+      />
     );
   }
 

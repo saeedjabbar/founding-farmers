@@ -17,6 +17,12 @@ export interface StrapiFetchOptions {
 
 const DEFAULT_BASE_URL = 'http://localhost:1337';
 
+const PUBLIC_STRAPI_BASE_URL =
+  process.env.NEXT_PUBLIC_STRAPI_URL ??
+  process.env.STRAPI_PUBLIC_URL ??
+  process.env.STRAPI_BASE_URL ??
+  DEFAULT_BASE_URL;
+
 const STRAPI_BASE_URL =
   process.env.STRAPI_BASE_URL ??
   process.env.NEXT_PUBLIC_STRAPI_URL ??
@@ -91,5 +97,10 @@ export function getStrapiAssetUrl(url?: string | null): string | undefined {
     return url;
   }
 
-  return `${STRAPI_BASE_URL}${url}`;
+  try {
+    const normalized = new URL(url, PUBLIC_STRAPI_BASE_URL);
+    return normalized.toString();
+  } catch {
+    return `${PUBLIC_STRAPI_BASE_URL}${url}`;
+  }
 }

@@ -1,13 +1,14 @@
 'use client';
 
-import { themes } from '@/lib/themes';
-import { useEditorialTheme } from '@/lib/useEditorialTheme';
-import { SiteHeader } from '@/components/SiteHeader';
-import { PdfViewer } from '@/components/PdfViewer';
-import type { SourceRecord } from '@/lib/strapi/types';
-import { StrapiRichText } from '@/components/StrapiRichText';
 import Image from 'next/image';
 import Link from 'next/link';
+import { AudioPlayer } from '@/components/AudioPlayer';
+import { PdfViewer } from '@/components/PdfViewer';
+import { SiteHeader } from '@/components/SiteHeader';
+import { StrapiRichText } from '@/components/StrapiRichText';
+import type { SourceRecord } from '@/lib/strapi/types';
+import { themes } from '@/lib/themes';
+import { useEditorialTheme } from '@/lib/useEditorialTheme';
 
 interface RecordDetailPageProps {
   record: SourceRecord;
@@ -82,9 +83,13 @@ function renderMedia(record: SourceRecord) {
 
   if (record.mediaType === 'audio') {
     return (
-      <audio controls preload="metadata" className="w-full rounded-md border border-[var(--theme-border)]" src={assetUrl}>
-        Your browser does not support the audio tag.
-      </audio>
+      <AudioPlayer
+        src={assetUrl}
+        type={record.mediaAsset?.mime}
+        className="w-full"
+        preload="metadata"
+        title="Now Playing"
+      />
     );
   }
 
