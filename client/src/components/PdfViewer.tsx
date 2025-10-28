@@ -72,31 +72,33 @@ export function PdfViewer({ fileUrl, downloadUrl, title, className }: PdfViewerP
     <div className={clsx('space-y-4', className)}>
       <div
         ref={containerRef}
-        className="relative w-full rounded-lg border border-[var(--theme-border)] bg-[var(--theme-surface)]"
+        className="relative w-full rounded-lg border border-[var(--theme-border)] bg-[var(--theme-surface)] overflow-hidden"
       >
-        <Document
-          file={fileUrl}
-          onLoadSuccess={handleLoadSuccess}
-          error={documentError}
-          loading={documentLoading}
-          className="flex flex-col items-center gap-6 py-6"
-          options={{
-            cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-            cMapPacked: true,
-          }}
-        >
-          {Array.from({ length: numPages }, (_, index) => (
-            <Page
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-              width={containerWidth ? Math.min(containerWidth - 32, 960) : undefined}
-              renderAnnotationLayer={false}
-              renderTextLayer
-              className="shadow-sm"
-              loading={null}
-            />
-          ))}
-        </Document>
+        <div className="max-h-[640px] overflow-y-auto">
+          <Document
+            file={fileUrl}
+            onLoadSuccess={handleLoadSuccess}
+            error={documentError}
+            loading={documentLoading}
+            className="flex flex-col items-center gap-6 py-6 px-4"
+            options={{
+              cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+              cMapPacked: true,
+            }}
+          >
+            {Array.from({ length: numPages }, (_, index) => (
+              <Page
+                key={`page_${index + 1}`}
+                pageNumber={index + 1}
+                width={containerWidth ? Math.min(containerWidth - 32, 960) : undefined}
+                renderAnnotationLayer={false}
+                renderTextLayer
+                className="shadow-sm"
+                loading={null}
+              />
+            ))}
+          </Document>
+        </div>
       </div>
 
       {numPages > 0 && (
