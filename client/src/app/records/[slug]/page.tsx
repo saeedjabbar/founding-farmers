@@ -5,11 +5,12 @@ import { getRecordBySlug, getStories } from '@/lib/strapi/queries';
 export const revalidate = 60;
 
 interface RecordPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export default async function RecordPage({ params }: RecordPageProps) {
-  const record = await getRecordBySlug(params.slug);
+  const { slug } = await params;
+  const record = await getRecordBySlug(slug);
   if (!record) {
     notFound();
   }
