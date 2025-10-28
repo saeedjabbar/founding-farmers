@@ -51,6 +51,7 @@ function renderMediaPreview(
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 320px"
+          unoptimized
         />
       </div>
     );
