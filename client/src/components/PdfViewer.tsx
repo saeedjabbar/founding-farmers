@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
+import '@/lib/polyfills/promiseWithResolvers';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import { Document, Page, pdfjs } from 'react-pdf';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 
@@ -68,6 +71,14 @@ export function PdfViewer({ fileUrl, downloadUrl, title, className }: PdfViewerP
     setNumPages(doc.numPages);
   };
 
+  const documentOptions = useMemo(
+    () => ({
+      cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+      cMapPacked: true,
+    }),
+    [],
+  );
+
   return (
     <div className={clsx('space-y-4', className)}>
       <div
@@ -81,10 +92,7 @@ export function PdfViewer({ fileUrl, downloadUrl, title, className }: PdfViewerP
             error={documentError}
             loading={documentLoading}
             className="flex flex-col items-center gap-6 py-6 px-4"
-            options={{
-              cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
-              cMapPacked: true,
-            }}
+            options={documentOptions}
           >
             {Array.from({ length: numPages }, (_, index) => (
               <Page
