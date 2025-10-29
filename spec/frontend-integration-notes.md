@@ -23,6 +23,7 @@
   - [x] Paginate listings in 10-story pages using the `page` search param with previous/next controls.
 - [x] Implement `/stories/[slug]/page.tsx` rendering the timeline using `TimelineMarker`, `StorySection`, and `SourceCard`.
 - [x] Implement optional `/records/[slug]/page.tsx` for deep links to individual records.
+- [x] Implement `/records/page.tsx` to list source records as metadata cards (no thumbnails), paginated in 10-item pages via the `page` search param.
 - [x] Wire `SiteHeader` component to all new routes and pass `useEditorialTheme` data.
 - [x] When adding new dynamic routes in Next.js 16, remember `params`/`searchParams` arrive as `Promise` values and must be awaited before use (adjusted on `/stories/[slug]`).
 

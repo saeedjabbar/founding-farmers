@@ -32,6 +32,7 @@
 - [x] Create typed DTOs (e.g., `Story`, `TimelineEntry`, `Record`) and mapping utilities from Strapi responses.
 - [x] Build story listing fetcher for landing pages (`/stories`).
   - [x] Apply Strapi pagination (page size 10 via `page` search param) and expose previous/next navigation on the listing view.
+- [x] Build records listing fetcher for `/records` with page-size 10 pagination powering the metadata-only index route.
 - [x] Build single story loader (`/stories/[slug]`) that resolves timeline entries and populated records.
 - [x] Add `/records/[slug]` route if standalone record pages are required.
 - [x] Implement ISR or revalidation strategy for published updates.

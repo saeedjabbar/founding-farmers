@@ -132,6 +132,91 @@ export async function getAllStories(): Promise<Story[]> {
   return sortStoriesByPublishedDate(aggregatedStories);
 }
 
+function sortRecordsByPublishedDate(records: SourceRecord[]): SourceRecord[] {
+  return records.sort((a, b) => {
+    const aTimestamp =
+      parsePublicationDateTime(a.publishDate) ??
+      parsePublicationDateTime(a.publishedAt) ??
+      parsePublicationDateTime(a.createdAt) ??
+      Number.NEGATIVE_INFINITY;
+    const bTimestamp =
+      parsePublicationDateTime(b.publishDate) ??
+      parsePublicationDateTime(b.publishedAt) ??
+      parsePublicationDateTime(b.createdAt) ??
+      Number.NEGATIVE_INFINITY;
+
+    if (aTimestamp === bTimestamp) {
+      return 0;
+    }
+
+    return bTimestamp - aTimestamp;
+  });
+}
+
+interface GetRecordsOptions {
+  page?: number;
+  pageSize?: number;
+}
+
+export interface RecordListResult {
+  records: SourceRecord[];
+  pagination: StrapiPagination;
+}
+
+export async function getRecords(options: GetRecordsOptions = {}): Promise<RecordListResult> {
+  const { page = 1, pageSize = 10 } = options;
+  try {
+    const response = await strapiFetch<StrapiListResponse<RecordDocument>>('/api/records', {
+      params: withPublicationState({
+        populate: { mediaAsset: true, videoEmbed: true },
+        sort: ['publishDate:desc', 'publishedAt:desc', 'createdAt:desc'],
+        pagination: { page, pageSize },
+      }),
+      cache: 'no-store',
+    });
+
+    const records =
+      response.data
+        .map((document) => mapRecord(document))
+        .filter((record): record is SourceRecord => Boolean(record)) ?? [];
+
+    const sortedRecords = sortRecordsByPublishedDate(records);
+    const pagination = normalizePagination(response.meta?.pagination, page, pageSize, sortedRecords.length);
+
+    return { records: sortedRecords, pagination };
+  } catch (error) {
+    console.warn('[strapi] Failed to load records:', error);
+    return {
+      records: [],
+      pagination: {
+        page: Math.max(page, 1),
+        pageSize: pageSize > 0 ? pageSize : 10,
+        pageCount: 1,
+        total: 0,
+      },
+    };
+  }
+}
+
+export async function getAllRecords(): Promise<SourceRecord[]> {
+  const aggregatedRecords: SourceRecord[] = [];
+  const pageSize = 100;
+  let page = 1;
+
+  while (true) {
+    const { records, pagination } = await getRecords({ page, pageSize });
+    aggregatedRecords.push(...records);
+
+    if (page >= pagination.pageCount) {
+      break;
+    }
+
+    page += 1;
+  }
+
+  return sortRecordsByPublishedDate(aggregatedRecords);
+}
+
 export async function getStoryBySlug(slug: string): Promise<Story | null> {
   try {
     const response = await strapiFetch<StrapiListResponse<StoryDocument>>('/api/stories', {

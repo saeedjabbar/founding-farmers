@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { RecordDetailPage } from '@/components/RecordDetailPage';
-import { getAllStories, getRecordBySlug } from '@/lib/strapi/queries';
+import { getAllRecords, getRecordBySlug } from '@/lib/strapi/queries';
 
 export const revalidate = 60;
 
@@ -19,16 +19,6 @@ export default async function RecordPage({ params }: RecordPageProps) {
 }
 
 export async function generateStaticParams() {
-  const stories = await getAllStories();
-  const slugs = new Set<string>();
-
-  stories.forEach((story) => {
-    story.timelineEntries.forEach((entry) => {
-      entry.records.forEach((record) => {
-        slugs.add(record.slug);
-      });
-    });
-  });
-
-  return Array.from(slugs).map((slug) => ({ slug }));
+  const records = await getAllRecords();
+  return records.map((record) => ({ slug: record.slug }));
 }
