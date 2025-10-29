@@ -21,6 +21,7 @@
 - [x] Add `getPrivacyPolicyPage()` query to resolve the privacy policy single-type.
 - [x] Populate the Strapi `shared.seo` component (lowercase `seo` attribute) for stories, records, and single-types, mapping it to strongly typed `SeoMetadata` via `mapSeoComponent()` and exposing helpers that prefer Strapi-provided meta fields.
 - [x] Surface SEO helpers in `src/lib/seo.ts` (`getSiteBaseUrl`, `createPageMetadata`, `serializeStructuredData`) and ensure all detail pages call them before rendering.
+- [x] Add `resolveStrapiBaseUrl()` to `client/src/lib/strapi/client.ts` so route handlers can proxy Strapi endpoints (sitemap, XSL assets) without duplicating env logic.
 
 ## Routing & Pages
 - [ ] Update `client/src/app/layout.tsx` to load shared data if global navigation requires story summaries.
@@ -34,6 +35,7 @@
 - [x] Wire `SiteHeader` component to all new routes and pass `useEditorialTheme` data.
 - [x] When adding new dynamic routes in Next.js 16, remember `params`/`searchParams` arrive as `Promise` values and must be awaited before use (adjusted on `/stories/[slug]`).
 - [x] Provide per-route `generateMetadata` implementations that call `createPageMetadata()` using Strapi SEO data and render optional JSON-LD from `serializeStructuredData()`.
+- [x] Add `/sitemap.xml` route to proxy the Webtools sitemap output from Strapi and `/xsl/[...path]` to expose the associated XSL/CSS/JS assets for crawler styling.
 
 ## Components & Rendering
 - [x] Ensure `SourceCard` accepts expanded data: `longDescription`, `mediaAsset`, `mediaType`, `sourceUrl` (long narrative content comes through as Blocks JSON, never Markdown).

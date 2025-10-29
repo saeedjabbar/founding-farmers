@@ -8,6 +8,8 @@
 
 ## Project Structure
 - `src/app/` – route segments (`page.tsx`), layout, and Next metadata (including `icon.png`).
+- `src/app/sitemap.xml/route.ts` proxies the Strapi-generated sitemap XML so crawlers hit the Next.js domain.
+- `src/app/xsl/[...path]/route.ts` exposes the Webtools XSL, JS, and CSS helpers used by the sitemap index styling.
 - `src/components/` – reusable components; primitives live in `components/ui/`. Notable shared pieces:
   - `SiteHeader.tsx` – renders masthead/nav plus the light/dark toggle.
   - `TimelineMarker`, `StorySection`, `SourceCard` – story timeline UI.
@@ -21,6 +23,7 @@
 - `src/lib/` – shared logic. `useEditorialTheme.ts` locks the experience to the Editorial Red palette and syncs with system preferences plus the header toggle.
   - Strapi queries now include `getStoriesFeaturingRecord(recordSlug)` for "Featured In" summaries, `getStandardsPage()` for the `/standards` single page, and `getPrivacyPolicyPage()` for `/privacy-policy`, all of which populate the `shared.seo` component.
   - `src/lib/seo.ts` provides `getSiteBaseUrl()`, `createPageMetadata()`, and `serializeStructuredData()` helpers. Use these from route files to map Strapi SEO fields into Next.js metadata and JSON-LD `<script>` tags.
+  - `src/lib/strapi/client.ts` exposes `resolveStrapiBaseUrl()` for sitemap/XSL proxies in addition to `strapiFetch`.
 - `src/styles/` and `src/app/globals.css` – global layers, tokens, and theme class definitions.
 - Documentation and supporting copy live under `src/guidelines/`.
 
@@ -45,8 +48,11 @@
 - All Strapi rich narrative fields must use the Blocks editor (JSON) going forward; do not introduce Markdown-based rich text.
 - Strapi media lives under `http(s)://<host>:1337/uploads/*`. Inline previews currently pass `unoptimized` to `next/image`; update `next.config.mjs` if the Strapi URL changes in higher environments.
 - Strapi SEO plugin (`@strapi/plugin-seo`) seeds a `shared.seo` component with meta fields. All content-types now expose a `seo` component (lowercase) on the REST API. Queries must populate `seo` and pass the result through `createPageMetadata()` so `<head>` tags reflect Strapi data.
+- Strapi Webtools (`strapi-plugin-webtools`) is enabled; bootstrap seeds URL alias patterns for stories, records, standards, and privacy policy. Generated aliases live in `plugin::webtools.url-alias`.
+- The Webtools sitemap add-on stores XML snapshots in Strapi (`plugin::webtools-addon-sitemap.sitemap`) and is auto-generated after content writes; defaults are seeded from bootstrap but editable via the admin UI.
 - Frontend metadata should prefer Strapi values but fall back to existing copy. When structured data exists, emit it via `serializeStructuredData()` inside a JSON-LD `<script type="application/ld+json">`.
 - Configure canonical URLs by setting `NEXT_PUBLIC_SITE_URL` (or fallback `SITE_URL`, `NEXT_PUBLIC_APP_URL`, etc.); `getSiteBaseUrl()` resolves these to feed Next metadata `metadataBase`.
+- Strapi expects environment flags captured in `.env(.example)` such as `WEBTOOLS_WEBSITE_URL`, `WEBTOOLS_UNIQUE_PER_LOCALE`, `SITEMAP_CRON`, `SITEMAP_MAX_LINKS`, `SITEMAP_AUTO_GENERATE`, and `SITEMAP_XSL_ENABLED`; keep these aligned across environments so sitemap URLs stay correct.
 
 ## Testing & QA
 - Automated tests are not yet configured. If introducing tests, colocate them under `src/__tests__/` using Vitest + React Testing Library.

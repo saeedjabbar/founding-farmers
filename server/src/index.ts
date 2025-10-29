@@ -2,6 +2,28 @@
 import { PRIVACY_POLICY_BODY, PRIVACY_POLICY_TITLE } from './data/privacyPolicyPage';
 import { STANDARDS_PAGE_BODY, STANDARDS_PAGE_TITLE } from './data/standardsPage';
 
+const DEFAULT_LANGUAGE_CODE = 'und';
+
+const WEBTOOLS_URL_PATTERNS: Array<{ uid: string; pattern: string }> = [
+  { uid: 'api::story.story', pattern: '/stories/[slug]' },
+  { uid: 'api::record.record', pattern: '/records/[slug]' },
+  { uid: 'api::standard.standard', pattern: '/standards' },
+  { uid: 'api::privacy-policy.privacy-policy', pattern: '/privacy-policy' },
+];
+
+const SITEMAP_CONTENT_TYPE_DEFAULTS: Record<string, { changefreq: string; priority: number; includeLastmod?: boolean }> = {
+  'api::story.story': { changefreq: 'weekly', priority: 0.8, includeLastmod: true },
+  'api::record.record': { changefreq: 'monthly', priority: 0.5, includeLastmod: true },
+  'api::standard.standard': { changefreq: 'yearly', priority: 0.3, includeLastmod: true },
+  'api::privacy-policy.privacy-policy': { changefreq: 'yearly', priority: 0.2, includeLastmod: true },
+};
+
+const SITEMAP_CUSTOM_ENTRY_DEFAULTS: Record<string, { changefreq: string; priority: number }> = {
+  '/stories': { changefreq: 'daily', priority: 0.8 },
+  '/records': { changefreq: 'weekly', priority: 0.6 },
+  '/submit': { changefreq: 'monthly', priority: 0.2 },
+};
+
 export default {
   /**
    * An asynchronous register function that runs before
@@ -22,6 +44,9 @@ export default {
     await ensureStandardsPage(strapi);
     await ensurePrivacyPolicyPage(strapi);
     await backfillAuthorNames(strapi);
+    await ensureWebtoolsUrlPatterns(strapi);
+    await generateDefaultUrlAliases(strapi);
+    await ensureSitemapSettings(strapi);
   },
 };
 
@@ -143,4 +168,208 @@ function deriveDisplayName(user: any): string | undefined {
     }
   }
   return undefined;
+}
+
+async function ensureWebtoolsUrlPatterns(strapi: any) {
+  if (!strapi.plugin?.('webtools')) {
+    return;
+  }
+
+  const availablePatterns = WEBTOOLS_URL_PATTERNS.filter(({ uid }) => Boolean(strapi.contentTypes?.[uid]));
+
+  await Promise.all(
+    availablePatterns.map(async ({ uid, pattern }) => {
+      try {
+        const existingPatterns = await strapi.documents('plugin::webtools.url-pattern').findMany({
+          filters: { contenttype: uid },
+        });
+
+        const existingDefault = existingPatterns.find(
+          (entry: any) => Array.isArray(entry?.languages) && entry.languages.includes(DEFAULT_LANGUAGE_CODE)
+        );
+
+        if (!existingDefault) {
+          await strapi.documents('plugin::webtools.url-pattern').create({
+            data: {
+              contenttype: uid,
+              pattern,
+              languages: [DEFAULT_LANGUAGE_CODE],
+            },
+          });
+          strapi.log.info(`Created Webtools URL pattern "${pattern}" for ${uid}.`);
+          return;
+        }
+
+        const needsPatternUpdate = existingDefault.pattern !== pattern;
+        const languages = Array.isArray(existingDefault.languages)
+          ? Array.from(new Set([...existingDefault.languages, DEFAULT_LANGUAGE_CODE]))
+          : [DEFAULT_LANGUAGE_CODE];
+        const needsLanguageUpdate =
+          !Array.isArray(existingDefault.languages) || !existingDefault.languages.includes(DEFAULT_LANGUAGE_CODE);
+
+        if (needsPatternUpdate || needsLanguageUpdate) {
+          await strapi.documents('plugin::webtools.url-pattern').update({
+            documentId: existingDefault.documentId ?? existingDefault.id,
+            data: {
+              contenttype: uid,
+              pattern,
+              languages,
+            },
+          });
+          strapi.log.info(`Updated Webtools URL pattern for ${uid} to "${pattern}".`);
+        }
+      } catch (error: any) {
+        strapi.log.warn(`Could not ensure Webtools URL pattern for ${uid}: ${error?.message ?? error}`);
+      }
+    })
+  );
+}
+
+async function generateDefaultUrlAliases(strapi: any) {
+  if (!strapi.plugin?.('webtools')) {
+    return;
+  }
+
+  try {
+    const bulkGenerateService = strapi.plugin('webtools')?.service?.('bulk-generate');
+    if (!bulkGenerateService?.generateUrlAliases) {
+      return;
+    }
+
+    const contentTypes = WEBTOOLS_URL_PATTERNS.map(({ uid }) => uid).filter((uid) =>
+      Boolean(strapi.contentTypes?.[uid])
+    );
+
+    if (!contentTypes.length) {
+      return;
+    }
+
+    const generatedCount = await bulkGenerateService.generateUrlAliases({
+      types: contentTypes,
+      generationType: 'only_generated',
+    });
+
+    if (generatedCount > 0) {
+      strapi.log.info(`Generated ${generatedCount} Webtools URL alias(es).`);
+    }
+  } catch (error: any) {
+    strapi.log.warn(`Could not generate Webtools URL aliases: ${error?.message ?? error}`);
+  }
+}
+
+async function ensureSitemapSettings(strapi: any) {
+  if (!strapi.plugin?.('webtools-addon-sitemap')) {
+    return;
+  }
+
+  try {
+    const pluginStore = strapi.store({
+      environment: '',
+      type: 'plugin',
+      name: 'sitemap',
+    });
+
+    const currentSettings = (await pluginStore.get({ key: 'settings' })) ?? {};
+    const settings = { ...currentSettings };
+    let hasChanges = false;
+
+    const configuredHostname = normalizeHostname(strapi.config.get('plugin::webtools.website_url'));
+    if (configuredHostname && normalizeHostname(settings.hostname) !== configuredHostname) {
+      settings.hostname = configuredHostname;
+      hasChanges = true;
+    } else if (!settings.hostname) {
+      settings.hostname = configuredHostname ?? '';
+      if (settings.hostname) {
+        hasChanges = true;
+      }
+    }
+
+    if (settings.includeHomepage === undefined) {
+      settings.includeHomepage = true;
+      hasChanges = true;
+    }
+
+    if (settings.excludeDrafts === undefined) {
+      settings.excludeDrafts = true;
+      hasChanges = true;
+    }
+
+    if (!settings.hostname_overrides || typeof settings.hostname_overrides !== 'object') {
+      settings.hostname_overrides = {};
+      hasChanges = true;
+    }
+
+    if (settings.defaultLanguageUrlType === undefined) {
+      settings.defaultLanguageUrlType = '';
+      hasChanges = true;
+    }
+
+    if (settings.defaultLanguageUrl === undefined) {
+      settings.defaultLanguageUrl = '';
+      hasChanges = true;
+    }
+
+    const contentTypes: Record<string, any> =
+      settings.contentTypes && typeof settings.contentTypes === 'object' ? { ...settings.contentTypes } : {};
+
+    for (const [uid, defaults] of Object.entries(SITEMAP_CONTENT_TYPE_DEFAULTS)) {
+      if (!strapi.contentTypes?.[uid]) {
+        continue;
+      }
+
+      const existingType = contentTypes[uid] && typeof contentTypes[uid] === 'object' ? { ...contentTypes[uid] } : {};
+      const languageConfig =
+        existingType.languages && typeof existingType.languages === 'object' ? { ...existingType.languages } : {};
+      const baseLanguage = languageConfig[DEFAULT_LANGUAGE_CODE]
+        ? { ...languageConfig[DEFAULT_LANGUAGE_CODE] }
+        : {};
+
+      if (baseLanguage.changefreq === undefined) {
+        baseLanguage.changefreq = defaults.changefreq;
+        hasChanges = true;
+      }
+
+      if (baseLanguage.priority === undefined) {
+        baseLanguage.priority = defaults.priority;
+        hasChanges = true;
+      }
+
+      if (baseLanguage.includeLastmod === undefined && defaults.includeLastmod !== undefined) {
+        baseLanguage.includeLastmod = defaults.includeLastmod;
+        hasChanges = true;
+      }
+
+      languageConfig[DEFAULT_LANGUAGE_CODE] = baseLanguage;
+      existingType.languages = languageConfig;
+      contentTypes[uid] = existingType;
+    }
+
+    const customEntries: Record<string, any> =
+      settings.customEntries && typeof settings.customEntries === 'object' ? { ...settings.customEntries } : {};
+
+    for (const [path, defaults] of Object.entries(SITEMAP_CUSTOM_ENTRY_DEFAULTS)) {
+      if (!customEntries[path]) {
+        customEntries[path] = defaults;
+        hasChanges = true;
+      }
+    }
+
+    settings.contentTypes = contentTypes;
+    settings.customEntries = customEntries;
+
+    if (hasChanges) {
+      await pluginStore.set({ key: 'settings', value: settings });
+      strapi.log.info('Updated sitemap settings with default values.');
+    }
+  } catch (error: any) {
+    strapi.log.warn(`Could not ensure sitemap settings: ${error?.message ?? error}`);
+  }
+}
+
+function normalizeHostname(value?: string | null): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  return value.replace(/\/+$/, '');
 }

@@ -104,3 +104,7 @@ export function getStrapiAssetUrl(url?: string | null): string | undefined {
     return `${PUBLIC_STRAPI_BASE_URL}${url}`;
   }
 }
+
+export function resolveStrapiBaseUrl(): string {
+  return STRAPI_BASE_URL;
+}
