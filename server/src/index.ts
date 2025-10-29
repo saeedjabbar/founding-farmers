@@ -1,4 +1,5 @@
 // import type { Core } from '@strapi/strapi';
+import { PRIVACY_POLICY_BODY, PRIVACY_POLICY_TITLE } from './data/privacyPolicyPage';
 import { STANDARDS_PAGE_BODY, STANDARDS_PAGE_TITLE } from './data/standardsPage';
 
 export default {
@@ -19,37 +20,55 @@ export default {
    */
   async bootstrap({ strapi }: { strapi: any }) {
     await ensureStandardsPage(strapi);
+    await ensurePrivacyPolicyPage(strapi);
     await backfillAuthorNames(strapi);
   },
 };
 
 async function ensureStandardsPage(strapi: any) {
+  await ensureSingleTypeContent(strapi, 'api::standard.standard', {
+    title: STANDARDS_PAGE_TITLE,
+    body: STANDARDS_PAGE_BODY,
+  }, 'Standards');
+}
+
+async function ensurePrivacyPolicyPage(strapi: any) {
+  await ensureSingleTypeContent(strapi, 'api::privacy-policy.privacy-policy', {
+    title: PRIVACY_POLICY_TITLE,
+    body: PRIVACY_POLICY_BODY,
+  }, 'Privacy policy');
+}
+
+async function ensureSingleTypeContent(strapi: any, uid: string, data: Record<string, unknown>, label: string) {
   try {
-    const existingResult = await strapi.entityService.findMany('api::standard.standard', {
+    const existingResult = await strapi.entityService.findMany(uid, {
       publicationState: 'preview',
     });
 
     const entry = Array.isArray(existingResult) ? existingResult[0] : existingResult;
-    const hasBody = Array.isArray(entry?.body) && entry.body.length > 0;
-    const hasTitle = typeof entry?.title === 'string' && entry.title.trim().length > 0;
-
-    const data = {
-      title: STANDARDS_PAGE_TITLE,
-      body: STANDARDS_PAGE_BODY,
-    };
+    const isComplete = Object.entries(data).every(([key, value]) => {
+      const field = entry?.[key];
+      if (Array.isArray(value)) {
+        return Array.isArray(field) && field.length > 0;
+      }
+      if (typeof value === 'string') {
+        return typeof field === 'string' && field.trim().length > 0;
+      }
+      return Boolean(field);
+    });
 
     if (!entry) {
-      await strapi.entityService.create('api::standard.standard', { data });
-      strapi.log.info('Created default Standards page content.');
+      await strapi.entityService.create(uid, { data });
+      strapi.log.info(`Created default ${label} content.`);
       return;
     }
 
-    if (!hasTitle || !hasBody) {
-      await strapi.entityService.update('api::standard.standard', entry.id, { data });
-      strapi.log.info('Backfilled Standards page content.');
+    if (!isComplete) {
+      await strapi.entityService.update(uid, entry.id, { data });
+      strapi.log.info(`Backfilled ${label} content.`);
     }
   } catch (error: any) {
-    strapi.log.warn(`Could not ensure Standards page content: ${error?.message ?? error}`);
+    strapi.log.warn(`Could not ensure ${label.toLowerCase()} content: ${error?.message ?? error}`);
   }
 }
 

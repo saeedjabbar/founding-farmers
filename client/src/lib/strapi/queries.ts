@@ -1,5 +1,7 @@
-import { mapRecord, mapStandardsPage, mapStory, mapStorySummary } from './mappers';
+import { mapPrivacyPolicyPage, mapRecord, mapStandardsPage, mapStory, mapStorySummary } from './mappers';
 import type {
+  PrivacyPolicyPage,
+  PrivacyPolicyPageDocument,
   SourceRecord,
   Story,
   StoryDocument,
@@ -300,6 +302,20 @@ export async function getStandardsPage(): Promise<StandardsPage | null> {
     return mapStandardsPage(response.data);
   } catch (error) {
     console.warn('[strapi] Failed to load standards page:', error);
+    return null;
+  }
+}
+
+export async function getPrivacyPolicyPage(): Promise<PrivacyPolicyPage | null> {
+  try {
+    const response = await strapiFetch<StrapiSingleResponse<PrivacyPolicyPageDocument>>('/api/privacy-policy', {
+      params: withPublicationState({}),
+      cache: 'no-store',
+    });
+
+    return mapPrivacyPolicyPage(response.data);
+  } catch (error) {
+    console.warn('[strapi] Failed to load privacy policy page:', error);
     return null;
   }
 }

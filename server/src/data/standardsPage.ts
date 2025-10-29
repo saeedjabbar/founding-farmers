@@ -1,68 +1,10 @@
-type TextMarks = {
-  bold?: boolean;
-  italic?: boolean;
-  underline?: boolean;
-  strikethrough?: boolean;
-};
-
-type TextSegment = string | ({ text: string } & TextMarks);
-
-interface TextNode extends TextMarks {
-  type: 'text';
-  text: string;
-}
-
-interface BlockNode {
-  type: string;
-  [key: string]: unknown;
-}
-
-export type BlocksContent = BlockNode[];
-
-const createTextNode = (segment: TextSegment): TextNode => {
-  if (typeof segment === 'string') {
-    return { type: 'text', text: segment };
-  }
-
-  const { text, ...marks } = segment;
-  return {
-    type: 'text',
-    text,
-    ...marks,
-  };
-};
-
-const paragraph = (...segments: TextSegment[]): BlockNode => ({
-  type: 'paragraph',
-  children: segments.map(createTextNode),
-});
-
-const heading = (level: number, text: string, marks: TextMarks = {}): BlockNode => ({
-  type: 'heading',
-  level,
-  children: [createTextNode({ text, ...marks })],
-});
-
-const horizontalRule: BlockNode = { type: 'horizontal-rule' };
-
-interface ListItemInput {
-  content: BlockNode[];
-  nestedList?: BlockNode;
-}
-
-const list = (items: ListItemInput[], format: 'unordered' | 'ordered' = 'unordered'): BlockNode => ({
-  type: 'list',
-  format,
-  children: items.map(({ content, nestedList }) => ({
-    type: 'list-item',
-    children: [
-      {
-        type: 'list-item-child',
-        children: [...content, ...(nestedList ? [nestedList] : [])],
-      },
-    ],
-  })),
-});
+import {
+  BlocksContent,
+  heading,
+  horizontalRule,
+  list,
+  paragraph,
+} from './blockHelpers';
 
 export const STANDARDS_PAGE_TITLE = 'Founding Farmers Project and Editorial Rules';
 

@@ -16,8 +16,9 @@
   ```
 - [x] Add `getRecordBySlug(slug)` query to support standalone record route (if needed).
 - [x] Ensure home story listing sorts newest-first via `publishedDate` with `publishedAt` fallback to handle missing editorial dates.
-- [x] Add `getStoriesFeaturingRecord(recordSlug)` to provide lightweight story summaries for the record detail “Featured In” cards.
+- [x] Add `getStoriesFeaturingRecord(recordSlug)` to provide lightweight story summaries for the record detail "Featured In" cards.
 - [x] Add `getStandardsPage()` query to resolve the editorial standards single-type (returns title + Blocks body, no summary).
+- [x] Add `getPrivacyPolicyPage()` query to resolve the privacy policy single-type.
 
 ## Routing & Pages
 - [ ] Update `client/src/app/layout.tsx` to load shared data if global navigation requires story summaries.
@@ -27,6 +28,7 @@
 - [x] Implement optional `/records/[slug]/page.tsx` for deep links to individual records.
 - [x] Implement `/records/page.tsx` to list source records as metadata cards (no thumbnails), paginated in 10-item pages via the `page` search param.
 - [x] Implement `/standards/page.tsx` to render the editorial standards rich text using `StrapiRichText` with shared theming.
+- [x] Implement `/privacy-policy/page.tsx` mirroring the standards layout (not exposed in nav yet).
 - [x] Wire `SiteHeader` component to all new routes and pass `useEditorialTheme` data.
 - [x] When adding new dynamic routes in Next.js 16, remember `params`/`searchParams` arrive as `Promise` values and must be awaited before use (adjusted on `/stories/[slug]`).
 

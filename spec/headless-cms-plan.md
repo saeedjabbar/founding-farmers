@@ -14,7 +14,7 @@
 - [x] Adjust collection types as needed:
   - [x] `stories` with fields: `title`, `slug`, `blurb`, hidden `authorName`, `published_at`, `heroMedia?`, `timelineEntries` (repeatable component), optional `summaryEnabled` toggle, and embedded `summaryCard` (heading, Blocks rich text body, newline-separated bullets).
   - [x] `records` with fields: `title`, `slug`, Blocks rich-text `description`, `mediaAsset (media)`, `mediaType (enum)`, `sourceUrl`, `publishDate`.
-- [x] Introduce single-type `standard` for the editorial rules page (required `title`, required Blocks `body`).
+  - [x] Introduce single-types `standard` (editorial rules) and `privacy-policy` (privacy policy), each with required `title` + Blocks `body`.
 - [x] Ensure `timelineEntry` component includes `entryDate (date)`, `headline`, `body`, `records (relation -> records)`.
 - [x] Auto-populate hidden `authorName` for all roles via lifecycle (after create/update) and bootstrap backfill (username → name → email prefix fallback).
 - [ ] Configure default & authenticated roles so public API only exposes published content.
@@ -23,7 +23,7 @@
 ## 2. Content & Media Operations
 - [x] Import sample stories, timeline entries, and records; ensure shared records can link to multiple stories.
 - [x] Upload representative image assets to Strapi media library (audio/PDF uploads pending direct support).
-- [x] Seed the `standard` single-type during bootstrap with the WP editorial rules copy so QA always has baseline content.
+  - [x] Seed the `standard` and `privacy-policy` single-types during bootstrap with the canonical site copy so QA always has baseline content.
 - [ ] Validate media processing (image thumbnails, PDF preview links, audio/video transcoding if needed).
 - [ ] Document editorial workflow for creating new records and associating them with stories, including guidance for the story summary toggle (leave disabled by default; enable when body/bullets are provided). Reinforce that all narrative fields must be authored with the Blocks editor (no Markdown).
 - [ ] Establish versioning/backups strategy (database export schedule or managed DB).
@@ -40,7 +40,7 @@
 - [x] Implement ISR or revalidation strategy for published updates.
 - [x] Note for Next.js 16: dynamic route loaders must `await params`/`searchParams` because they are provided as `Promise` values (story route updated).
 - [x] Sort story collections by latest `publishedDate`/`publishedAt` so the home feed surfaces the newest investigations first.
-  - [x] Fetch related stories per record to populate record detail “Featured In” cards.
+  - [x] Fetch related stories per record to populate record detail "Featured In" cards.
 
 ## 4. UI Composition & Theming
 - [x] Wire `SiteHeader` with `useEditorialTheme` on new story and record routes.
@@ -48,7 +48,7 @@
 - [x] Extend `SourceCard` to support expandable media preview (image, audio player, video embed, PDF viewer).
 - [x] Use `react-pdf` for inline document previews while keeping a downloadable fallback link (single-page pager in timelines, full render on record detail page).
 - [x] Ensure media types map to appropriate UI primitives (Radix Accordion, custom audio/video players).
-- [x] Add “View Source” external link and track `aria` attributes for accessibility.
+- [x] Add "View Source" external link and track `aria` attributes for accessibility.
 - [x] Update `next.config.mjs` image `remotePatterns` for Strapi hosts and default timeline/record previews to `unoptimized` images for local media.
 - [ ] Validate styling against editorial light/dark themes and update Tailwind tokens if gaps exist.
 

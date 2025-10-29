@@ -2,6 +2,8 @@ import type { BlocksContent } from '@strapi/blocks-react-renderer';
 import { sanitizeVideoEmbed } from '@/lib/videoEmbeds';
 import { getStrapiAssetUrl } from './client';
 import type {
+  PrivacyPolicyPage,
+  PrivacyPolicyPageDocument,
   RecordDocument,
   SourceRecord,
   StandardsPage,
@@ -141,6 +143,16 @@ export function mapStorySummary(document: StoryDocument): StorySummary {
 }
 
 export function mapStandardsPage(document: StandardsPageDocument | null | undefined): StandardsPage | null {
+  if (!document) return null;
+
+  return {
+    id: String(document.documentId ?? document.id),
+    title: document.title,
+    body: normalizeBlocks(document.body) ?? [],
+  };
+}
+
+export function mapPrivacyPolicyPage(document: PrivacyPolicyPageDocument | null | undefined): PrivacyPolicyPage | null {
   if (!document) return null;
 
   return {

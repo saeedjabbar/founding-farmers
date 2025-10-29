@@ -185,3 +185,16 @@ export interface StandardsPage {
   title: string;
   body: BlocksContent;
 }
+
+export interface PrivacyPolicyPageDocument {
+  id: StrapiID;
+  documentId?: string;
+  title: string;
+  body?: BlocksContent | null;
+}
+
+export interface PrivacyPolicyPage {
+  id: string;
+  title: string;
+  body: BlocksContent;
+}
