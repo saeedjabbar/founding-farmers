@@ -27,12 +27,19 @@
     "mediaAsset": {
       "type": "media",
       "multiple": false,
-      "required": true,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
+      ]
+    },
+    "mediaSource": {
+      "type": "enumeration",
+      "default": "upload",
+      "enum": [
+        "upload",
+        "externalEmbed"
       ]
     },
     "mediaType": {
@@ -44,6 +51,11 @@
         "pdf",
         "document"
       ]
+    },
+    "videoEmbed": {
+      "type": "component",
+      "component": "media.video-embed",
+      "repeatable": false
     },
     "sourceUrl": {
       "type": "string"

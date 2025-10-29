@@ -3,6 +3,18 @@ import type { BlocksContent } from '@strapi/blocks-react-renderer';
 export type StrapiID = number | string;
 
 export type MediaType = 'image' | 'video' | 'audio' | 'pdf' | 'document';
+export type MediaSource = 'upload' | 'externalEmbed';
+export type VideoProvider = 'youtube' | 'vimeo' | 'other';
+export type VideoAspectRatio = '16:9' | '4:3' | '1:1' | '9:16';
+export type ReferrerPolicyValue =
+  | 'no-referrer'
+  | 'no-referrer-when-downgrade'
+  | 'origin'
+  | 'origin-when-cross-origin'
+  | 'same-origin'
+  | 'strict-origin'
+  | 'strict-origin-when-cross-origin'
+  | 'unsafe-url';
 
 export interface StrapiMedia {
   id: StrapiID;
@@ -18,6 +30,29 @@ export interface StrapiMedia {
   ext?: string | null;
 }
 
+export interface VideoEmbedDocument {
+  provider?: VideoProvider | null;
+  title?: string | null;
+  embedHtml?: string | null;
+  aspectRatio?: VideoAspectRatio | null;
+}
+
+export interface VideoIframeAttributes {
+  src: string;
+  allow?: string;
+  referrerPolicy?: ReferrerPolicyValue;
+  allowFullScreen: boolean;
+  loading?: 'lazy' | 'eager';
+}
+
+export interface VideoEmbed {
+  provider: VideoProvider;
+  title?: string;
+  embedHtml: string;
+  aspectRatio: VideoAspectRatio;
+  iframe: VideoIframeAttributes;
+}
+
 export interface RecordDocument {
   id: StrapiID;
   documentId?: string;
@@ -26,6 +61,8 @@ export interface RecordDocument {
   description?: BlocksContent | null;
   mediaAsset?: StrapiMedia | null;
   mediaType?: MediaType | null;
+  mediaSource?: MediaSource | null;
+  videoEmbed?: VideoEmbedDocument | null;
   sourceUrl?: string | null;
   publishDate?: string | null;
   publishedAt?: string | null;
@@ -103,6 +140,8 @@ export interface SourceRecord {
   descriptionText?: string | null;
   mediaType?: MediaType | null;
   mediaAsset?: StrapiMedia | null;
+  mediaSource?: MediaSource;
+  videoEmbed?: VideoEmbed | null;
   sourceUrl?: string | null;
   publishDate?: string | null;
   publishedAt?: string | null;

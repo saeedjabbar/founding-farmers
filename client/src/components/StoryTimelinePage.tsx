@@ -184,6 +184,8 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
                         url={record.sourceUrl ?? undefined}
                         mediaType={record.mediaType ?? undefined}
                         mediaAsset={record.mediaAsset}
+                        mediaSource={record.mediaSource}
+                        videoEmbed={record.videoEmbed ?? null}
                         recordSlug={record.slug}
                       />
                     ))}

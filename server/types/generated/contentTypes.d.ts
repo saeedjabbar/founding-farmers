@@ -454,8 +454,9 @@ export interface ApiRecordRecord extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     mediaAsset: Schema.Attribute.Media<
       'images' | 'files' | 'videos' | 'audios'
-    > &
-      Schema.Attribute.Required;
+    >;
+    mediaSource: Schema.Attribute.Enumeration<['upload', 'externalEmbed']> &
+      Schema.Attribute.DefaultTo<'upload'>;
     mediaType: Schema.Attribute.Enumeration<
       ['image', 'video', 'audio', 'pdf', 'document']
     >;
@@ -467,6 +468,7 @@ export interface ApiRecordRecord extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    videoEmbed: Schema.Attribute.Component<'media.video-embed', false>;
   };
 }
 

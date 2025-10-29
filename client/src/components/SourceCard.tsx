@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { ChevronDown, FileText, Image as ImageIcon, Mic, File, Film } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { BlocksContent } from '@strapi/blocks-react-renderer';
-import type { MediaType, StrapiMedia } from '@/lib/strapi/types';
+import type { MediaSource, MediaType, StrapiMedia, VideoEmbed } from '@/lib/strapi/types';
 import { AudioPlayer } from '@/components/AudioPlayer';
 import { PdfViewer } from '@/components/PdfViewer';
 import { StrapiRichText } from '@/components/StrapiRichText';
+import VideoEmbedPlayer from '@/components/VideoEmbedPlayer';
 
 interface SourceCardProps {
   title: string;
@@ -16,6 +17,8 @@ interface SourceCardProps {
   url?: string;
   mediaType?: MediaType;
   mediaAsset?: StrapiMedia | null;
+  mediaSource?: MediaSource;
+  videoEmbed?: VideoEmbed | null;
   recordSlug?: string;
 }
 
@@ -31,9 +34,15 @@ function renderMediaPreview(
   mediaType: MediaType | undefined,
   mediaAsset: StrapiMedia | null | undefined,
   fallbackUrl: string | undefined,
-  title: string
+  title: string,
+  mediaSource: MediaSource | undefined,
+  videoEmbed: VideoEmbed | null | undefined
 ) {
   if (!mediaType) return null;
+
+  if (mediaType === 'video' && mediaSource === 'externalEmbed' && videoEmbed) {
+    return <VideoEmbedPlayer embed={videoEmbed} className="mt-2" />;
+  }
 
   const assetUrl = mediaAsset?.url ?? fallbackUrl;
   if (!assetUrl) return null;
@@ -73,6 +82,10 @@ function renderMediaPreview(
   }
 
   if (mediaType === 'video') {
+    if (!mediaAsset?.url && mediaSource === 'externalEmbed') {
+      return null;
+    }
+
     return (
       <video
         controls
@@ -119,7 +132,17 @@ function renderMediaPreview(
   return null;
 }
 
-export function SourceCard({ title, summary, content, url, mediaType, mediaAsset, recordSlug }: SourceCardProps) {
+export function SourceCard({
+  title,
+  summary,
+  content,
+  url,
+  mediaType,
+  mediaAsset,
+  mediaSource,
+  videoEmbed,
+  recordSlug,
+}: SourceCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const iconKey = mediaType ?? 'document';
   const Icon = iconMap[iconKey] ?? File;
@@ -174,7 +197,7 @@ export function SourceCard({ title, summary, content, url, mediaType, mediaAsset
                   listClassName="pl-4 space-y-1.5"
                 />
               )}
-              {renderMediaPreview(mediaType, mediaAsset, previewUrl, title)}
+              {renderMediaPreview(mediaType, mediaAsset, previewUrl, title, mediaSource, videoEmbed)}
               {url && (
                 <a
                   href={url}

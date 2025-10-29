@@ -6,6 +6,7 @@ import { AudioPlayer } from '@/components/AudioPlayer';
 import { PdfViewer } from '@/components/PdfViewer';
 import { SiteHeader } from '@/components/SiteHeader';
 import { StrapiRichText } from '@/components/StrapiRichText';
+import VideoEmbedPlayer from '@/components/VideoEmbedPlayer';
 import type { SourceRecord } from '@/lib/strapi/types';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
@@ -57,6 +58,12 @@ function humanizeMediaType(mediaType?: SourceRecord['mediaType']): string | null
 function renderMedia(record: SourceRecord) {
   if (!record.mediaType) return null;
 
+  const isExternalVideo = record.mediaSource === 'externalEmbed' && record.videoEmbed;
+
+  if (record.mediaType === 'video' && isExternalVideo && record.videoEmbed) {
+    return <VideoEmbedPlayer embed={record.videoEmbed} />;
+  }
+
   const assetUrl = record.mediaAsset?.url ?? record.sourceUrl ?? undefined;
   if (!assetUrl) return null;
   const downloadUrl = record.mediaAsset?.url ?? record.sourceUrl ?? undefined;
@@ -94,6 +101,10 @@ function renderMedia(record: SourceRecord) {
   }
 
   if (record.mediaType === 'video') {
+    if (!record.mediaAsset?.url && record.mediaSource === 'externalEmbed') {
+      return null;
+    }
+
     return (
       <video
         controls

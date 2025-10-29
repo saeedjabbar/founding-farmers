@@ -7,7 +7,7 @@ const STORY_POPULATE: StrapiQueryParams = {
     timelineEntries: {
       populate: {
         records: {
-          populate: ['mediaAsset'],
+          populate: ['mediaAsset', 'videoEmbed'],
         },
       },
     },
@@ -64,7 +64,7 @@ export async function getRecordBySlug(slug: string): Promise<SourceRecord | null
   try {
     const response = await strapiFetch<StrapiListResponse<RecordDocument>>('/api/records', {
       params: withPublicationState({
-        populate: { mediaAsset: true },
+        populate: { mediaAsset: true, videoEmbed: true },
         filters: { slug: { $eq: slug } },
         pagination: { page: 1, pageSize: 1 },
       }),

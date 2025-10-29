@@ -1,4 +1,5 @@
 import type { BlocksContent } from '@strapi/blocks-react-renderer';
+import { sanitizeVideoEmbed } from '@/lib/videoEmbeds';
 import { getStrapiAssetUrl } from './client';
 import type {
   RecordDocument,
@@ -42,6 +43,7 @@ export function mapRecord(document: RecordDocument | null | undefined): SourceRe
 
   const description = normalizeBlocks(document.description);
   const descriptionText = blocksToPlainText(description);
+  const videoEmbed = sanitizeVideoEmbed(document.videoEmbed);
 
   return {
     id: String(document.documentId ?? document.id),
@@ -51,6 +53,8 @@ export function mapRecord(document: RecordDocument | null | undefined): SourceRe
     descriptionText: descriptionText.length > 0 ? descriptionText : undefined,
     mediaType: document.mediaType ?? undefined,
     mediaAsset,
+    mediaSource: document.mediaSource ?? (videoEmbed ? 'externalEmbed' : 'upload'),
+    videoEmbed: videoEmbed ?? undefined,
     sourceUrl: document.sourceUrl ?? undefined,
     publishDate: document.publishDate ?? document.publishedAt ?? undefined,
     publishedAt: document.publishedAt ?? undefined,
