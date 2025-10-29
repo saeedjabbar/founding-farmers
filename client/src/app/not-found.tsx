@@ -42,7 +42,7 @@ export default function NotFound() {
                 href="/submit"
                 className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 uppercase text-xs tracking-[0.25em] theme-surface theme-border border text-[var(--theme-accent)] transition-colors duration-150 hover:text-[var(--theme-accent-hover)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-[var(--theme-bg)]"
               >
-                Share a newsroom tip
+                Submit a tip
               </Link>
             </div>
           </div>
