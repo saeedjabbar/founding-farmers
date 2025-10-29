@@ -128,6 +128,15 @@ export interface Story {
   summary?: SummaryCard | null;
 }
 
+export interface StorySummary {
+  id: string;
+  title: string;
+  slug: string;
+  location: string;
+  publishedDate?: string | null;
+  publishedAt?: string | null;
+}
+
 export interface TimelineEntry {
   id: string;
   entryDate: string;

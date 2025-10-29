@@ -6,6 +6,7 @@ import type {
   SourceRecord,
   Story,
   StoryDocument,
+  StorySummary,
   SummaryCard,
   TimelineEntry,
   TimelineEntryComponent,
@@ -123,5 +124,16 @@ export function mapStory(document: StoryDocument): Story {
     heroMedia,
     timelineEntries,
     summary: mapSummary(document),
+  };
+}
+
+export function mapStorySummary(document: StoryDocument): StorySummary {
+  return {
+    id: String(document.documentId ?? document.id),
+    title: document.title,
+    slug: document.slug,
+    location: document.location ?? 'Marlborough',
+    publishedDate: document.publishedDate ?? undefined,
+    publishedAt: document.publishedAt ?? undefined,
   };
 }

@@ -16,6 +16,7 @@
   ```
 - [x] Add `getRecordBySlug(slug)` query to support standalone record route (if needed).
 - [x] Ensure home story listing sorts newest-first via `publishedDate` with `publishedAt` fallback to handle missing editorial dates.
+- [x] Add `getStoriesFeaturingRecord(recordSlug)` to provide lightweight story summaries for the record detail “Featured In” cards.
 
 ## Routing & Pages
 - [ ] Update `client/src/app/layout.tsx` to load shared data if global navigation requires story summaries.
@@ -39,6 +40,7 @@
 - [x] Provide accessible labels and `aria` attributes for toggles and media players.
 - [x] Add optional story summary card rendering at timeline bottom. Summary pulls from Strapi `summaryEnabled` + `summaryCard` (enter bullets as newline-separated text; body authored with Blocks editor, frontend renders via `StrapiRichText`).
 - [x] Style `/records/[slug]` detail page to present top summary/metadata card plus media panel; media renders according to type (image, audio, video, PDF) with accent-styled summary actions.
+  - [x] Surface related story cards at the bottom of record detail pages linking to their timelines.
 
 ## Theming & UX
 - [ ] Validate timeline and source cards across `editorialRedLight` and `editorialRedDark`.

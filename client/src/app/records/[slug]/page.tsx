@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { RecordDetailPage } from '@/components/RecordDetailPage';
-import { getAllRecords, getRecordBySlug } from '@/lib/strapi/queries';
+import { getAllRecords, getRecordBySlug, getStoriesFeaturingRecord } from '@/lib/strapi/queries';
 
 export const revalidate = 60;
 
@@ -15,7 +15,9 @@ export default async function RecordPage({ params }: RecordPageProps) {
     notFound();
   }
 
-  return <RecordDetailPage record={record} />;
+  const featuredIn = await getStoriesFeaturingRecord(slug);
+
+  return <RecordDetailPage record={record} featuredIn={featuredIn} />;
 }
 
 export async function generateStaticParams() {

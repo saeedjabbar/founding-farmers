@@ -1,4 +1,4 @@
-import { mapRecord, mapStory } from './mappers';
+import { mapRecord, mapStory, mapStorySummary } from './mappers';
 import type {
   SourceRecord,
   Story,
@@ -6,6 +6,7 @@ import type {
   RecordDocument,
   StrapiListResponse,
   StrapiPagination,
+  StorySummary,
 } from './types';
 import { strapiFetch, type StrapiQueryParams } from './client';
 
@@ -252,5 +253,36 @@ export async function getRecordBySlug(slug: string): Promise<SourceRecord | null
   } catch (error) {
     console.warn(`[strapi] Failed to load record for slug "${slug}":`, error);
     return null;
+  }
+}
+
+export async function getStoriesFeaturingRecord(recordSlug: string): Promise<StorySummary[]> {
+  try {
+    const response = await strapiFetch<StrapiListResponse<StoryDocument>>('/api/stories', {
+      params: withPublicationState({
+        filters: {
+          timelineEntries: {
+            records: {
+              slug: { $eq: recordSlug },
+            },
+          },
+        },
+        fields: ['title', 'slug', 'location', 'publishedDate', 'publishedAt', 'documentId'],
+        pagination: { page: 1, pageSize: 50 },
+        sort: ['publishedDate:desc', 'publishedAt:desc'],
+      }),
+      cache: 'no-store',
+    });
+
+    const summaries = response.data.map(mapStorySummary);
+    const seen = new Set<string>();
+    return summaries.filter((story) => {
+      if (seen.has(story.slug)) return false;
+      seen.add(story.slug);
+      return true;
+    });
+  } catch (error) {
+    console.warn(`[strapi] Failed to load stories for record slug "${recordSlug}":`, error);
+    return [];
   }
 }

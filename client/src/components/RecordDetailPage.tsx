@@ -7,12 +7,13 @@ import { PdfViewer } from '@/components/PdfViewer';
 import { SiteHeader } from '@/components/SiteHeader';
 import { StrapiRichText } from '@/components/StrapiRichText';
 import VideoEmbedPlayer from '@/components/VideoEmbedPlayer';
-import type { SourceRecord } from '@/lib/strapi/types';
+import type { SourceRecord, StorySummary } from '@/lib/strapi/types';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
 
 interface RecordDetailPageProps {
   record: SourceRecord;
+  featuredIn?: StorySummary[];
 }
 
 function formatDate(value?: string | null): string | null {
@@ -149,7 +150,7 @@ function renderMedia(record: SourceRecord) {
   return null;
 }
 
-export function RecordDetailPage({ record }: RecordDetailPageProps) {
+export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPageProps) {
   const { theme, isDark, toggleTheme } = useEditorialTheme();
 
   const metadata = [
@@ -269,6 +270,47 @@ export function RecordDetailPage({ record }: RecordDetailPageProps) {
                   View original source →
                 </a>
               )}
+            </div>
+          </section>
+        )}
+
+        {featuredIn.length > 0 && (
+          <section className="theme-border theme-surface border rounded-lg shadow-sm p-6 md:p-8 space-y-5">
+            <header className="space-y-1 md:space-y-2">
+              <p className="text-xs uppercase tracking-[0.32em] theme-text-muted">Featured In</p>
+              <h2 className="theme-text-primary text-lg md:text-xl uppercase tracking-[0.08em]">Related Stories</h2>
+              <p className="text-sm theme-text-secondary md:max-w-2xl">
+                This record surfaces within the stories below. Visit each story to see how it connects to the broader narrative.
+              </p>
+            </header>
+
+            <div className="grid gap-3 md:gap-4 md:grid-cols-2">
+              {featuredIn.map((story) => {
+                const publishedOn = formatDate(story.publishedDate ?? story.publishedAt);
+                return (
+                  <Link
+                    key={story.id}
+                    href={`/stories/${story.slug}`}
+                    className="group theme-surface theme-border border rounded-lg px-4 py-5 flex flex-col gap-2 transition duration-150 hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-[var(--theme-bg)]"
+                  >
+                    <div className="text-[11px] uppercase tracking-[0.3em] theme-text-muted flex items-center gap-2">
+                      <span className="text-[var(--theme-accent)] tracking-[0.35em]">{story.location}</span>
+                      {publishedOn && (
+                        <time dateTime={story.publishedDate ?? story.publishedAt ?? undefined}>{publishedOn}</time>
+                      )}
+                    </div>
+                    <h3 className="theme-text-primary text-sm md:text-base uppercase tracking-[0.08em] leading-snug">
+                      {story.title}
+                    </h3>
+                    <span className="text-[11px] uppercase tracking-[0.3em] theme-text-muted">
+                      View timeline{' '}
+                      <span className="theme-accent group-hover:translate-x-0.5 inline-block transition-transform duration-150">
+                        →
+                      </span>
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           </section>
         )}

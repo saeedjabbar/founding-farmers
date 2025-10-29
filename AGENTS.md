@@ -12,11 +12,12 @@
   - `SiteHeader.tsx` – renders masthead/nav plus the light/dark toggle.
   - `TimelineMarker`, `StorySection`, `SourceCard` – story timeline UI.
   - `StoryTimelinePage` also renders an optional summary card fed by Strapi.
-  - `RecordDetailPage` presents source record summaries with metadata + media viewer, driven by Strapi `records` data (rich-text `description`, media asset, source URL).
+  - `RecordDetailPage` presents source record summaries with metadata + media viewer and surfaces related story cards, driven by Strapi `records` data (rich-text `description`, media asset, source URL).
   - `StoryListPage` sorts stories descending by publish timestamp using `publishedDate` with a `publishedAt` fallback and paginates results in 10-item pages with previous/next controls driven by the `page` search param.
   - `RecordListPage` lists records with metadata-only cards (no thumbnails), sorted by publish timestamp, and paginated in 10-item pages keyed off the `page` search param.
   - `PdfViewer` handles inline PDFs. Source cards load a single page with in-card navigation; record detail pages request the full document render.
 - `src/lib/` – shared logic. `useEditorialTheme.ts` locks the experience to the Editorial Red palette and syncs with system preferences plus the header toggle.
+  - Strapi queries now include `getStoriesFeaturingRecord(recordSlug)` which returns lightweight story summaries for a record’s “Featured In” section.
 - `src/styles/` and `src/app/globals.css` – global layers, tokens, and theme class definitions.
 - Documentation and supporting copy live under `src/guidelines/`.
 
