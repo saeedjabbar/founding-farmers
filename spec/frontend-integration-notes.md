@@ -20,6 +20,7 @@
 ## Routing & Pages
 - [ ] Update `client/src/app/layout.tsx` to load shared data if global navigation requires story summaries.
 - [x] Implement `/stories/page.tsx` listing story previews (title, blurb, published date, author, hero image).
+  - [x] Paginate listings in 10-story pages using the `page` search param with previous/next controls.
 - [x] Implement `/stories/[slug]/page.tsx` rendering the timeline using `TimelineMarker`, `StorySection`, and `SourceCard`.
 - [x] Implement optional `/records/[slug]/page.tsx` for deep links to individual records.
 - [x] Wire `SiteHeader` component to all new routes and pass `useEditorialTheme` data.

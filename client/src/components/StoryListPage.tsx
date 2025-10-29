@@ -9,6 +9,9 @@ import type { Story } from '@/lib/strapi/types';
 
 interface StoryListPageProps {
   stories: Story[];
+  currentPage: number;
+  pageCount: number;
+  basePath: string;
 }
 
 function formatDisplayDate(date?: string | null): string | null {
@@ -25,15 +28,39 @@ function formatDisplayDate(date?: string | null): string | null {
   });
 }
 
-export function StoryListPage({ stories }: StoryListPageProps) {
+function buildPageHref(basePath: string, page: number): string {
+  if (page <= 1) {
+    return basePath;
+  }
+  const separator = basePath.includes('?') ? '&' : '?';
+  return `${basePath}${separator}page=${page}`;
+}
+
+export function StoryListPage({
+  stories,
+  currentPage,
+  pageCount,
+  basePath,
+}: StoryListPageProps) {
   const { theme, isDark, toggleTheme } = useEditorialTheme();
+  const normalizedBasePath = basePath === '/' ? '/' : basePath.replace(/\/$/, '');
+  const hasStories = stories.length > 0;
+  const safeCurrentPage = currentPage > 0 ? currentPage : 1;
+  const hasPrevious = safeCurrentPage > 1;
+  const hasNext = safeCurrentPage < pageCount;
+  const paginationLabel = `Page ${safeCurrentPage.toLocaleString()} of ${pageCount.toLocaleString()}`;
+  const actionBaseClasses =
+    'inline-flex items-center justify-center rounded-full px-4 py-2 uppercase text-[11px] tracking-[0.25em] transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-[var(--theme-bg)]';
+  const previousClasses = `${actionBaseClasses} theme-surface theme-border border text-[var(--theme-accent)] hover:text-[var(--theme-accent-hover)]`;
+  const nextClasses = `${actionBaseClasses} bg-[var(--theme-accent)] text-white hover:bg-[var(--theme-accent-hover)]`;
+  const disabledClasses = 'pointer-events-none opacity-50 cursor-not-allowed theme-text-muted';
 
   return (
     <div className={`min-h-screen theme-bg ${themes[theme].className}`}>
       <SiteHeader isDark={isDark} onToggleTheme={toggleTheme} />
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-14">
-        {stories.length === 0 ? (
+        {!hasStories ? (
           <section className="theme-surface theme-border border rounded-lg shadow-sm p-6 text-center">
             <h2 className="theme-text-primary text-lg mb-3">Stories coming soon</h2>
             <p className="theme-text-secondary text-sm max-w-xl mx-auto">
@@ -93,6 +120,34 @@ export function StoryListPage({ stories }: StoryListPageProps) {
                 );
               })}
             </div>
+            {pageCount > 1 && (
+              <nav
+                className="mt-10 flex flex-col items-center gap-4 md:flex-row md:justify-between md:gap-6"
+                aria-label="Stories pagination"
+              >
+                <p className="text-[11px] uppercase tracking-[0.3em] theme-text-muted">{paginationLabel}</p>
+                <div className="flex items-center gap-3">
+                  {hasPrevious ? (
+                    <Link href={buildPageHref(normalizedBasePath, safeCurrentPage - 1)} className={previousClasses}>
+                      Previous
+                    </Link>
+                  ) : (
+                    <span className={`${previousClasses} ${disabledClasses}`} aria-disabled="true">
+                      Previous
+                    </span>
+                  )}
+                  {hasNext ? (
+                    <Link href={buildPageHref(normalizedBasePath, safeCurrentPage + 1)} className={nextClasses}>
+                      Next
+                    </Link>
+                  ) : (
+                    <span className={`${nextClasses} ${disabledClasses}`} aria-disabled="true">
+                      Next
+                    </span>
+                  )}
+                </div>
+              </nav>
+            )}
           </section>
         )}
       </main>

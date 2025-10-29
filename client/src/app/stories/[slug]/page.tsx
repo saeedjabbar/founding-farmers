@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { StoryTimelinePage } from '@/components/StoryTimelinePage';
-import { getStoryBySlug, getStories } from '@/lib/strapi/queries';
+import { getAllStories, getStoryBySlug } from '@/lib/strapi/queries';
 
 export const revalidate = 60;
 
@@ -20,6 +20,6 @@ export default async function StoryPage({ params }: StoryPageProps) {
 }
 
 export async function generateStaticParams() {
-  const stories = await getStories();
+  const stories = await getAllStories();
   return stories.map((story) => ({ slug: story.slug }));
 }

@@ -94,16 +94,20 @@ export interface StoryDocument {
   summaryCard?: SummaryCardDocument | null;
 }
 
+export interface StrapiPagination {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+}
+
+export interface StrapiMeta {
+  pagination?: StrapiPagination;
+}
+
 export interface StrapiListResponse<T> {
   data: T[];
-  meta?: {
-    pagination?: {
-      page: number;
-      pageSize: number;
-      pageCount: number;
-      total: number;
-    };
-  };
+  meta?: StrapiMeta;
 }
 
 export interface StrapiSingleResponse<T> {
