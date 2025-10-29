@@ -16,8 +16,9 @@
   - `StoryListPage` sorts stories descending by publish timestamp using `publishedDate` with a `publishedAt` fallback and paginates results in 10-item pages with previous/next controls driven by the `page` search param.
   - `RecordListPage` lists records with metadata-only cards (no thumbnails), sorted by publish timestamp, and paginated in 10-item pages keyed off the `page` search param.
   - `PdfViewer` handles inline PDFs. Source cards load a single page with in-card navigation; record detail pages request the full document render.
+  - `StandardsPage` renders the editorial rules single-type with the shared theme + header.
 - `src/lib/` – shared logic. `useEditorialTheme.ts` locks the experience to the Editorial Red palette and syncs with system preferences plus the header toggle.
-  - Strapi queries now include `getStoriesFeaturingRecord(recordSlug)` which returns lightweight story summaries for a record’s “Featured In” section.
+  - Strapi queries now include `getStoriesFeaturingRecord(recordSlug)` for “Featured In” summaries and `getStandardsPage()` for the `/standards` single page.
 - `src/styles/` and `src/app/globals.css` – global layers, tokens, and theme class definitions.
 - Documentation and supporting copy live under `src/guidelines/`.
 
@@ -37,6 +38,7 @@
 - Keep imports grouped (React → third-party → local). Use Tailwind classes; prefer extracting repeated patterns to components or utilities.
 - When tagging forms or interactive elements, ensure proper labels and `aria-*` attributes for accessibility.
 - Treat Strapi content as the single source of truth: story authors display via the hidden `authorName` field (automatically populated by lifecycle hooks) and the optional summary card is controlled by `summaryEnabled` plus `summaryCard` (heading, rich paragraph, newline-separated bullets).
+- Editorial standards live in the Strapi single-type `standard` (title + Blocks body). The server bootstrap seeds default content if it’s empty.
 - All Strapi rich narrative fields must use the Blocks editor (JSON) going forward; do not introduce Markdown-based rich text.
 - Strapi media lives under `http(s)://<host>:1337/uploads/*`. Inline previews currently pass `unoptimized` to `next/image`; update `next.config.mjs` if the Strapi URL changes in higher environments.
 

@@ -472,6 +472,36 @@ export interface ApiRecordRecord extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiStandardStandard extends Struct.SingleTypeSchema {
+  collectionName: 'standards';
+  info: {
+    description: 'Editorial standards and project rules';
+    displayName: 'Standards Page';
+    pluralName: 'standards';
+    singularName: 'standard';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    body: Schema.Attribute.Blocks & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::standard.standard'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiStoryStory extends Struct.CollectionTypeSchema {
   collectionName: 'stories';
   info: {
@@ -1041,6 +1071,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::record.record': ApiRecordRecord;
+      'api::standard.standard': ApiStandardStandard;
       'api::story.story': ApiStoryStory;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

@@ -1,4 +1,5 @@
 // import type { Core } from '@strapi/strapi';
+import { STANDARDS_PAGE_BODY, STANDARDS_PAGE_TITLE } from './data/standardsPage';
 
 export default {
   /**
@@ -17,9 +18,40 @@ export default {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }: { strapi: any }) {
+    await ensureStandardsPage(strapi);
     await backfillAuthorNames(strapi);
   },
 };
+
+async function ensureStandardsPage(strapi: any) {
+  try {
+    const existingResult = await strapi.entityService.findMany('api::standard.standard', {
+      publicationState: 'preview',
+    });
+
+    const entry = Array.isArray(existingResult) ? existingResult[0] : existingResult;
+    const hasBody = Array.isArray(entry?.body) && entry.body.length > 0;
+    const hasTitle = typeof entry?.title === 'string' && entry.title.trim().length > 0;
+
+    const data = {
+      title: STANDARDS_PAGE_TITLE,
+      body: STANDARDS_PAGE_BODY,
+    };
+
+    if (!entry) {
+      await strapi.entityService.create('api::standard.standard', { data });
+      strapi.log.info('Created default Standards page content.');
+      return;
+    }
+
+    if (!hasTitle || !hasBody) {
+      await strapi.entityService.update('api::standard.standard', entry.id, { data });
+      strapi.log.info('Backfilled Standards page content.');
+    }
+  } catch (error: any) {
+    strapi.log.warn(`Could not ensure Standards page content: ${error?.message ?? error}`);
+  }
+}
 
 async function backfillAuthorNames(strapi: any) {
   try {

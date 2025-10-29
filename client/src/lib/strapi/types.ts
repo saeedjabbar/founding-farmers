@@ -172,3 +172,16 @@ export interface SummaryCard {
   body?: BlocksContent | null;
   bullets?: string[];
 }
+
+export interface StandardsPageDocument {
+  id: StrapiID;
+  documentId?: string;
+  title: string;
+  body?: BlocksContent | null;
+}
+
+export interface StandardsPage {
+  id: string;
+  title: string;
+  body: BlocksContent;
+}

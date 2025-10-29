@@ -4,6 +4,8 @@ import { getStrapiAssetUrl } from './client';
 import type {
   RecordDocument,
   SourceRecord,
+  StandardsPage,
+  StandardsPageDocument,
   Story,
   StoryDocument,
   StorySummary,
@@ -135,5 +137,15 @@ export function mapStorySummary(document: StoryDocument): StorySummary {
     location: document.location ?? 'Marlborough',
     publishedDate: document.publishedDate ?? undefined,
     publishedAt: document.publishedAt ?? undefined,
+  };
+}
+
+export function mapStandardsPage(document: StandardsPageDocument | null | undefined): StandardsPage | null {
+  if (!document) return null;
+
+  return {
+    id: String(document.documentId ?? document.id),
+    title: document.title,
+    body: normalizeBlocks(document.body) ?? [],
   };
 }

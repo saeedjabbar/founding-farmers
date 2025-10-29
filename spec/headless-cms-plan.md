@@ -14,6 +14,7 @@
 - [x] Adjust collection types as needed:
   - [x] `stories` with fields: `title`, `slug`, `blurb`, hidden `authorName`, `published_at`, `heroMedia?`, `timelineEntries` (repeatable component), optional `summaryEnabled` toggle, and embedded `summaryCard` (heading, Blocks rich text body, newline-separated bullets).
   - [x] `records` with fields: `title`, `slug`, Blocks rich-text `description`, `mediaAsset (media)`, `mediaType (enum)`, `sourceUrl`, `publishDate`.
+- [x] Introduce single-type `standard` for the editorial rules page (required `title`, required Blocks `body`).
 - [x] Ensure `timelineEntry` component includes `entryDate (date)`, `headline`, `body`, `records (relation -> records)`.
 - [x] Auto-populate hidden `authorName` for all roles via lifecycle (after create/update) and bootstrap backfill (username → name → email prefix fallback).
 - [ ] Configure default & authenticated roles so public API only exposes published content.
@@ -22,6 +23,7 @@
 ## 2. Content & Media Operations
 - [x] Import sample stories, timeline entries, and records; ensure shared records can link to multiple stories.
 - [x] Upload representative image assets to Strapi media library (audio/PDF uploads pending direct support).
+- [x] Seed the `standard` single-type during bootstrap with the WP editorial rules copy so QA always has baseline content.
 - [ ] Validate media processing (image thumbnails, PDF preview links, audio/video transcoding if needed).
 - [ ] Document editorial workflow for creating new records and associating them with stories, including guidance for the story summary toggle (leave disabled by default; enable when body/bullets are provided). Reinforce that all narrative fields must be authored with the Blocks editor (no Markdown).
 - [ ] Establish versioning/backups strategy (database export schedule or managed DB).

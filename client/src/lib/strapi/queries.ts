@@ -1,4 +1,4 @@
-import { mapRecord, mapStory, mapStorySummary } from './mappers';
+import { mapRecord, mapStandardsPage, mapStory, mapStorySummary } from './mappers';
 import type {
   SourceRecord,
   Story,
@@ -7,6 +7,9 @@ import type {
   StrapiListResponse,
   StrapiPagination,
   StorySummary,
+  StandardsPage,
+  StandardsPageDocument,
+  StrapiSingleResponse,
 } from './types';
 import { strapiFetch, type StrapiQueryParams } from './client';
 
@@ -284,5 +287,19 @@ export async function getStoriesFeaturingRecord(recordSlug: string): Promise<Sto
   } catch (error) {
     console.warn(`[strapi] Failed to load stories for record slug "${recordSlug}":`, error);
     return [];
+  }
+}
+
+export async function getStandardsPage(): Promise<StandardsPage | null> {
+  try {
+    const response = await strapiFetch<StrapiSingleResponse<StandardsPageDocument>>('/api/standard', {
+      params: withPublicationState({}),
+      cache: 'no-store',
+    });
+
+    return mapStandardsPage(response.data);
+  } catch (error) {
+    console.warn('[strapi] Failed to load standards page:', error);
+    return null;
   }
 }
