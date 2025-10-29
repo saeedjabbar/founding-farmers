@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
+import { getSiteBaseUrl } from '@/lib/seo';
 import './globals.css';
+
+const metadataBase = getSiteBaseUrl();
 
 export const metadata: Metadata = {
   title: 'The Chronicle Timeline',
   description: 'Investigative timeline experience with dynamic themes and storytelling.',
+  ...(metadataBase ? { metadataBase } : {}),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -9,6 +9,7 @@
 ## 1. Strapi Audit & Schema Configuration
 - [x] Review existing Strapi project under `/backend` and confirm Postgres connection details.
 - [x] Audit current content-types and components; document gaps relative to the story/timeline/record model.
+- [x] Install and enable `@strapi/plugin-seo`, allowing it to scaffold the `shared.seo` component and attach a lowercase `seo` field to stories, records, and single-types for metadata management.
 - [ ] Enable or verify GraphQL/REST plugins required for the frontend integration.
 - [x] Define or update reusable components for Timeline Entry and Source Record references.
 - [x] Adjust collection types as needed:
@@ -26,6 +27,7 @@
   - [x] Seed the `standard` and `privacy-policy` single-types during bootstrap with the canonical site copy so QA always has baseline content.
 - [ ] Validate media processing (image thumbnails, PDF preview links, audio/video transcoding if needed).
 - [ ] Document editorial workflow for creating new records and associating them with stories, including guidance for the story summary toggle (leave disabled by default; enable when body/bullets are provided). Reinforce that all narrative fields must be authored with the Blocks editor (no Markdown).
+- [ ] Document SEO authoring workflow (meta title/description length guidance, optional OG image upload, keywords/robots usage) now that the plugin is enabled.
 - [ ] Establish versioning/backups strategy (database export schedule or managed DB).
 
 ## 3. Next.js Data Layer Integration

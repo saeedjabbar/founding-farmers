@@ -30,6 +30,48 @@ export interface StrapiMedia {
   ext?: string | null;
 }
 
+export interface OpenGraphDocument {
+  id: StrapiID;
+  ogTitle?: string | null;
+  ogDescription?: string | null;
+  ogImage?: StrapiMedia | null;
+  ogUrl?: string | null;
+  ogType?: string | null;
+}
+
+export interface SeoComponentDocument {
+  id: StrapiID;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaImage?: StrapiMedia | null;
+  openGraph?: OpenGraphDocument | null;
+  keywords?: string | null;
+  metaRobots?: string | null;
+  metaViewport?: string | null;
+  canonicalURL?: string | null;
+  structuredData?: unknown;
+}
+
+export interface OpenGraphMetadata {
+  title?: string;
+  description?: string;
+  url?: string;
+  type?: string;
+  image?: StrapiMedia | null;
+}
+
+export interface SeoMetadata {
+  metaTitle?: string;
+  metaDescription?: string;
+  metaImage?: StrapiMedia | null;
+  openGraph?: OpenGraphMetadata;
+  keywords?: string[];
+  metaRobots?: string[];
+  metaViewport?: string;
+  canonicalURL?: string;
+  structuredData?: unknown;
+}
+
 export interface VideoEmbedDocument {
   provider?: VideoProvider | null;
   title?: string | null;
@@ -68,6 +110,8 @@ export interface RecordDocument {
   publishedAt?: string | null;
   createdAt?: string | null;
   updatedAt?: string | null;
+  SEO?: SeoComponentDocument | null;
+  seo?: SeoComponentDocument | null;
 }
 
 export interface TimelineEntryComponent {
@@ -92,6 +136,8 @@ export interface StoryDocument {
   timelineEntries?: TimelineEntryComponent[] | null;
   summaryEnabled?: boolean | null;
   summaryCard?: SummaryCardDocument | null;
+  SEO?: SeoComponentDocument | null;
+  seo?: SeoComponentDocument | null;
 }
 
 export interface StrapiPagination {
@@ -126,6 +172,7 @@ export interface Story {
   heroMedia?: StrapiMedia | null;
   timelineEntries: TimelineEntry[];
   summary?: SummaryCard | null;
+  seo?: SeoMetadata | null;
 }
 
 export interface StorySummary {
@@ -159,6 +206,7 @@ export interface SourceRecord {
   publishDate?: string | null;
   publishedAt?: string | null;
   createdAt?: string | null;
+  seo?: SeoMetadata | null;
 }
 
 export interface SummaryCardDocument {
@@ -178,12 +226,15 @@ export interface StandardsPageDocument {
   documentId?: string;
   title: string;
   body?: BlocksContent | null;
+  SEO?: SeoComponentDocument | null;
+  seo?: SeoComponentDocument | null;
 }
 
 export interface StandardsPage {
   id: string;
   title: string;
   body: BlocksContent;
+  seo?: SeoMetadata | null;
 }
 
 export interface PrivacyPolicyPageDocument {
@@ -191,10 +242,13 @@ export interface PrivacyPolicyPageDocument {
   documentId?: string;
   title: string;
   body?: BlocksContent | null;
+  SEO?: SeoComponentDocument | null;
+  seo?: SeoComponentDocument | null;
 }
 
 export interface PrivacyPolicyPage {
   id: string;
   title: string;
   body: BlocksContent;
+  seo?: SeoMetadata | null;
 }

@@ -5,6 +5,8 @@ import type {
   PrivacyPolicyPage,
   PrivacyPolicyPageDocument,
   RecordDocument,
+  SeoComponentDocument,
+  SeoMetadata,
   SourceRecord,
   StandardsPage,
   StandardsPageDocument,
@@ -12,10 +14,142 @@ import type {
   StoryDocument,
   StorySummary,
   SummaryCard,
+  StrapiMedia,
   TimelineEntry,
   TimelineEntryComponent,
 } from './types';
 import { blocksToPlainText, hasBlocksContent } from './richText';
+
+type StrapiMediaInput =
+  | StrapiMedia
+  | {
+      data?:
+        | {
+            id?: unknown;
+            attributes?: StrapiMedia | null;
+          }
+        | null;
+    }
+  | null
+  | undefined;
+
+function mapMedia(media?: StrapiMediaInput): StrapiMedia | undefined {
+  if (!media) return undefined;
+
+  if ('data' in media && media.data && media.data.attributes) {
+    return mapMedia(media.data.attributes ?? undefined);
+  }
+
+  if ('url' in (media as StrapiMedia)) {
+    const typed = media as StrapiMedia;
+    if (!typed.url) return undefined;
+    return {
+      ...typed,
+      url: getStrapiAssetUrl(typed.url) ?? typed.url,
+    };
+  }
+
+  return undefined;
+}
+
+function splitCsv(value?: string | null): string[] | undefined {
+  if (!value) return undefined;
+  const parts = value
+    .split(',')
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0);
+  return parts.length > 0 ? parts : undefined;
+}
+
+function normalizeStructuredData(value: unknown): unknown | undefined {
+  if (value === null || value === undefined) return undefined;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }
+  if (Array.isArray(value)) {
+    return value.length > 0 ? value : undefined;
+  }
+  if (typeof value === 'object') {
+    return Object.keys(value as Record<string, unknown>).length > 0 ? value : undefined;
+  }
+  return value;
+}
+
+type SeoComponentInput =
+  | SeoComponentDocument
+  | {
+      data?:
+        | {
+            attributes?: SeoComponentDocument | null;
+          }
+        | null;
+    }
+  | null
+  | undefined;
+
+function normalizeSeoDocument(seo?: SeoComponentInput): SeoComponentDocument | undefined {
+  if (!seo) return undefined;
+  if ('data' in seo && seo.data) {
+    return normalizeSeoDocument(seo.data.attributes ?? undefined);
+  }
+  return seo ?? undefined;
+}
+
+function mapSeoComponent(seo?: SeoComponentInput): SeoMetadata | null {
+  const normalized = normalizeSeoDocument(seo);
+  if (!normalized) return null;
+
+  const metaImage = mapMedia(normalized.metaImage);
+  const openGraphImage = mapMedia(normalized.openGraph?.ogImage);
+  const hasOpenGraphValue =
+    Boolean(normalized.openGraph?.ogTitle) ||
+    Boolean(normalized.openGraph?.ogDescription) ||
+    Boolean(normalized.openGraph?.ogUrl) ||
+    Boolean(normalized.openGraph?.ogType) ||
+    Boolean(openGraphImage);
+
+  const openGraph = hasOpenGraphValue
+    ? {
+        title: normalized.openGraph?.ogTitle ?? undefined,
+        description: normalized.openGraph?.ogDescription ?? undefined,
+        url: normalized.openGraph?.ogUrl ?? undefined,
+        type: normalized.openGraph?.ogType ?? undefined,
+        image: openGraphImage ?? undefined,
+      }
+    : undefined;
+
+  const keywords = splitCsv(normalized.keywords);
+  const metaRobots = splitCsv(normalized.metaRobots);
+  const structuredData = normalizeStructuredData(normalized.structuredData);
+
+  const hasAnyValue =
+    Boolean(normalized.metaTitle) ||
+    Boolean(normalized.metaDescription) ||
+    Boolean(metaImage) ||
+    Boolean(openGraph) ||
+    Boolean(keywords) ||
+    Boolean(metaRobots) ||
+    Boolean(normalized.metaViewport) ||
+    Boolean(normalized.canonicalURL) ||
+    Boolean(structuredData);
+
+  if (!hasAnyValue) {
+    return null;
+  }
+
+  return {
+    metaTitle: normalized.metaTitle ?? undefined,
+    metaDescription: normalized.metaDescription ?? undefined,
+    metaImage,
+    openGraph,
+    keywords,
+    metaRobots,
+    metaViewport: normalized.metaViewport ?? undefined,
+    canonicalURL: normalized.canonicalURL ?? undefined,
+    structuredData,
+  };
+}
 
 function normalizeBlocks(content?: BlocksContent | null): BlocksContent | undefined {
   if (!content || content.length === 0) {
@@ -42,13 +176,12 @@ function normalizeBlocks(content?: BlocksContent | null): BlocksContent | undefi
 export function mapRecord(document: RecordDocument | null | undefined): SourceRecord | null {
   if (!document) return null;
 
-  const mediaAsset = document.mediaAsset
-    ? { ...document.mediaAsset, url: getStrapiAssetUrl(document.mediaAsset.url) ?? document.mediaAsset.url }
-    : undefined;
+  const mediaAsset = mapMedia(document.mediaAsset);
 
   const description = normalizeBlocks(document.description);
   const descriptionText = blocksToPlainText(description);
   const videoEmbed = sanitizeVideoEmbed(document.videoEmbed);
+  const seo = mapSeoComponent(document.SEO ?? document.seo);
 
   return {
     id: String(document.documentId ?? document.id),
@@ -64,6 +197,7 @@ export function mapRecord(document: RecordDocument | null | undefined): SourceRe
     publishDate: document.publishDate ?? document.publishedAt ?? undefined,
     publishedAt: document.publishedAt ?? undefined,
     createdAt: document.createdAt ?? undefined,
+    seo: seo ?? undefined,
   };
 }
 
@@ -109,12 +243,11 @@ function mapSummary(document: StoryDocument): SummaryCard | null {
 }
 
 export function mapStory(document: StoryDocument): Story {
-  const heroMedia = document.heroMedia
-    ? { ...document.heroMedia, url: getStrapiAssetUrl(document.heroMedia.url) ?? document.heroMedia.url }
-    : undefined;
+  const heroMedia = mapMedia(document.heroMedia);
 
   const timelineEntries =
     document.timelineEntries?.map(mapTimelineEntry).sort((a, b) => a.entryDate.localeCompare(b.entryDate)) ?? [];
+  const seo = mapSeoComponent(document.SEO ?? document.seo);
 
   return {
     id: String(document.documentId ?? document.id),
@@ -128,6 +261,7 @@ export function mapStory(document: StoryDocument): Story {
     heroMedia,
     timelineEntries,
     summary: mapSummary(document),
+    seo: seo ?? undefined,
   };
 }
 
@@ -144,20 +278,24 @@ export function mapStorySummary(document: StoryDocument): StorySummary {
 
 export function mapStandardsPage(document: StandardsPageDocument | null | undefined): StandardsPage | null {
   if (!document) return null;
+  const seo = mapSeoComponent(document.SEO ?? document.seo);
 
   return {
     id: String(document.documentId ?? document.id),
     title: document.title,
     body: normalizeBlocks(document.body) ?? [],
+    seo: seo ?? undefined,
   };
 }
 
 export function mapPrivacyPolicyPage(document: PrivacyPolicyPageDocument | null | undefined): PrivacyPolicyPage | null {
   if (!document) return null;
+  const seo = mapSeoComponent(document.SEO ?? document.seo);
 
   return {
     id: String(document.documentId ?? document.id),
     title: document.title,
     body: normalizeBlocks(document.body) ?? [],
+    seo: seo ?? undefined,
   };
 }

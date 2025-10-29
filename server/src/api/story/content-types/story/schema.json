@@ -10,6 +10,7 @@
   "options": {
     "draftAndPublish": true
   },
+  "pluginOptions": {},
   "attributes": {
     "title": {
       "type": "string",
@@ -37,29 +38,29 @@
     },
     "location": {
       "type": "enumeration",
+      "required": true,
+      "default": "Marlborough",
       "enum": [
         "Marlborough",
         "Hudson Valley",
         "Berkshires",
         "Crescent City"
-      ],
-      "default": "Marlborough",
-      "required": true
+      ]
     },
     "publishedDate": {
       "type": "date"
     },
     "heroMedia": {
       "type": "media",
+      "multiple": false,
       "allowedTypes": [
         "images"
-      ],
-      "multiple": false
+      ]
     },
     "timelineEntries": {
       "type": "component",
-      "repeatable": true,
       "component": "timeline.timeline-entry",
+      "repeatable": true,
       "required": true,
       "min": 1
     },
@@ -70,6 +71,11 @@
     "summaryCard": {
       "type": "component",
       "component": "story.summary-card",
+      "repeatable": false
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
       "repeatable": false
     }
   }

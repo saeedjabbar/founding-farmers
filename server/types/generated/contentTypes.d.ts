@@ -453,6 +453,7 @@ export interface ApiPrivacyPolicyPrivacyPolicy extends Struct.SingleTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -492,6 +493,7 @@ export interface ApiRecordRecord extends Struct.CollectionTypeSchema {
     >;
     publishDate: Schema.Attribute.Date;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     sourceUrl: Schema.Attribute.String;
     title: Schema.Attribute.String & Schema.Attribute.Required;
@@ -525,6 +527,7 @@ export interface ApiStandardStandard extends Struct.SingleTypeSchema {
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -568,6 +571,7 @@ export interface ApiStoryStory extends Struct.CollectionTypeSchema {
       Schema.Attribute.DefaultTo<'Marlborough'>;
     publishedAt: Schema.Attribute.DateTime;
     publishedDate: Schema.Attribute.Date;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     summaryCard: Schema.Attribute.Component<'story.summary-card', false>;
     summaryEnabled: Schema.Attribute.Boolean &

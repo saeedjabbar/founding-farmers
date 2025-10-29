@@ -19,7 +19,8 @@
   - `StandardsPage` renders the editorial rules single-type with the shared theme + header.
   - `PrivacyPolicyPage` mirrors the standards layout for the privacy policy single-type (route: `/privacy-policy`, not linked in nav).
 - `src/lib/` – shared logic. `useEditorialTheme.ts` locks the experience to the Editorial Red palette and syncs with system preferences plus the header toggle.
-  - Strapi queries now include `getStoriesFeaturingRecord(recordSlug)` for "Featured In" summaries, `getStandardsPage()` for the `/standards` single page, and `getPrivacyPolicyPage()` for `/privacy-policy`.
+  - Strapi queries now include `getStoriesFeaturingRecord(recordSlug)` for "Featured In" summaries, `getStandardsPage()` for the `/standards` single page, and `getPrivacyPolicyPage()` for `/privacy-policy`, all of which populate the `shared.seo` component.
+  - `src/lib/seo.ts` provides `getSiteBaseUrl()`, `createPageMetadata()`, and `serializeStructuredData()` helpers. Use these from route files to map Strapi SEO fields into Next.js metadata and JSON-LD `<script>` tags.
 - `src/styles/` and `src/app/globals.css` – global layers, tokens, and theme class definitions.
 - Documentation and supporting copy live under `src/guidelines/`.
 
@@ -43,6 +44,9 @@
 - Privacy policy copy lives in the Strapi single-type `privacy-policy` (title + Blocks body) and is auto-seeded during bootstrap if missing.
 - All Strapi rich narrative fields must use the Blocks editor (JSON) going forward; do not introduce Markdown-based rich text.
 - Strapi media lives under `http(s)://<host>:1337/uploads/*`. Inline previews currently pass `unoptimized` to `next/image`; update `next.config.mjs` if the Strapi URL changes in higher environments.
+- Strapi SEO plugin (`@strapi/plugin-seo`) seeds a `shared.seo` component with meta fields. All content-types now expose a `seo` component (lowercase) on the REST API. Queries must populate `seo` and pass the result through `createPageMetadata()` so `<head>` tags reflect Strapi data.
+- Frontend metadata should prefer Strapi values but fall back to existing copy. When structured data exists, emit it via `serializeStructuredData()` inside a JSON-LD `<script type="application/ld+json">`.
+- Configure canonical URLs by setting `NEXT_PUBLIC_SITE_URL` (or fallback `SITE_URL`, `NEXT_PUBLIC_APP_URL`, etc.); `getSiteBaseUrl()` resolves these to feed Next metadata `metadataBase`.
 
 ## Testing & QA
 - Automated tests are not yet configured. If introducing tests, colocate them under `src/__tests__/` using Vitest + React Testing Library.

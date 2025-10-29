@@ -15,17 +15,53 @@ import type {
 } from './types';
 import { strapiFetch, type StrapiQueryParams } from './client';
 
-const STORY_POPULATE: StrapiQueryParams = {
-  populate: {
-    timelineEntries: {
-      populate: {
-        records: {
-          populate: ['mediaAsset', 'videoEmbed'],
-        },
+const SEO_COMPONENT_POPULATE = {
+  metaImage: true,
+  openGraph: {
+    populate: {
+      ogImage: true,
+    },
+  },
+} satisfies StrapiQueryParams;
+
+const SEO_FIELDS_POPULATE = {
+  seo: {
+    populate: SEO_COMPONENT_POPULATE,
+  },
+};
+
+const STORY_BASE_POPULATE = {
+  timelineEntries: {
+    populate: {
+      records: {
+        populate: ['mediaAsset', 'videoEmbed'],
       },
     },
-    heroMedia: true,
-    summaryCard: true,
+  },
+  heroMedia: true,
+  summaryCard: true,
+};
+
+const STORY_POPULATE: StrapiQueryParams = {
+  populate: STORY_BASE_POPULATE,
+};
+
+const STORY_DETAIL_POPULATE: StrapiQueryParams = {
+  populate: {
+    ...STORY_BASE_POPULATE,
+    ...SEO_FIELDS_POPULATE,
+  },
+};
+
+const RECORD_LIST_POPULATE = {
+  mediaAsset: true,
+  videoEmbed: true,
+};
+
+const RECORD_DETAIL_POPULATE: StrapiQueryParams = {
+  populate: {
+    ...RECORD_LIST_POPULATE,
+    ...SEO_FIELDS_POPULATE,
   },
 };
 
@@ -174,7 +210,7 @@ export async function getRecords(options: GetRecordsOptions = {}): Promise<Recor
   try {
     const response = await strapiFetch<StrapiListResponse<RecordDocument>>('/api/records', {
       params: withPublicationState({
-        populate: { mediaAsset: true, videoEmbed: true },
+        populate: { ...RECORD_LIST_POPULATE },
         sort: ['publishDate:desc', 'publishedAt:desc', 'createdAt:desc'],
         pagination: { page, pageSize },
       }),
@@ -227,7 +263,7 @@ export async function getStoryBySlug(slug: string): Promise<Story | null> {
   try {
     const response = await strapiFetch<StrapiListResponse<StoryDocument>>('/api/stories', {
       params: withPublicationState({
-        ...STORY_POPULATE,
+        ...STORY_DETAIL_POPULATE,
         filters: { slug: { $eq: slug } },
         pagination: { page: 1, pageSize: 1 },
       }),
@@ -246,7 +282,7 @@ export async function getRecordBySlug(slug: string): Promise<SourceRecord | null
   try {
     const response = await strapiFetch<StrapiListResponse<RecordDocument>>('/api/records', {
       params: withPublicationState({
-        populate: { mediaAsset: true, videoEmbed: true },
+        ...RECORD_DETAIL_POPULATE,
         filters: { slug: { $eq: slug } },
         pagination: { page: 1, pageSize: 1 },
       }),
@@ -295,7 +331,11 @@ export async function getStoriesFeaturingRecord(recordSlug: string): Promise<Sto
 export async function getStandardsPage(): Promise<StandardsPage | null> {
   try {
     const response = await strapiFetch<StrapiSingleResponse<StandardsPageDocument>>('/api/standard', {
-      params: withPublicationState({}),
+      params: withPublicationState({
+        populate: {
+          ...SEO_FIELDS_POPULATE,
+        },
+      }),
       cache: 'no-store',
     });
 
@@ -309,7 +349,11 @@ export async function getStandardsPage(): Promise<StandardsPage | null> {
 export async function getPrivacyPolicyPage(): Promise<PrivacyPolicyPage | null> {
   try {
     const response = await strapiFetch<StrapiSingleResponse<PrivacyPolicyPageDocument>>('/api/privacy-policy', {
-      params: withPublicationState({}),
+      params: withPublicationState({
+        populate: {
+          ...SEO_FIELDS_POPULATE,
+        },
+      }),
       cache: 'no-store',
     });
 

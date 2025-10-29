@@ -19,6 +19,8 @@
 - [x] Add `getStoriesFeaturingRecord(recordSlug)` to provide lightweight story summaries for the record detail "Featured In" cards.
 - [x] Add `getStandardsPage()` query to resolve the editorial standards single-type (returns title + Blocks body, no summary).
 - [x] Add `getPrivacyPolicyPage()` query to resolve the privacy policy single-type.
+- [x] Populate the Strapi `shared.seo` component (lowercase `seo` attribute) for stories, records, and single-types, mapping it to strongly typed `SeoMetadata` via `mapSeoComponent()` and exposing helpers that prefer Strapi-provided meta fields.
+- [x] Surface SEO helpers in `src/lib/seo.ts` (`getSiteBaseUrl`, `createPageMetadata`, `serializeStructuredData`) and ensure all detail pages call them before rendering.
 
 ## Routing & Pages
 - [ ] Update `client/src/app/layout.tsx` to load shared data if global navigation requires story summaries.
@@ -31,6 +33,7 @@
 - [x] Implement `/privacy-policy/page.tsx` mirroring the standards layout (not exposed in nav yet).
 - [x] Wire `SiteHeader` component to all new routes and pass `useEditorialTheme` data.
 - [x] When adding new dynamic routes in Next.js 16, remember `params`/`searchParams` arrive as `Promise` values and must be awaited before use (adjusted on `/stories/[slug]`).
+- [x] Provide per-route `generateMetadata` implementations that call `createPageMetadata()` using Strapi SEO data and render optional JSON-LD from `serializeStructuredData()`.
 
 ## Components & Rendering
 - [x] Ensure `SourceCard` accepts expanded data: `longDescription`, `mediaAsset`, `mediaType`, `sourceUrl` (long narrative content comes through as Blocks JSON, never Markdown).
@@ -45,6 +48,7 @@
 - [x] Add optional story summary card rendering at timeline bottom. Summary pulls from Strapi `summaryEnabled` + `summaryCard` (enter bullets as newline-separated text; body authored with Blocks editor, frontend renders via `StrapiRichText`).
 - [x] Style `/records/[slug]` detail page to present top summary/metadata card plus media panel; media renders according to type (image, audio, video, PDF) with accent-styled summary actions.
   - [x] Surface related story cards at the bottom of record detail pages linking to their timelines.
+- [x] Update metadata fallback logic so pages gracefully default to site-wide titles/descriptions when Strapi SEO data is absent. Configure canonical URLs through `NEXT_PUBLIC_SITE_URL` (with `SITE_URL`/`NEXT_PUBLIC_APP_URL` fallback).
 
 ## Theming & UX
 - [ ] Validate timeline and source cards across `editorialRedLight` and `editorialRedDark`.
@@ -54,3 +58,4 @@
 ## Validation & Deployment
 - [ ] Document steps to restart `/server` Strapi instance so schema changes sync to Postgres.
 - [ ] Capture manual QA checklist for story timeline flows post-integration.
+- [ ] Add SEO validation checklist (meta title/description, canonical URL, structured data) for key routes post-publish.
