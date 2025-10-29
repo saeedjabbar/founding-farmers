@@ -7,9 +7,10 @@ const REVALIDATE_SECONDS = 60 * 60;
 
 export async function GET(
   _request: NextRequest,
-  context: { params: { path?: string[] } }
+  context: { params: Promise<{ path: string[] }> }
 ): Promise<Response> {
-  const segments = context.params.path ?? [];
+  const { path } = await context.params;
+  const segments = path ?? [];
 
   if (segments.length === 0) {
     return new Response('Not Found', { status: 404 });

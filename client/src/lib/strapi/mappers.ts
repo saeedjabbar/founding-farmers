@@ -88,12 +88,19 @@ type SeoComponentInput =
   | null
   | undefined;
 
+function isSeoComponentDocument(value: unknown): value is SeoComponentDocument {
+  return typeof value === 'object' && value !== null && 'id' in (value as Record<string, unknown>);
+}
+
 function normalizeSeoDocument(seo?: SeoComponentInput): SeoComponentDocument | undefined {
   if (!seo) return undefined;
+  if (isSeoComponentDocument(seo)) {
+    return seo;
+  }
   if ('data' in seo && seo.data) {
     return normalizeSeoDocument(seo.data.attributes ?? undefined);
   }
-  return seo ?? undefined;
+  return undefined;
 }
 
 function mapSeoComponent(seo?: SeoComponentInput): SeoMetadata | null {

@@ -67,7 +67,38 @@ export function getSiteBaseUrl(): URL | null {
 type ImageCandidate =
   | StrapiMedia
   | MetadataImageFallback
+  | null
   | undefined;
+
+const SUPPORTED_OPEN_GRAPH_TYPES = [
+  'website',
+  'article',
+  'book',
+  'profile',
+  'music.song',
+  'music.album',
+  'music.playlist',
+  'music.radio_station',
+  'video.movie',
+  'video.episode',
+  'video.tv_show',
+  'video.other',
+] as const;
+
+type SupportedOpenGraphType = (typeof SUPPORTED_OPEN_GRAPH_TYPES)[number];
+
+function isSupportedOpenGraphType(value: string): value is SupportedOpenGraphType {
+  return SUPPORTED_OPEN_GRAPH_TYPES.some((candidate) => candidate === value);
+}
+
+function normalizeOpenGraphType(
+  value: string | null | undefined,
+  fallback: SupportedOpenGraphType
+): SupportedOpenGraphType {
+  if (!value) return fallback;
+  const normalized = value.trim().toLowerCase();
+  return isSupportedOpenGraphType(normalized) ? normalized : fallback;
+}
 
 function normalizeImage(candidate: ImageCandidate): { url: string; width?: number; height?: number; alt?: string } | undefined {
   if (!candidate) return undefined;
@@ -136,7 +167,8 @@ export function createPageMetadata(
       .filter((candidate): candidate is { url: string; width?: number; height?: number; alt?: string } => Boolean(candidate))
   );
 
-  const openGraphType = seo?.openGraph?.type ?? (fallback.path ? 'article' : 'website');
+  const defaultOpenGraphType: SupportedOpenGraphType = fallback.path ? 'article' : 'website';
+  const openGraphType = normalizeOpenGraphType(seo?.openGraph?.type, defaultOpenGraphType);
   const openGraphUrl = seo?.openGraph?.url ?? canonical;
 
   const metadata: Metadata = {

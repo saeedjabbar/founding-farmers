@@ -37,6 +37,12 @@
 - [x] Provide per-route `generateMetadata` implementations that call `createPageMetadata()` using Strapi SEO data and render optional JSON-LD from `serializeStructuredData()`.
 - [x] Add `/sitemap.xml` route to proxy the Webtools sitemap output from Strapi and `/xsl/[...path]` to expose the associated XSL/CSS/JS assets for crawler styling.
 
+## Analytics & Telemetry
+- [x] Add PostHog support via `src/components/providers/PosthogProvider.tsx` and wrap the root layout to capture client-side navigation events.
+- [x] Document required env vars (`NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_POSTHOG_DEBUG`, `NEXT_PUBLIC_POSTHOG_DISABLE_TOOLBAR`, `NEXT_PUBLIC_POSTHOG_SESSION_RECORDING`) in the client README.
+- [x] Default the PostHog toolbar to disabled outside production while allowing opt-in via env flag.
+- [x] Allow session recording in development when `NEXT_PUBLIC_POSTHOG_SESSION_RECORDING=true`.
+
 ## Components & Rendering
 - [x] Ensure `SourceCard` accepts expanded data: `longDescription`, `mediaAsset`, `mediaType`, `sourceUrl` (long narrative content comes through as Blocks JSON, never Markdown).
 - [x] Centralize Blocks rendering via `StrapiRichText` so all rich text fields consume the JSON Blocks schema.

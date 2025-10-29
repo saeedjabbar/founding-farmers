@@ -37,6 +37,12 @@
 - Produce a production build: `npm run build`
 - Lint for formatting/import order issues: `npm run lint`
 
+## Analytics & Telemetry
+- PostHog loads through the client-only provider at `src/components/providers/PosthogProvider.tsx`; it wraps the App Router in `src/app/layout.tsx`.
+- Configure analytics with `NEXT_PUBLIC_POSTHOG_KEY` (plus optional `NEXT_PUBLIC_POSTHOG_HOST`). Debug logging toggles via `NEXT_PUBLIC_POSTHOG_DEBUG=true`.
+- The provider disables the PostHog toolbar by default in non-production builds; override with `NEXT_PUBLIC_POSTHOG_DISABLE_TOOLBAR=false` if needed.
+- Session recording is opt-out locally; set `NEXT_PUBLIC_POSTHOG_SESSION_RECORDING=true` to test FullSession Replay in development.
+
 ## Style & Authoring Conventions
 - TypeScript + React function components only; default to 2-space indentation.
 - PascalCase component filenames, camelCase hooks/utilities, and align file names with their default export.
