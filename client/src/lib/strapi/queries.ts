@@ -24,17 +24,38 @@ function withPublicationState(params: StrapiQueryParams = {}): StrapiQueryParams
   };
 }
 
+function parsePublicationDateTime(value?: string | null): number | null {
+  if (!value) return null;
+  const timestamp = Date.parse(value);
+  return Number.isNaN(timestamp) ? null : timestamp;
+}
+
+function sortStoriesByPublishedDate(stories: Story[]): Story[] {
+  return stories.sort((a, b) => {
+    const aTimestamp =
+      parsePublicationDateTime(a.publishedDate) ?? parsePublicationDateTime(a.publishedAt) ?? Number.NEGATIVE_INFINITY;
+    const bTimestamp =
+      parsePublicationDateTime(b.publishedDate) ?? parsePublicationDateTime(b.publishedAt) ?? Number.NEGATIVE_INFINITY;
+
+    if (aTimestamp === bTimestamp) {
+      return 0;
+    }
+
+    return bTimestamp - aTimestamp;
+  });
+}
+
 export async function getStories(): Promise<Story[]> {
   try {
     const response = await strapiFetch<StrapiListResponse<StoryDocument>>('/api/stories', {
       params: withPublicationState({
         ...STORY_POPULATE,
-        sort: { publishedDate: 'desc' },
+        sort: ['publishedDate:desc', 'publishedAt:desc'],
       }),
       cache: 'no-store',
     });
 
-    return response.data.map(mapStory);
+    return sortStoriesByPublishedDate(response.data.map(mapStory));
   } catch (error) {
     console.warn('[strapi] Failed to load stories:', error);
     return [];

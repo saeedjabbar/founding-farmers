@@ -15,6 +15,7 @@
   );
   ```
 - [x] Add `getRecordBySlug(slug)` query to support standalone record route (if needed).
+- [x] Ensure home story listing sorts newest-first via `publishedDate` with `publishedAt` fallback to handle missing editorial dates.
 
 ## Routing & Pages
 - [ ] Update `client/src/app/layout.tsx` to load shared data if global navigation requires story summaries.

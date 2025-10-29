@@ -13,6 +13,7 @@
   - `TimelineMarker`, `StorySection`, `SourceCard` – story timeline UI.
   - `StoryTimelinePage` also renders an optional summary card fed by Strapi.
   - `RecordDetailPage` presents source record summaries with metadata + media viewer, driven by Strapi `records` data (rich-text `description`, media asset, source URL).
+  - `StoryListPage` sorts stories descending by publish timestamp using `publishedDate` with a `publishedAt` fallback; preserve this ordering when adjusting data flows.
   - `PdfViewer` handles inline PDFs. Source cards load a single page with in-card navigation; record detail pages request the full document render.
 - `src/lib/` – shared logic. `useEditorialTheme.ts` locks the experience to the Editorial Red palette and syncs with system preferences plus the header toggle.
 - `src/styles/` and `src/app/globals.css` – global layers, tokens, and theme class definitions.

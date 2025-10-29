@@ -35,6 +35,7 @@
 - [x] Add `/records/[slug]` route if standalone record pages are required.
 - [x] Implement ISR or revalidation strategy for published updates.
 - [x] Note for Next.js 16: dynamic route loaders must `await params`/`searchParams` because they are provided as `Promise` values (story route updated).
+- [x] Sort story collections by latest `publishedDate`/`publishedAt` so the home feed surfaces the newest investigations first.
 
 ## 4. UI Composition & Theming
 - [x] Wire `SiteHeader` with `useEditorialTheme` on new story and record routes.
