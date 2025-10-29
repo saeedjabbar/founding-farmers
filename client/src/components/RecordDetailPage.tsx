@@ -7,6 +7,7 @@ import { PdfViewer } from '@/components/PdfViewer';
 import { SiteHeader } from '@/components/SiteHeader';
 import { StrapiRichText } from '@/components/StrapiRichText';
 import VideoEmbedPlayer from '@/components/VideoEmbedPlayer';
+import { VideoPlayer } from '@/components/VideoPlayer';
 import type { SourceRecord, StorySummary } from '@/lib/strapi/types';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
@@ -107,14 +108,12 @@ function renderMedia(record: SourceRecord) {
     }
 
     return (
-      <video
-        controls
+      <VideoPlayer
+        src={assetUrl}
+        type={record.mediaAsset?.mime ?? undefined}
+        title="Video Playback"
         preload="metadata"
-        className="w-full rounded-md border border-[var(--theme-border)]"
-      >
-        <source src={assetUrl} type={record.mediaAsset?.mime ?? undefined} />
-        Your browser does not support the video tag.
-      </video>
+      />
     );
   }
 

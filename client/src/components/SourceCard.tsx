@@ -9,6 +9,7 @@ import { AudioPlayer } from '@/components/AudioPlayer';
 import { PdfViewer } from '@/components/PdfViewer';
 import { StrapiRichText } from '@/components/StrapiRichText';
 import VideoEmbedPlayer from '@/components/VideoEmbedPlayer';
+import { VideoPlayer } from '@/components/VideoPlayer';
 
 interface SourceCardProps {
   title: string;
@@ -87,14 +88,14 @@ function renderMediaPreview(
     }
 
     return (
-      <video
-        controls
+      <VideoPlayer
+        src={assetUrl}
+        type={mediaAsset?.mime ?? undefined}
         preload="metadata"
-        className="w-full rounded-md mt-2 border border-[var(--theme-border)]"
-      >
-        <source src={assetUrl} type={mediaAsset?.mime ?? undefined} />
-        Your browser does not support the video tag.
-      </video>
+        size="compact"
+        title="Video Preview"
+        className="mt-2"
+      />
     );
   }
 

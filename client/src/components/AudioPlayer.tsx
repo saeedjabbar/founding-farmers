@@ -10,6 +10,7 @@ import {
 } from 'react';
 import { Pause, Play, Volume2, VolumeX } from 'lucide-react';
 import { cn } from '@/components/ui/utils';
+import { resolveStrapiAssetUrl } from '@/lib/strapi/public';
 
 interface AudioPlayerProps {
   src: string;
@@ -40,32 +41,6 @@ function inferMimeType(url: string): string | undefined {
   return undefined;
 }
 
-function resolveStrapiUrl(path: string): string {
-  const trimmed = path.trim();
-  if (!trimmed) return '';
-  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-    return trimmed;
-  }
-
-  const publicBase =
-    process.env.NEXT_PUBLIC_STRAPI_URL ??
-    (typeof window !== 'undefined'
-      ? `${window.location.protocol}//${window.location.hostname}:1337`
-      : '');
-
-  if (!publicBase) {
-    return trimmed;
-  }
-
-  try {
-    return new URL(trimmed, publicBase).toString();
-  } catch {
-    const base = publicBase.endsWith('/') ? publicBase.slice(0, -1) : publicBase;
-    const relative = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed;
-    return `${base}/${relative}`;
-  }
-}
-
 export function AudioPlayer({
   src,
   type,
@@ -75,7 +50,7 @@ export function AudioPlayer({
   preload = 'metadata',
 }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const normalizedSrc = useMemo(() => resolveStrapiUrl(src), [src]);
+  const normalizedSrc = useMemo(() => resolveStrapiAssetUrl(src), [src]);
   const inferredType = useMemo(() => type ?? inferMimeType(normalizedSrc), [type, normalizedSrc]);
 
   const [isPlaying, setIsPlaying] = useState(false);
