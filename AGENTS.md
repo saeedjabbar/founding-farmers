@@ -16,7 +16,7 @@
   - `TimelineMarker`, `StorySection`, `SourceCard` – story timeline UI.
   - `StoryTimelinePage` also renders an optional summary card fed by Strapi.
 - `RecordDetailPage` presents source record summaries with metadata + media viewer and surfaces related story cards, driven by Strapi `records` data (rich-text `description`, media asset, source URL).
-- Record detail pages also render an optional **Searchable Content** sidebar. Strapi exposes this as a Blocks (`searchableContent`) field; populate it with rich text to show the monospaced transcript-style panel beside the media viewer.
+- Record detail pages also render an optional **Searchable Content** sidebar. Strapi exposes this as a Blocks (`searchableContent`) field; populate it with rich text to show the monospaced transcript-style panel beside the media viewer. The sidebar includes a client-side search input with match highlighting and next/previous navigation.
   - `StoryListPage` sorts stories descending by publish timestamp using `publishedDate` with a `publishedAt` fallback and paginates results in 10-item pages with previous/next controls driven by the `page` search param.
   - `RecordListPage` lists records with metadata-only cards (no thumbnails), sorted by publish timestamp, and paginated in 10-item pages keyed off the `page` search param.
   - `PdfViewer` handles inline PDFs. Source cards load a single page with in-card navigation; record detail pages request the full document render.

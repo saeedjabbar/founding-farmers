@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import clsx from 'clsx';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { AudioPlayer } from '@/components/AudioPlayer';
 import { PdfViewer } from '@/components/PdfViewer';
 import { SiteFooter } from '@/components/SiteFooter';
@@ -9,15 +11,18 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { StrapiRichText } from '@/components/StrapiRichText';
 import VideoEmbedPlayer from '@/components/VideoEmbedPlayer';
 import { VideoPlayer } from '@/components/VideoPlayer';
+import { blocksToPlainText, hasBlocksContent } from '@/lib/strapi/richText';
 import type { SourceRecord, StorySummary } from '@/lib/strapi/types';
-import { hasBlocksContent } from '@/lib/strapi/richText';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 interface RecordDetailPageProps {
   record: SourceRecord;
   featuredIn?: StorySummary[];
 }
+
+type MarkElement = HTMLElementTagNameMap['mark'];
 
 function formatDate(value?: string | null): string | null {
   if (!value) return null;
@@ -153,6 +158,58 @@ function renderMedia(record: SourceRecord) {
 
 export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPageProps) {
   const { theme, isDark, toggleTheme } = useEditorialTheme();
+  const [searchTerm, setSearchTerm] = useState('');
+  const normalizedSearchTerm = searchTerm.trim();
+  const matchRefs = useRef<Array<MarkElement | null>>([]);
+  matchRefs.current = [];
+  const searchableContentText = useMemo(
+    () => blocksToPlainText(record.searchableContent),
+    [record.searchableContent]
+  );
+  const matchCount = useMemo(() => {
+    if (!normalizedSearchTerm) return null;
+    if (!searchableContentText) return 0;
+    const escaped = normalizedSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(escaped, 'gi');
+    return searchableContentText.match(regex)?.length ?? 0;
+  }, [normalizedSearchTerm, searchableContentText]);
+  const matchTotal = typeof matchCount === 'number' ? matchCount : 0;
+  const hasMatches = matchTotal > 0;
+  const [activeMatchIndex, setActiveMatchIndex] = useState(0);
+
+  useEffect(() => {
+    if (!normalizedSearchTerm) {
+      setActiveMatchIndex(0);
+      return;
+    }
+
+    setActiveMatchIndex(0);
+  }, [normalizedSearchTerm, matchTotal]);
+
+  useEffect(() => {
+    if (!hasMatches) {
+      return;
+    }
+
+    const target = matchRefs.current[activeMatchIndex];
+    if (target) {
+      target.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' });
+    }
+  }, [activeMatchIndex, hasMatches, normalizedSearchTerm]);
+
+  const handleHighlightMatch = useCallback((index: number, element: MarkElement | null) => {
+    matchRefs.current[index] = element;
+  }, []);
+
+  const goToNextMatch = useCallback(() => {
+    if (!hasMatches || matchTotal <= 1) return;
+    setActiveMatchIndex((current) => (current + 1) % matchTotal);
+  }, [hasMatches, matchTotal]);
+
+  const goToPreviousMatch = useCallback(() => {
+    if (!hasMatches || matchTotal <= 1) return;
+    setActiveMatchIndex((current) => (current - 1 + matchTotal) % matchTotal);
+  }, [hasMatches, matchTotal]);
 
   const metadata = [
     { label: 'Date of Publication', value: formatDate(record.publishDate) },
@@ -261,13 +318,67 @@ export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPagePr
             {hasSearchableContent && (
               <aside className="border-t border-[var(--theme-border)] lg:border-t-0 lg:border-l">
                 <div className="p-6 md:p-8 h-full flex flex-col gap-4">
-                  <h3 className="text-xs uppercase tracking-[0.26em] theme-text-muted">Searchable Content</h3>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="record-search" className="text-xs uppercase tracking-[0.26em] theme-text-muted">
+                      Searchable Content
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="record-search"
+                        type="search"
+                        value={searchTerm}
+                        onChange={(event) => setSearchTerm(event.target.value)}
+                        placeholder="Search within content..."
+                        className="w-full rounded-md border border-[var(--theme-border)] bg-[var(--theme-bg)] px-3 py-2 text-sm theme-text-primary placeholder:theme-text-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--theme-bg)]"
+                        aria-label="Search within searchable content"
+                      />
+                      {normalizedSearchTerm && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] uppercase tracking-[0.3em] theme-text-muted">
+                            {hasMatches ? `${activeMatchIndex + 1}/${matchTotal}` : '0/0'}
+                          </span>
+                          <div className="flex flex-col gap-1">
+                            <button
+                              type="button"
+                              onClick={goToPreviousMatch}
+                              disabled={!hasMatches || matchTotal <= 1}
+                              className={clsx(
+                                'flex h-6 w-6 items-center justify-center rounded border border-[var(--theme-border)] bg-[var(--theme-bg)] transition-colors duration-150',
+                                'hover:bg-[var(--theme-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--theme-bg)]',
+                                'disabled:opacity-40 disabled:cursor-not-allowed'
+                              )}
+                              aria-label="Previous match"
+                            >
+                              <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={goToNextMatch}
+                              disabled={!hasMatches || matchTotal <= 1}
+                              className={clsx(
+                                'flex h-6 w-6 items-center justify-center rounded border border-[var(--theme-border)] bg-[var(--theme-bg)] transition-colors duration-150',
+                                'hover:bg-[var(--theme-surface)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--theme-bg)]',
+                                'disabled:opacity-40 disabled:cursor-not-allowed'
+                              )}
+                              aria-label="Next match"
+                            >
+                              <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="rounded-lg border border-[var(--theme-border)] bg-[var(--theme-bg)] px-4 py-4 text-sm theme-text-secondary lg:max-h-[560px] lg:overflow-y-auto">
                     <StrapiRichText
                       content={record.searchableContent}
                       className="space-y-3 font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
                       paragraphClassName="font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
                       listClassName="font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
+                      highlightTerm={normalizedSearchTerm || undefined}
+                      activeHighlightIndex={hasMatches ? activeMatchIndex : undefined}
+                      onHighlightMatch={handleHighlightMatch}
                     />
                   </div>
                 </div>
