@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "timeline_entries",
+  "info": {
+    "singularName": "timeline-entry",
+    "pluralName": "timeline-entries",
+    "displayName": "Timeline Entry",
+    "description": "Story milestone with linked source records"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "entryDate": {
+      "type": "string",
+      "required": true
+    },
+    "headline": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "blocks",
+      "required": true
+    },
+    "position": {
+      "type": "integer",
+      "default": 0
+    },
+    "story": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::story.story",
+      "inversedBy": "timelineEntries"
+    },
+    "records": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::record.record",
+      "inversedBy": "timelineEntries"
+    }
+  }
+}

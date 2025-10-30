@@ -1,0 +1,91 @@
+{
+  "kind": "collectionType",
+  "collectionName": "stories",
+  "info": {
+    "singularName": "story",
+    "pluralName": "stories",
+    "displayName": "Story",
+    "description": "Editorial story with timeline milestones and source records"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "webtools": {
+      "enabled": true
+    }
+  },
+  "attributes": {
+    "url_alias": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::webtools.url-alias",
+      "configurable": false
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "blurb": {
+      "type": "text",
+      "required": true
+    },
+    "authorName": {
+      "type": "string",
+      "pluginOptions": {
+        "content-manager": {
+          "visible": false
+        },
+        "content-type-builder": {
+          "visible": false
+        }
+      }
+    },
+    "location": {
+      "type": "enumeration",
+      "required": true,
+      "default": "Marlborough",
+      "enum": [
+        "Marlborough",
+        "Hudson Valley",
+        "Berkshires",
+        "Crescent City"
+      ]
+    },
+    "publishedDate": {
+      "type": "date"
+    },
+    "heroMedia": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "timelineEntries": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::timeline-entry.timeline-entry",
+      "mappedBy": "story"
+    },
+    "summaryEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "summaryCard": {
+      "type": "component",
+      "component": "story.summary-card",
+      "repeatable": false
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
+    }
+  }
+}

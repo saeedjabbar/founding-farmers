@@ -1,0 +1,91 @@
+{
+  "kind": "collectionType",
+  "collectionName": "records",
+  "info": {
+    "singularName": "record",
+    "pluralName": "records",
+    "displayName": "Record",
+    "description": "Reusable archival record referenced by timeline entries"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "webtools": {
+      "enabled": true
+    }
+  },
+  "attributes": {
+    "url_alias": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::webtools.url-alias",
+      "configurable": false
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "searchableContent": {
+      "type": "blocks"
+    },
+    "timelineEntries": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::timeline-entry.timeline-entry",
+      "mappedBy": "records"
+    },
+    "mediaAsset": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "mediaSource": {
+      "type": "enumeration",
+      "default": "upload",
+      "enum": [
+        "upload",
+        "externalEmbed"
+      ]
+    },
+    "mediaType": {
+      "type": "enumeration",
+      "enum": [
+        "image",
+        "video",
+        "audio",
+        "pdf",
+        "document"
+      ]
+    },
+    "videoEmbed": {
+      "type": "component",
+      "component": "media.video-embed",
+      "repeatable": false
+    },
+    "sourceUrl": {
+      "type": "string"
+    },
+    "publishDate": {
+      "type": "date"
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
+    }
+  }
+}

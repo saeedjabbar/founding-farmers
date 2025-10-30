@@ -11,12 +11,12 @@
 - [x] Audit current content-types and components; document gaps relative to the story/timeline/record model.
 - [x] Install and enable `@strapi/plugin-seo`, allowing it to scaffold the `shared.seo` component and attach a lowercase `seo` field to stories, records, and single-types for metadata management.
 - [ ] Enable or verify GraphQL/REST plugins required for the frontend integration.
-- [x] Define or update reusable components for Timeline Entry and Source Record references.
+- [x] Finalize reusable components for Source Record references and transition timeline milestones into a dedicated collection type.
 - [x] Adjust collection types as needed:
-  - [x] `stories` with fields: `title`, `slug`, `blurb`, hidden `authorName`, `published_at`, `heroMedia?`, `timelineEntries` (repeatable component), optional `summaryEnabled` toggle, and embedded `summaryCard` (heading, Blocks rich text body, newline-separated bullets).
+  - [x] `stories` with fields: `title`, `slug`, `blurb`, hidden `authorName`, `published_at`, `heroMedia?`, `timelineEntries` (one-to-many relation to `timeline-entry`), optional `summaryEnabled` toggle, and embedded `summaryCard` (heading, Blocks rich text body, newline-separated bullets).
   - [x] `records` with fields: `title`, `slug`, Blocks rich-text `description`, `mediaAsset (media)`, `mediaType (enum)`, `sourceUrl`, `publishDate`.
   - [x] Introduce single-types `standard` (editorial rules) and `privacy-policy` (privacy policy), each with required `title` + Blocks `body`.
-- [x] Ensure `timelineEntry` component includes `entryDate (date)`, `headline`, `body`, `records (relation -> records)`.
+- [x] Replace the legacy `timelineEntry` component with an API-backed `timeline-entry` collection (`entryDate`, `headline`, `body`, optional `position`, and `records` many-to-many relation).
 - [x] Auto-populate hidden `authorName` for all roles via lifecycle (after create/update) and bootstrap backfill (username → name → email prefix fallback).
 - [ ] Configure default & authenticated roles so public API only exposes published content.
 - [ ] Seed or migrate initial content fixtures for QA using the existing Strapi admin.

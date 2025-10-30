@@ -4,15 +4,24 @@
 - [x] Add `STRAPI_BASE_URL` and `STRAPI_API_TOKEN` placeholders in `client/.env.local` and document requirements.
 - [x] Implement `client/src/lib/strapi/client.ts` exposing `fetchFromStrapi<T>()` with automatic draft/published param support.
 - [x] Create strongly typed mappers in `client/src/lib/strapi/mappers.ts` for:
-  - [x] `StoryDocument` → `Story` (includes `timelineEntries` with populated `records`).
+  - [x] `StoryDocument` → `Story` (includes `timelineEntries` from the dedicated collection with populated `records` and `position` ordering).
   - [x] `RecordDocument` → `Record`.
 - [x] Provide shared TypeScript interfaces in `client/src/lib/strapi/types.ts` mirroring Strapi schema.
 - [x] Expose helper `getStories()` and `getStoryBySlug(slug)` using REST `populate` queries:
   ```ts
-  await fetchFromStrapi<StrapiStoryResponse>(
-    '/api/stories',
-    { populate: { timelineEntries: { populate: ['records', 'records.mediaAsset'] }, heroMedia: true } }
-  );
+  await fetchFromStrapi<StrapiStoryResponse>('/api/stories', {
+    populate: {
+      timelineEntries: {
+        sort: ['position:asc', 'entryDate:asc', 'id:asc'],
+        populate: {
+          records: {
+            populate: ['mediaAsset', 'videoEmbed'],
+          },
+        },
+      },
+      heroMedia: true,
+    },
+  });
   ```
 - [x] Add `getRecordBySlug(slug)` query to support standalone record route (if needed).
 - [x] Ensure home story listing sorts newest-first via `publishedDate` with `publishedAt` fallback to handle missing editorial dates.
