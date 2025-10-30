@@ -4,11 +4,13 @@ import { StrapiRichText } from '@/components/StrapiRichText';
 
 interface StorySectionProps {
   id: string;
-  title: string;
+  title?: string | null;
   body: BlocksContent;
 }
 
 export function StorySection({ id, title, body }: StorySectionProps) {
+  const hasTitle = typeof title === 'string' && title.trim().length > 0;
+
   return (
     <motion.div
       id={id}
@@ -16,9 +18,9 @@ export function StorySection({ id, title, body }: StorySectionProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.5 }}
-      className="space-y-3 story-content"
+      className={`story-content${hasTitle ? ' space-y-3' : ''}`}
     >
-      <h2 className="theme-text-primary text-lg">{title}</h2>
+      {hasTitle && <h2 className="theme-text-primary text-lg">{title}</h2>}
       <StrapiRichText content={body} className="theme-text-secondary story-content text-sm" />
     </motion.div>
   );

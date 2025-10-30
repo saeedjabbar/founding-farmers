@@ -10,6 +10,7 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "entryDate": {
       "type": "string",
@@ -17,7 +18,7 @@
     },
     "headline": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "body": {
       "type": "blocks",
