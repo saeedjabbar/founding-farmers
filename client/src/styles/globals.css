@@ -184,6 +184,21 @@ html {
   font-size: var(--font-size);
 }
 
+.record-search-highlight {
+  color: inherit;
+  padding: 0 0.1em;
+  border-radius: 0.125rem;
+  margin: 0 0.05em;
+  box-shadow: 0 -0.35em 0 inset var(--theme-accent);
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.record-search-highlight.record-search-highlight-active {
+  background-color: var(--theme-accent);
+  color: var(--theme-bg);
+  box-shadow: none;
+}
+
 /* ============================================ */
 /* THEME: ARCHIVE LIGHT                         */
 /* ============================================ */

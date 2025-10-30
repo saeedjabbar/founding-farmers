@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import clsx from 'clsx';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import Mark from 'mark.js';
+
 import { AudioPlayer } from '@/components/AudioPlayer';
 import { PdfViewer } from '@/components/PdfViewer';
 import { SiteFooter } from '@/components/SiteFooter';
@@ -11,8 +13,9 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { StrapiRichText } from '@/components/StrapiRichText';
 import VideoEmbedPlayer from '@/components/VideoEmbedPlayer';
 import { VideoPlayer } from '@/components/VideoPlayer';
-import { blocksToPlainText, hasBlocksContent } from '@/lib/strapi/richText';
+import { hasBlocksContent } from '@/lib/strapi/richText';
 import type { SourceRecord, StorySummary } from '@/lib/strapi/types';
+import { createSearchRegex, normalizeSearchTerm } from '@/lib/search';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -23,6 +26,8 @@ interface RecordDetailPageProps {
 }
 
 type MarkElement = HTMLElementTagNameMap['mark'];
+const HIGHLIGHT_CLASS = 'record-search-highlight';
+const ACTIVE_HIGHLIGHT_CLASS = 'record-search-highlight-active';
 
 function formatDate(value?: string | null): string | null {
   if (!value) return null;
@@ -159,47 +164,101 @@ function renderMedia(record: SourceRecord) {
 export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPageProps) {
   const { theme, isDark, toggleTheme } = useEditorialTheme();
   const [searchTerm, setSearchTerm] = useState('');
-  const normalizedSearchTerm = searchTerm.trim();
-  const matchRefs = useRef<Array<MarkElement | null>>([]);
-  matchRefs.current = [];
-  const searchableContentText = useMemo(
-    () => blocksToPlainText(record.searchableContent),
-    [record.searchableContent]
+  const normalizedSearchTerm = useMemo(() => normalizeSearchTerm(searchTerm), [searchTerm]);
+  const hasSearchQuery = normalizedSearchTerm.length > 0;
+  const searchRegex = useMemo(
+    () => (hasSearchQuery ? createSearchRegex(normalizedSearchTerm) : null),
+    [hasSearchQuery, normalizedSearchTerm]
   );
-  const matchCount = useMemo(() => {
-    if (!normalizedSearchTerm) return null;
-    if (!searchableContentText) return 0;
-    const escaped = normalizedSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(escaped, 'gi');
-    return searchableContentText.match(regex)?.length ?? 0;
-  }, [normalizedSearchTerm, searchableContentText]);
-  const matchTotal = typeof matchCount === 'number' ? matchCount : 0;
+  const matchRefs = useRef<MarkElement[]>([]);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const markInstanceRef = useRef<Mark | null>(null);
+  const [matchTotal, setMatchTotal] = useState(0);
   const hasMatches = matchTotal > 0;
   const [activeMatchIndex, setActiveMatchIndex] = useState(0);
 
-  useEffect(() => {
-    if (!normalizedSearchTerm) {
-      setActiveMatchIndex(0);
-      return;
-    }
-
-    setActiveMatchIndex(0);
-  }, [normalizedSearchTerm, matchTotal]);
-
-  useEffect(() => {
-    if (!hasMatches) {
-      return;
-    }
-
-    const target = matchRefs.current[activeMatchIndex];
-    if (target) {
-      target.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' });
-    }
-  }, [activeMatchIndex, hasMatches, normalizedSearchTerm]);
-
-  const handleHighlightMatch = useCallback((index: number, element: MarkElement | null) => {
-    matchRefs.current[index] = element;
+  const updateActiveHighlight = useCallback((index: number | null) => {
+    matchRefs.current.forEach((element, matchIndex) => {
+      if (!element) return;
+      const isActive = index !== null && matchIndex === index;
+      if (isActive) {
+        element.setAttribute('data-active', 'true');
+        element.classList.add(ACTIVE_HIGHLIGHT_CLASS);
+      } else {
+        element.removeAttribute('data-active');
+        element.classList.remove(ACTIVE_HIGHLIGHT_CLASS);
+      }
+    });
   }, []);
+
+  const scrollToMatch = useCallback((index: number) => {
+    const target = matchRefs.current[index];
+    if (!target) {
+      return false;
+    }
+
+    target.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' });
+    return true;
+  }, []);
+
+  useEffect(() => {
+    if (!contentRef.current) {
+      return;
+    }
+
+    markInstanceRef.current = new Mark(contentRef.current);
+
+    return () => {
+      markInstanceRef.current?.unmark();
+      markInstanceRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const container = contentRef.current;
+    const markInstance = markInstanceRef.current;
+
+    if (!container || !markInstance) {
+      return;
+    }
+
+    markInstance.unmark({
+      done: () => {
+        matchRefs.current = [];
+
+        if (!hasSearchQuery || !searchRegex) {
+          setMatchTotal(0);
+          setActiveMatchIndex(0);
+          updateActiveHighlight(null);
+          return;
+        }
+
+        markInstance.markRegExp(searchRegex, {
+          acrossElements: true,
+          className: HIGHLIGHT_CLASS,
+          separateWordSearch: false,
+          each: (element) => {
+            const markElement = element as MarkElement;
+            const index = matchRefs.current.length;
+            markElement.setAttribute('data-match-index', index.toString());
+            matchRefs.current.push(markElement);
+          },
+          done: () => {
+            const total = matchRefs.current.length;
+            setMatchTotal(total);
+            const nextIndex = total > 0 ? 0 : 0;
+            setActiveMatchIndex(nextIndex);
+            updateActiveHighlight(total > 0 ? 0 : null);
+            if (total > 0) {
+              requestAnimationFrame(() => {
+                scrollToMatch(0);
+              });
+            }
+          },
+        });
+      },
+    });
+  }, [hasSearchQuery, searchRegex, record.searchableContent, scrollToMatch, updateActiveHighlight]);
 
   const goToNextMatch = useCallback(() => {
     if (!hasMatches || matchTotal <= 1) return;
@@ -210,6 +269,24 @@ export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPagePr
     if (!hasMatches || matchTotal <= 1) return;
     setActiveMatchIndex((current) => (current - 1 + matchTotal) % matchTotal);
   }, [hasMatches, matchTotal]);
+
+  useEffect(() => {
+    if (!hasMatches) {
+      updateActiveHighlight(null);
+      return;
+    }
+
+    updateActiveHighlight(activeMatchIndex);
+    if (!scrollToMatch(activeMatchIndex)) {
+      const animationFrame = requestAnimationFrame(() => {
+        scrollToMatch(activeMatchIndex);
+      });
+
+      return () => cancelAnimationFrame(animationFrame);
+    }
+
+    return undefined;
+  }, [activeMatchIndex, hasMatches, scrollToMatch, updateActiveHighlight]);
 
   const metadata = [
     { label: 'Date of Publication', value: formatDate(record.publishDate) },
@@ -332,7 +409,7 @@ export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPagePr
                         className="w-full rounded-md border border-[var(--theme-border)] bg-[var(--theme-bg)] px-3 py-2 text-sm theme-text-primary placeholder:theme-text-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--theme-bg)]"
                         aria-label="Search within searchable content"
                       />
-                      {normalizedSearchTerm && (
+                      {hasSearchQuery && (
                         <div className="flex items-center gap-2">
                           <span className="text-[11px] uppercase tracking-[0.3em] theme-text-muted">
                             {hasMatches ? `${activeMatchIndex + 1}/${matchTotal}` : '0/0'}
@@ -370,15 +447,15 @@ export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPagePr
                     </div>
                   </div>
 
-                  <div className="rounded-lg border border-[var(--theme-border)] bg-[var(--theme-bg)] px-4 py-4 text-sm theme-text-secondary lg:max-h-[560px] lg:overflow-y-auto">
+                  <div
+                    ref={contentRef}
+                    className="rounded-lg border border-[var(--theme-border)] bg-[var(--theme-bg)] px-4 py-4 text-sm theme-text-secondary lg:max-h-[560px] lg:overflow-y-auto"
+                  >
                     <StrapiRichText
                       content={record.searchableContent}
                       className="space-y-3 font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
                       paragraphClassName="font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
                       listClassName="font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
-                      highlightTerm={normalizedSearchTerm || undefined}
-                      activeHighlightIndex={hasMatches ? activeMatchIndex : undefined}
-                      onHighlightMatch={handleHighlightMatch}
                     />
                   </div>
                 </div>

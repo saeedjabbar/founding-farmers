@@ -5,6 +5,7 @@
 - Next.js 16 now delivers route props as `Promise` objects; server components should `await params`/`searchParams` before use.
 - Tailwind CSS (configured in `tailwind.config.js`) provides utility-first styling; prefer using existing custom properties (`theme-*` classes) instead of hard-coded colors.
 - Motion/animation helpers come from `motion` and UI primitives from Radix. Icons use `lucide-react`. PDF previews rely on `react-pdf`.
+- Record-detail search highlighting uses `mark.js`; keep the dependency updated alongside the DOM highlight classes defined in `src/styles/globals.css`.
 
 ## Project Structure
 - `src/app/` – route segments (`page.tsx`), layout, and Next metadata (including `icon.png`).
@@ -16,7 +17,7 @@
   - `TimelineMarker`, `StorySection`, `SourceCard` – story timeline UI.
   - `StoryTimelinePage` also renders an optional summary card fed by Strapi.
 - `RecordDetailPage` presents source record summaries with metadata + media viewer and surfaces related story cards, driven by Strapi `records` data (rich-text `description`, media asset, source URL).
-- Record detail pages also render an optional **Searchable Content** sidebar. Strapi exposes this as a Blocks (`searchableContent`) field; populate it with rich text to show the monospaced transcript-style panel beside the media viewer. The sidebar includes a client-side search input with match highlighting and next/previous navigation.
+- Record detail pages also render an optional **Searchable Content** sidebar. Strapi exposes this as a Blocks (`searchableContent`) field; populate it with rich text to show the monospaced transcript-style panel beside the media viewer. The sidebar includes a client-side search input that highlights matches with `mark.js` and uses the `record-search-highlight(_active)` classes for consistent styling plus next/previous navigation.
   - `StoryListPage` sorts stories descending by publish timestamp using `publishedDate` with a `publishedAt` fallback and paginates results in 10-item pages with previous/next controls driven by the `page` search param.
   - `RecordListPage` lists records with metadata-only cards (no thumbnails), sorted by publish timestamp, and paginated in 10-item pages keyed off the `page` search param.
   - `PdfViewer` handles inline PDFs. Source cards load a single page with in-card navigation; record detail pages request the full document render.
@@ -26,6 +27,7 @@
   - Strapi queries now include `getStoriesFeaturingRecord(recordSlug)` for "Featured In" summaries, `getStandardsPage()` for the `/standards` single page, and `getPrivacyPolicyPage()` for `/privacy-policy`, all of which populate the `shared.seo` component.
   - `src/lib/seo.ts` provides `getSiteBaseUrl()`, `createPageMetadata()`, and `serializeStructuredData()` helpers. Use these from route files to map Strapi SEO fields into Next.js metadata and JSON-LD `<script>` tags.
   - `src/lib/strapi/client.ts` exposes `resolveStrapiBaseUrl()` for sitemap/XSL proxies in addition to `strapiFetch`.
+  - `src/lib/search.ts` centralizes search-term normalization and regex helpers shared by the record searchable-content panel and future in-app search surfaces.
 - `src/styles/` and `src/app/globals.css` – global layers, tokens, and theme class definitions.
 - Documentation and supporting copy live under `src/guidelines/`.
 
