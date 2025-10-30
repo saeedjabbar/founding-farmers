@@ -11,6 +11,7 @@
 - `src/app/` – route segments (`page.tsx`), layout, and Next metadata (including `icon.png`).
 - `src/app/sitemap.xml/route.ts` proxies the Strapi-generated sitemap XML so crawlers hit the Next.js domain.
 - `src/app/xsl/[...path]/route.ts` exposes the Webtools XSL, JS, and CSS helpers used by the sitemap index styling.
+- `src/app/api/submit/route.ts` relays submit-form entries to Mailgun; it requires Mailgun env vars to be populated server-side before the route can send messages.
 - `src/components/` – reusable components; primitives live in `components/ui/`. Notable shared pieces:
   - `SiteHeader.tsx` – renders masthead/nav plus the light/dark toggle.
   - `SiteFooter.tsx` – global footer with the privacy-policy link, ©2025 credit, and outbound X profile badge.
@@ -46,6 +47,11 @@
 - Configure analytics with `NEXT_PUBLIC_POSTHOG_KEY` (plus optional `NEXT_PUBLIC_POSTHOG_HOST`). Debug logging toggles via `NEXT_PUBLIC_POSTHOG_DEBUG=true`.
 - The provider disables the PostHog toolbar by default in non-production builds; override with `NEXT_PUBLIC_POSTHOG_DISABLE_TOOLBAR=false` if needed.
 - Session recording is opt-out locally; set `NEXT_PUBLIC_POSTHOG_SESSION_RECORDING=true` to test FullSession Replay in development.
+
+## Email & Contact Form
+- `/submit` posts to `/api/submit`, which constructs Mailgun text + HTML payloads and returns JSON success/error states to the client.
+- Server env must include `MAILGUN_API_KEY`, `MAILGUN_DOMAIN`, `MAILGUN_TO_EMAIL`, and optionally `MAILGUN_FROM_EMAIL`/`MAILGUN_BASE_URL` (defaults to `https://api.mailgun.net`).
+- Mailgun sandbox domains only deliver mail to verified recipients; add approved addresses when testing.
 
 ## Style & Authoring Conventions
 - TypeScript + React function components only; default to 2-space indentation.

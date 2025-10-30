@@ -25,6 +25,7 @@
 
 ## Routing & Pages
 - [ ] Update `client/src/app/layout.tsx` to load shared data if global navigation requires story summaries.
+- [x] Wire `/submit/page.tsx` form submission to `/api/submit`, surfacing loading/feedback states from the Mailgun response.
 - [x] Implement `/stories/page.tsx` listing story previews (title, blurb, published date, author, hero image).
   - [x] Paginate listings in 10-story pages using the `page` search param with previous/next controls.
 - [x] Implement `/stories/[slug]/page.tsx` rendering the timeline using `TimelineMarker`, `StorySection`, and `SourceCard`.
@@ -36,6 +37,9 @@
 - [x] When adding new dynamic routes in Next.js 16, remember `params`/`searchParams` arrive as `Promise` values and must be awaited before use (adjusted on `/stories/[slug]`).
 - [x] Provide per-route `generateMetadata` implementations that call `createPageMetadata()` using Strapi SEO data and render optional JSON-LD from `serializeStructuredData()`.
 - [x] Add `/sitemap.xml` route to proxy the Webtools sitemap output from Strapi and `/xsl/[...path]` to expose the associated XSL/CSS/JS assets for crawler styling.
+
+## Email Delivery
+- [x] Add `/api/submit/route.ts` that posts Mailgun-formatted payloads using `MAILGUN_API_KEY`, `MAILGUN_DOMAIN`, `MAILGUN_TO_EMAIL`, optional `MAILGUN_FROM_EMAIL`, and configurable `MAILGUN_BASE_URL` (defaults to Mailgun API).
 
 ## Analytics & Telemetry
 - [x] Add PostHog support via `src/components/providers/PosthogProvider.tsx` and wrap the root layout to capture client-side navigation events.
