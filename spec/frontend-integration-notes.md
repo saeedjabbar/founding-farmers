@@ -16,6 +16,7 @@
   ```
 - [x] Add `getRecordBySlug(slug)` query to support standalone record route (if needed).
 - [x] Ensure home story listing sorts newest-first via `publishedDate` with `publishedAt` fallback to handle missing editorial dates.
+- [x] Normalize Strapi date rendering via `formatStrapiDate` (see `src/lib/dates.ts`) so date-only fields from the CMS don’t shift by viewer timezone.
 - [x] Add `getStoriesFeaturingRecord(recordSlug)` to provide lightweight story summaries for the record detail "Featured In" cards.
 - [x] Add `getStandardsPage()` query to resolve the editorial standards single-type (returns title + Blocks body, no summary).
 - [x] Add `getPrivacyPolicyPage()` query to resolve the privacy policy single-type.

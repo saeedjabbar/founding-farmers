@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
+import { formatStrapiDate } from '@/lib/dates';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
 import type { Story } from '@/lib/strapi/types';
@@ -15,19 +16,7 @@ interface StoryListPageProps {
   basePath: string;
 }
 
-function formatDisplayDate(date?: string | null): string | null {
-  if (!date) return null;
-  const parsed = new Date(date);
-  if (Number.isNaN(parsed.getTime())) {
-    return date;
-  }
-
-  return parsed.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
+const formatDisplayDate = (date?: string | null) => formatStrapiDate(date);
 
 function buildPageHref(basePath: string, page: number): string {
   if (page <= 1) {

@@ -29,6 +29,7 @@
   - `src/lib/seo.ts` provides `getSiteBaseUrl()`, `createPageMetadata()`, and `serializeStructuredData()` helpers. Use these from route files to map Strapi SEO fields into Next.js metadata and JSON-LD `<script>` tags.
   - `src/lib/strapi/client.ts` exposes `resolveStrapiBaseUrl()` for sitemap/XSL proxies in addition to `strapiFetch`.
   - `src/lib/search.ts` centralizes search-term normalization and regex helpers shared by the record searchable-content panel and future in-app search surfaces.
+  - `src/lib/dates.ts` exports `formatStrapiDate`/`parseStrapiDate`/`getIsoDate` so CMS-managed date-only fields render consistently regardless of viewer timezone. Use these instead of `new Date(...)` when formatting Strapi dates.
 - `src/styles/` and `src/app/globals.css` – global layers, tokens, and theme class definitions.
 - Documentation and supporting copy live under `src/guidelines/`.
 

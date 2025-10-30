@@ -42,6 +42,7 @@
 - [x] Implement ISR or revalidation strategy for published updates.
 - [x] Note for Next.js 16: dynamic route loaders must `await params`/`searchParams` because they are provided as `Promise` values (story route updated).
 - [x] Sort story collections by latest `publishedDate`/`publishedAt` so the home feed surfaces the newest investigations first.
+  - [x] Format CMS-provided dates through a shared helper that treats `YYYY-MM-DD` values as UTC to avoid off-by-one rendering in the frontend.
   - [x] Fetch related stories per record to populate record detail "Featured In" cards.
 
 ## 4. UI Composition & Theming

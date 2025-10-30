@@ -8,6 +8,7 @@ import { SourceCard } from '@/components/SourceCard';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { StrapiRichText } from '@/components/StrapiRichText';
+import { formatStrapiDate, getIsoDate } from '@/lib/dates';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
 import type { Story } from '@/lib/strapi/types';
@@ -17,32 +18,21 @@ interface StoryTimelinePageProps {
 }
 
 function formatTimelineDate(date: string): string {
-  const parsed = new Date(date);
-  if (Number.isNaN(parsed.getTime())) {
-    return date;
-  }
-
-  return parsed.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  return formatStrapiDate(date) ?? date;
 }
 
 function formatMetaDate(date?: string | null): { display: string; iso?: string } | null {
   if (!date) return null;
-  const parsed = new Date(date);
-  if (Number.isNaN(parsed.getTime())) {
-    return { display: date };
+  const display = formatStrapiDate(date);
+  if (!display) {
+    return null;
   }
 
+  const iso = getIsoDate(date);
+
   return {
-    display: parsed.toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }),
-    iso: parsed.toISOString().split('T')[0],
+    display,
+    iso: iso ?? undefined,
   };
 }
 

@@ -13,6 +13,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { StrapiRichText } from '@/components/StrapiRichText';
 import VideoEmbedPlayer from '@/components/VideoEmbedPlayer';
 import { VideoPlayer } from '@/components/VideoPlayer';
+import { formatStrapiDate } from '@/lib/dates';
 import { hasBlocksContent } from '@/lib/strapi/richText';
 import type { SourceRecord, StorySummary } from '@/lib/strapi/types';
 import { createSearchRegex, normalizeSearchTerm } from '@/lib/search';
@@ -29,18 +30,7 @@ type MarkElement = HTMLElementTagNameMap['mark'];
 const HIGHLIGHT_CLASS = 'record-search-highlight';
 const ACTIVE_HIGHLIGHT_CLASS = 'record-search-highlight-active';
 
-function formatDate(value?: string | null): string | null {
-  if (!value) return null;
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-  return parsed.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
+const formatDate = (value?: string | null) => formatStrapiDate(value);
 
 function getSourceLabel(url?: string | null): string | null {
   if (!url) return null;

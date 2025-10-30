@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
+import { formatStrapiDate } from '@/lib/dates';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
 import type { SourceRecord } from '@/lib/strapi/types';
@@ -14,19 +15,7 @@ interface RecordListPageProps {
   basePath: string;
 }
 
-function formatDisplayDate(value?: string | null): string | null {
-  if (!value) return null;
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-
-  return parsed.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
+const formatDisplayDate = (value?: string | null) => formatStrapiDate(value);
 
 function getSourceLabel(url?: string | null): string | null {
   if (!url) return null;
