@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
@@ -151,6 +152,7 @@ export function StoryListPage({
           </section>
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }

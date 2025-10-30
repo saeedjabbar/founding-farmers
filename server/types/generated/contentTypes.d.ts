@@ -511,6 +511,7 @@ export interface ApiRecordRecord extends Struct.CollectionTypeSchema {
     >;
     publishDate: Schema.Attribute.Date;
     publishedAt: Schema.Attribute.DateTime;
+    searchableContent: Schema.Attribute.Blocks;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     sitemap_exclude: Schema.Attribute.Boolean &
       Schema.Attribute.Private &

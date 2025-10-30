@@ -16,6 +16,12 @@
     }
   },
   "attributes": {
+    "url_alias": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::webtools.url-alias",
+      "configurable": false
+    },
     "title": {
       "type": "string",
       "required": true
@@ -26,6 +32,9 @@
       "required": true
     },
     "description": {
+      "type": "blocks"
+    },
+    "searchableContent": {
       "type": "blocks"
     },
     "mediaAsset": {

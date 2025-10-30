@@ -45,7 +45,8 @@
 
 ## Components & Rendering
 - [x] Ensure `SourceCard` accepts expanded data: `longDescription`, `mediaAsset`, `mediaType`, `sourceUrl` (long narrative content comes through as Blocks JSON, never Markdown).
-- [x] Centralize Blocks rendering via `StrapiRichText` so all rich text fields consume the JSON Blocks schema.
+- [x] Centralize Blocks rendering via `StrapiRichText` so all rich text fields consume the JSON Blocks schema. Record detail pages now pull an optional `searchableContent` Blocks field to render the right-hand transcript panel when content exists.
+- [x] Add `SiteFooter` to share footer content (privacy policy link, ©2025 Founding Farmers credit, and external X profile) across all public pages.
 - [x] Extend media rendering utilities to handle:
   - [x] Images via `<Image>` (timeline cards use `unoptimized` to avoid local Strapi proxy issues; update `next.config.mjs` if the CDN host changes).
   - [x] Audio via `<audio controls>`.

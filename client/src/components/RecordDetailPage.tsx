@@ -4,11 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { AudioPlayer } from '@/components/AudioPlayer';
 import { PdfViewer } from '@/components/PdfViewer';
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { StrapiRichText } from '@/components/StrapiRichText';
 import VideoEmbedPlayer from '@/components/VideoEmbedPlayer';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import type { SourceRecord, StorySummary } from '@/lib/strapi/types';
+import { hasBlocksContent } from '@/lib/strapi/richText';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
 
@@ -170,6 +172,9 @@ export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPagePr
             ? 'Document Preview'
             : 'Attached Media';
 
+  const mediaContent = renderMedia(record);
+  const hasSearchableContent = hasBlocksContent(record.searchableContent);
+
   return (
     <div className={`min-h-screen theme-bg ${themes[theme].className}`}>
       <SiteHeader isDark={isDark} onToggleTheme={toggleTheme} />
@@ -222,25 +227,51 @@ export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPagePr
           <div className="px-6 py-4 border-b border-[var(--theme-border)]">
             <h2 className="text-sm uppercase tracking-[0.2em] theme-text-muted">{mediaHeading}</h2>
           </div>
-          <div className="p-6 md:p-8">
-            {renderMedia(record) ?? (
-              <div className="text-sm theme-text-secondary">
-                Media preview unavailable.
-                {record.sourceUrl && (
-                  <>
-                    {' '}
-                    <a
-                      href={record.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="theme-accent hover:underline"
-                    >
-                      View the original asset
-                    </a>
-                    .
-                  </>
-                )}
-              </div>
+          <div
+            className={`flex flex-col${
+              hasSearchableContent ? ' lg:grid lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]' : ''
+            }`}
+          >
+            <div
+              className={`p-6 md:p-8${
+                hasSearchableContent ? ' border-b border-[var(--theme-border)] lg:border-b-0 lg:border-r' : ''
+              }`}
+            >
+              {mediaContent ?? (
+                <div className="text-sm theme-text-secondary">
+                  Media preview unavailable.
+                  {record.sourceUrl && (
+                    <>
+                      {' '}
+                      <a
+                        href={record.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="theme-accent hover:underline"
+                      >
+                        View the original asset
+                      </a>
+                      .
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {hasSearchableContent && (
+              <aside className="border-t border-[var(--theme-border)] lg:border-t-0 lg:border-l">
+                <div className="p-6 md:p-8 h-full flex flex-col gap-4">
+                  <h3 className="text-xs uppercase tracking-[0.26em] theme-text-muted">Searchable Content</h3>
+                  <div className="rounded-lg border border-[var(--theme-border)] bg-[var(--theme-bg)] px-4 py-4 text-sm theme-text-secondary lg:max-h-[560px] lg:overflow-y-auto">
+                    <StrapiRichText
+                      content={record.searchableContent}
+                      className="space-y-3 font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
+                      paragraphClassName="font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
+                      listClassName="font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
+                    />
+                  </div>
+                </div>
+              </aside>
             )}
           </div>
         </section>
@@ -314,6 +345,7 @@ export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPagePr
           </section>
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }

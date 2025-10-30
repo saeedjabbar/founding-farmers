@@ -1,5 +1,6 @@
 'use client';
 
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
@@ -73,6 +74,7 @@ export default function SubmitPage() {
           </form>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

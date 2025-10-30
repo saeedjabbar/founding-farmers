@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
@@ -177,6 +178,7 @@ export function RecordListPage({ records, currentPage, pageCount, basePath }: Re
           </section>
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }

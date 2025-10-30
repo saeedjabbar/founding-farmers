@@ -189,6 +189,7 @@ export function mapRecord(document: RecordDocument | null | undefined): SourceRe
   const descriptionText = blocksToPlainText(description);
   const videoEmbed = sanitizeVideoEmbed(document.videoEmbed);
   const seo = mapSeoComponent(document.SEO ?? document.seo);
+  const searchableContent = normalizeBlocks(document.searchableContent);
 
   return {
     id: String(document.documentId ?? document.id),
@@ -196,6 +197,7 @@ export function mapRecord(document: RecordDocument | null | undefined): SourceRe
     slug: document.slug,
     description: description ?? undefined,
     descriptionText: descriptionText.length > 0 ? descriptionText : undefined,
+    searchableContent: searchableContent ?? undefined,
     mediaType: document.mediaType ?? undefined,
     mediaAsset,
     mediaSource: document.mediaSource ?? (videoEmbed ? 'externalEmbed' : 'upload'),

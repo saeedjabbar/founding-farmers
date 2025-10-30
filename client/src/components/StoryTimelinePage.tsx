@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { TimelineMarker } from '@/components/TimelineMarker';
 import { StorySection } from '@/components/StorySection';
 import { SourceCard } from '@/components/SourceCard';
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { StrapiRichText } from '@/components/StrapiRichText';
 import { themes } from '@/lib/themes';
@@ -230,6 +231,7 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
           </section>
         )}
       </article>
+      <SiteFooter />
     </div>
   );
 }

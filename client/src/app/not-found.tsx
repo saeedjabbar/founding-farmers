@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
@@ -48,6 +49,7 @@ export default function NotFound() {
           </div>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

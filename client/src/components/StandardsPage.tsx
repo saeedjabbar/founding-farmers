@@ -1,5 +1,6 @@
 'use client';
 
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { StrapiRichText } from '@/components/StrapiRichText';
 import { themes } from '@/lib/themes';
@@ -40,6 +41,7 @@ export function StandardsPage({ page }: StandardsPageProps) {
           )}
         </article>
       </main>
+      <SiteFooter />
     </div>
   );
 }

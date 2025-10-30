@@ -12,9 +12,11 @@
 - `src/app/xsl/[...path]/route.ts` exposes the Webtools XSL, JS, and CSS helpers used by the sitemap index styling.
 - `src/components/` – reusable components; primitives live in `components/ui/`. Notable shared pieces:
   - `SiteHeader.tsx` – renders masthead/nav plus the light/dark toggle.
+  - `SiteFooter.tsx` – global footer with the privacy-policy link, ©2025 credit, and outbound X profile badge.
   - `TimelineMarker`, `StorySection`, `SourceCard` – story timeline UI.
   - `StoryTimelinePage` also renders an optional summary card fed by Strapi.
-  - `RecordDetailPage` presents source record summaries with metadata + media viewer and surfaces related story cards, driven by Strapi `records` data (rich-text `description`, media asset, source URL).
+- `RecordDetailPage` presents source record summaries with metadata + media viewer and surfaces related story cards, driven by Strapi `records` data (rich-text `description`, media asset, source URL).
+- Record detail pages also render an optional **Searchable Content** sidebar. Strapi exposes this as a Blocks (`searchableContent`) field; populate it with rich text to show the monospaced transcript-style panel beside the media viewer.
   - `StoryListPage` sorts stories descending by publish timestamp using `publishedDate` with a `publishedAt` fallback and paginates results in 10-item pages with previous/next controls driven by the `page` search param.
   - `RecordListPage` lists records with metadata-only cards (no thumbnails), sorted by publish timestamp, and paginated in 10-item pages keyed off the `page` search param.
   - `PdfViewer` handles inline PDFs. Source cards load a single page with in-card navigation; record detail pages request the full document render.
@@ -51,7 +53,7 @@
 - Treat Strapi content as the single source of truth: story authors display via the hidden `authorName` field (automatically populated by lifecycle hooks) and the optional summary card is controlled by `summaryEnabled` plus `summaryCard` (heading, rich paragraph, newline-separated bullets).
 - Editorial standards live in the Strapi single-type `standard` (title + Blocks body). The server bootstrap seeds default content if it's empty.
 - Privacy policy copy lives in the Strapi single-type `privacy-policy` (title + Blocks body) and is auto-seeded during bootstrap if missing.
-- All Strapi rich narrative fields must use the Blocks editor (JSON) going forward; do not introduce Markdown-based rich text.
+- All Strapi rich narrative fields must use the Blocks editor (JSON) going forward; do not introduce Markdown-based rich text. Records now include a `searchableContent` Blocks field to capture optional transcript-style content for the sidebar.
 - Strapi media lives under `http(s)://<host>:1337/uploads/*`. Inline previews currently pass `unoptimized` to `next/image`; update `next.config.mjs` if the Strapi URL changes in higher environments.
 - Strapi SEO plugin (`@strapi/plugin-seo`) seeds a `shared.seo` component with meta fields. All content-types now expose a `seo` component (lowercase) on the REST API. Queries must populate `seo` and pass the result through `createPageMetadata()` so `<head>` tags reflect Strapi data.
 - Strapi Webtools (`strapi-plugin-webtools`) is enabled; bootstrap seeds URL alias patterns for stories, records, standards, and privacy policy. Generated aliases live in `plugin::webtools.url-alias`.

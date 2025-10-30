@@ -101,6 +101,7 @@ export interface RecordDocument {
   title: string;
   slug: string;
   description?: BlocksContent | null;
+  searchableContent?: BlocksContent | null;
   mediaAsset?: StrapiMedia | null;
   mediaType?: MediaType | null;
   mediaSource?: MediaSource | null;
@@ -198,6 +199,7 @@ export interface SourceRecord {
   slug: string;
   description?: BlocksContent | null;
   descriptionText?: string | null;
+  searchableContent?: BlocksContent | null;
   mediaType?: MediaType | null;
   mediaAsset?: StrapiMedia | null;
   mediaSource?: MediaSource;
