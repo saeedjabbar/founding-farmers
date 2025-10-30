@@ -236,7 +236,6 @@ export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPagePr
         markInstance.markRegExp(searchRegex, {
           acrossElements: true,
           className: HIGHLIGHT_CLASS,
-          separateWordSearch: false,
           each: (element) => {
             const markElement = element as MarkElement;
             const index = matchRefs.current.length;
