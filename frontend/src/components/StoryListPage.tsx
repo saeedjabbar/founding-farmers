@@ -92,7 +92,7 @@ export function StoryListPage({
                               <time dateTime={story.publishedDate ?? story.publishedAt ?? undefined}>{publishedOn}</time>
                             )}
                           </div>
-                          <h3 className="text-lg md:text-xl uppercase tracking-[0.08em] theme-text-primary leading-snug">
+                          <h3 className="text-lg md:text-xl uppercase tracking-[0.08em] theme-text-primary leading-snug max-w-3xl">
                             {story.title}
                           </h3>
                           <p className="text-sm md:text-base theme-text-secondary leading-relaxed max-w-3xl">
