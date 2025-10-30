@@ -17,10 +17,6 @@ interface StoryTimelinePageProps {
   story: Story;
 }
 
-function formatTimelineDate(date: string): string {
-  return formatStrapiDate(date) ?? date;
-}
-
 function formatMetaDate(date?: string | null): { display: string; iso?: string } | null {
   if (!date) return null;
   const display = formatStrapiDate(date);
@@ -43,7 +39,7 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
       story.timelineEntries.map((entry, index) => ({
         ...entry,
         anchorId: `timeline-entry-${index}-${entry.id}`,
-        displayDate: formatTimelineDate(entry.entryDate),
+        displayDate: entry.entryDate,
       })),
     [story.timelineEntries]
   );

@@ -18,7 +18,7 @@
   "attributes": {
     "title": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "slug": {
       "type": "uid",
@@ -81,6 +81,12 @@
       "type": "component",
       "component": "shared.seo",
       "repeatable": false
+    },
+    "url_alias": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::webtools.url-alias",
+      "configurable": false
     }
   }
 }

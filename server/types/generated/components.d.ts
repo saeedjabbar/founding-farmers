@@ -88,7 +88,7 @@ export interface TimelineTimelineEntry extends Struct.ComponentSchema {
   };
   attributes: {
     body: Schema.Attribute.Blocks & Schema.Attribute.Required;
-    entryDate: Schema.Attribute.Date & Schema.Attribute.Required;
+    entryDate: Schema.Attribute.String & Schema.Attribute.Required;
     headline: Schema.Attribute.String & Schema.Attribute.Required;
     records: Schema.Attribute.Relation<'manyToMany', 'api::record.record'>;
   };

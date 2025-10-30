@@ -254,8 +254,7 @@ function mapSummary(document: StoryDocument): SummaryCard | null {
 export function mapStory(document: StoryDocument): Story {
   const heroMedia = mapMedia(document.heroMedia);
 
-  const timelineEntries =
-    document.timelineEntries?.map(mapTimelineEntry).sort((a, b) => a.entryDate.localeCompare(b.entryDate)) ?? [];
+  const timelineEntries = document.timelineEntries?.map(mapTimelineEntry) ?? [];
   const seo = mapSeoComponent(document.SEO ?? document.seo);
 
   return {

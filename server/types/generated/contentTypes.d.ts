@@ -635,7 +635,7 @@ export interface ApiStoryStory extends Struct.CollectionTypeSchema {
         },
         number
       >;
-    title: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
