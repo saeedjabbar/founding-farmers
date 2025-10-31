@@ -118,7 +118,24 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
               </div>
             )}
 
-            <p className="theme-text-secondary leading-relaxed max-w-3xl">{story.blurb}</p>
+            {(story.snippet || story.blurb) && (
+              <div className="max-w-3xl space-y-6">
+                {story.snippet && (
+                  <StrapiRichText
+                    content={story.snippet}
+                    className="theme-text-secondary text-sm md:text-base"
+                    paragraphClassName="leading-relaxed"
+                  />
+                )}
+                {story.blurb && (
+                  <StrapiRichText
+                    content={story.blurb}
+                    className="theme-text-secondary text-sm md:text-base"
+                    paragraphClassName="leading-relaxed"
+                  />
+                )}
+              </div>
+            )}
 
             <div className="flex flex-col gap-2 text-sm theme-text-muted md:flex-row md:items-center md:gap-6">
               {hasAuthor && (

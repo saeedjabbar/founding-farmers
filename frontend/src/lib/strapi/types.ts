@@ -129,7 +129,10 @@ export interface StoryDocument {
   documentId?: string;
   title: string;
   slug: string;
-  blurb: string;
+  storySnippet?: BlocksContent | string | null;
+  storyBlurb?: BlocksContent | string | null;
+  snippet?: BlocksContent | string | null;
+  blurb?: string | null;
   authorName?: string | null;
   location?: string | null;
   publishedDate?: string | null;
@@ -166,7 +169,10 @@ export interface Story {
   id: string;
   title: string;
   slug: string;
-  blurb: string;
+  snippet?: BlocksContent | null;
+  blurb?: BlocksContent | null;
+  snippetText?: string | null;
+  blurbText?: string | null;
   authorName: string;
   location: string;
   publishedDate?: string | null;

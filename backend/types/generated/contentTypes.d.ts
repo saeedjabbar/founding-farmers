@@ -605,7 +605,15 @@ export interface ApiStoryStory extends Struct.CollectionTypeSchema {
           visible: false;
         };
       }>;
-    blurb: Schema.Attribute.Text & Schema.Attribute.Required;
+    blurb: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        'content-manager': {
+          visible: false;
+        };
+        'content-type-builder': {
+          visible: false;
+        };
+      }>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -625,6 +633,8 @@ export interface ApiStoryStory extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private &
       Schema.Attribute.DefaultTo<false>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
+    storyBlurb: Schema.Attribute.Blocks;
+    storySnippet: Schema.Attribute.Blocks & Schema.Attribute.Required;
     summaryCard: Schema.Attribute.Component<'story.summary-card', false>;
     summaryEnabled: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;

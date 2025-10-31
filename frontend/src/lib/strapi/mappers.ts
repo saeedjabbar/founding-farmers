@@ -180,6 +180,37 @@ function normalizeBlocks(content?: BlocksContent | null): BlocksContent | undefi
   return hasBlocksContent(normalized) ? normalized : undefined;
 }
 
+function normalizeRichTextInput(content?: BlocksContent | string | null): BlocksContent | undefined {
+  if (!content) {
+    return undefined;
+  }
+
+  if (Array.isArray(content)) {
+    return normalizeBlocks(content);
+  }
+
+  if (typeof content === 'string') {
+    const trimmed = content.trim();
+    if (trimmed.length === 0) {
+      return undefined;
+    }
+
+    return [
+      {
+        type: 'paragraph',
+        children: [
+          {
+            type: 'text',
+            text: trimmed,
+          },
+        ],
+      },
+    ] as unknown as BlocksContent;
+  }
+
+  return undefined;
+}
+
 export function mapRecord(document: RecordDocument | null | undefined): SourceRecord | null {
   if (!document) return null;
 
@@ -259,6 +290,13 @@ function mapSummary(document: StoryDocument): SummaryCard | null {
 
 export function mapStory(document: StoryDocument): Story {
   const heroMedia = mapMedia(document.heroMedia);
+  const snippetBlocks = normalizeRichTextInput(document.storySnippet ?? document.snippet ?? document.blurb);
+  const blurbBlocks = normalizeRichTextInput(document.storyBlurb);
+  const snippetTextRaw = blocksToPlainText(snippetBlocks);
+  const blurbTextRaw = blocksToPlainText(blurbBlocks);
+  const legacyBlurb = typeof document.blurb === 'string' ? document.blurb.trim() : '';
+  const snippetText = snippetTextRaw.length > 0 ? snippetTextRaw : legacyBlurb;
+  const blurbText = blurbTextRaw.length > 0 ? blurbTextRaw : snippetText;
 
   const timelineEntries =
     document.timelineEntries
@@ -284,7 +322,10 @@ export function mapStory(document: StoryDocument): Story {
     id: String(document.documentId ?? document.id),
     title: document.title,
     slug: document.slug,
-    blurb: document.blurb,
+    snippet: snippetBlocks ?? undefined,
+    blurb: blurbBlocks ?? undefined,
+    snippetText: snippetText.length > 0 ? snippetText : undefined,
+    blurbText: blurbText.length > 0 ? blurbText : undefined,
     authorName: document.authorName ?? 'Unknown',
     location: document.location ?? 'Marlborough',
     publishedDate: document.publishedDate ?? undefined,

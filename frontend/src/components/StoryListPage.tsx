@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
+import { StrapiRichText } from '@/components/StrapiRichText';
 import { formatStrapiDate } from '@/lib/dates';
 import { themes } from '@/lib/themes';
 import { useEditorialTheme } from '@/lib/useEditorialTheme';
@@ -63,6 +64,7 @@ export function StoryListPage({
               {stories.map((story) => {
                 const publishedOn = formatDisplayDate(story.publishedDate ?? story.publishedAt);
                 const hero = story.heroMedia?.url;
+                const snippetContent = story.snippet ?? story.blurb;
 
                 return (
                   <article key={story.id} className="py-6 md:py-8 border-b border-dashed border-[var(--theme-border)] last:border-none">
@@ -95,9 +97,13 @@ export function StoryListPage({
                           <h3 className="text-lg md:text-xl uppercase tracking-[0.08em] theme-text-primary leading-snug max-w-3xl">
                             {story.title}
                           </h3>
-                          <p className="text-sm md:text-base theme-text-secondary leading-relaxed max-w-3xl">
-                            {story.blurb}
-                          </p>
+                          {snippetContent && (
+                            <StrapiRichText
+                              content={snippetContent}
+                              className="text-sm md:text-base theme-text-secondary max-w-3xl"
+                              paragraphClassName="leading-relaxed"
+                            />
+                          )}
                           {story.authorName && story.authorName !== 'Unknown' && (
                             <p className="text-xs theme-text-muted">
                               By <span className="theme-text-primary">{story.authorName}</span>

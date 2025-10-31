@@ -95,6 +95,16 @@ async function fetchDisplayNameById(id: number | string): Promise<string | undef
 }
 
 export default {
+  async beforeCreate(event: StoryLifecycleEvent) {
+    synchronizeLegacyBlurb(event.params);
+    const actingUser = resolveActingUser(event);
+    await updateAuthorName(event.params, actingUser);
+  },
+  async beforeUpdate(event: StoryLifecycleEvent) {
+    synchronizeLegacyBlurb(event.params);
+    const actingUser = resolveActingUser(event);
+    await updateAuthorName(event.params, actingUser);
+  },
   async afterCreate(event: StoryLifecycleEvent) {
     await ensureAuthorNameAfter(event);
   },
@@ -102,6 +112,58 @@ export default {
     await ensureAuthorNameAfter(event);
   },
 };
+
+function synchronizeLegacyBlurb(params: { data?: Record<string, any> }) {
+  if (!params.data) return;
+
+  const snippetText = extractPlainText(params.data.storySnippet);
+  const blurbText = extractPlainText(params.data.storyBlurb);
+  const legacyTextCandidate = typeof params.data.blurb === 'string' ? params.data.blurb : undefined;
+
+  const resolvedText = (blurbText ?? snippetText ?? legacyTextCandidate)?.trim();
+  if (resolvedText && resolvedText.length > 0) {
+    params.data.blurb = resolvedText;
+  }
+}
+
+function extractPlainText(value: unknown): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }
+
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+
+  const parts: string[] = [];
+  const nodes = value as Array<Record<string, any>>;
+
+  const walk = (children: Array<Record<string, any>> | undefined) => {
+    if (!children) return;
+    for (const child of children) {
+      if (!child) continue;
+      if (typeof child.text === 'string' && child.text.trim().length > 0) {
+        parts.push(child.text.trim());
+      }
+      if (Array.isArray(child.children)) {
+        walk(child.children as Array<Record<string, any>>);
+      }
+    }
+  };
+
+  walk(nodes);
+
+  if (!parts.length) {
+    return undefined;
+  }
+
+  return parts.join(' ').replace(/\s+/g, ' ').trim();
+}
 
 async function ensureAuthorNameAfter(event: StoryLifecycleEvent) {
   const { result } = event;

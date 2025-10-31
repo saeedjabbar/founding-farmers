@@ -31,9 +31,23 @@
       "targetField": "title",
       "required": true
     },
+    "storySnippet": {
+      "type": "blocks",
+      "required": true
+    },
+    "storyBlurb": {
+      "type": "blocks"
+    },
     "blurb": {
       "type": "text",
-      "required": true
+      "pluginOptions": {
+        "content-manager": {
+          "visible": false
+        },
+        "content-type-builder": {
+          "visible": false
+        }
+      }
     },
     "authorName": {
       "type": "string",

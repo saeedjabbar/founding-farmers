@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: StoryPageProps): Promise<Meta
 
   return createPageMetadata(story.seo, {
     title: story.title,
-    description: story.blurb,
+    description: story.blurbText ?? story.snippetText ?? undefined,
     path: `/stories/${slug}`,
     image: story.heroMedia
       ? {
