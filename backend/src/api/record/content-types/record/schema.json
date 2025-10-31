@@ -68,7 +68,8 @@
         "video",
         "audio",
         "pdf",
-        "document"
+        "document",
+        "link"
       ]
     },
     "videoEmbed": {

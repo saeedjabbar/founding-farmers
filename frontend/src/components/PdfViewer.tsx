@@ -20,9 +20,17 @@ export interface PdfViewerProps {
   title?: string;
   className?: string;
   renderAllPages?: boolean;
+  showPageSummary?: boolean;
 }
 
-export function PdfViewer({ fileUrl, downloadUrl, title, className, renderAllPages = false }: PdfViewerProps) {
+export function PdfViewer({
+  fileUrl,
+  downloadUrl,
+  title,
+  className,
+  renderAllPages = false,
+  showPageSummary = true,
+}: PdfViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState<number>();
   const [numPages, setNumPages] = useState<number>(0);
@@ -99,32 +107,32 @@ export function PdfViewer({ fileUrl, downloadUrl, title, className, renderAllPag
           >
             {renderAllPages
               ? Array.from({ length: numPages }, (_, index) => (
-                  <Page
-                    key={`page_${index + 1}`}
-                    pageNumber={index + 1}
-                    width={containerWidth ? Math.min(containerWidth - 32, 960) : undefined}
-                    renderAnnotationLayer={false}
-                    renderTextLayer
-                    className="shadow-sm"
-                    loading={null}
-                  />
-                ))
+                <Page
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                  width={containerWidth ? Math.min(containerWidth - 32, 960) : undefined}
+                  renderAnnotationLayer={false}
+                  renderTextLayer
+                  className="shadow-sm"
+                  loading={null}
+                />
+              ))
               : numPages > 0 && (
-                  <Page
-                    key={`page_${currentPage}`}
-                    pageNumber={currentPage}
-                    width={containerWidth ? Math.min(containerWidth - 32, 960) : undefined}
-                    renderAnnotationLayer={false}
-                    renderTextLayer
-                    className="shadow-sm"
-                    loading={null}
-                  />
-                )}
+                <Page
+                  key={`page_${currentPage}`}
+                  pageNumber={currentPage}
+                  width={containerWidth ? Math.min(containerWidth - 32, 960) : undefined}
+                  renderAnnotationLayer={false}
+                  renderTextLayer
+                  className="shadow-sm"
+                  loading={null}
+                />
+              )}
           </Document>
         </div>
       </div>
 
-      {numPages > 0 && (
+      {(showPageSummary || (!renderAllPages && numPages > 1)) && numPages > 0 && (
         <div className="flex flex-col gap-2 text-xs theme-text-muted">
           {!renderAllPages && numPages > 1 && (
             <div className="flex items-center justify-between gap-4">
@@ -150,10 +158,12 @@ export function PdfViewer({ fileUrl, downloadUrl, title, className, renderAllPag
             </div>
           )}
 
-          <p className="uppercase tracking-[0.2em]">
-            {numPages} page{numPages === 1 ? '' : 's'}
-            {title ? ` in ${title}` : ''}
-          </p>
+          {showPageSummary && (
+            <p className="uppercase tracking-[0.2em]">
+              {numPages} page{numPages === 1 ? '' : 's'}
+              {title ? ` in ${title}` : ''}
+            </p>
+          )}
         </div>
       )}
     </div>

@@ -101,14 +101,15 @@ function renderMediaPreview(
 
   if (isPdfMedia) {
     return (
-      <PdfViewer
-        fileUrl={assetUrl}
-        downloadUrl={assetUrl}
-        title={title}
-        className="mt-2"
-      />
-    );
-  }
+        <PdfViewer
+          fileUrl={assetUrl}
+          downloadUrl={assetUrl}
+          title={title}
+          className="mt-2"
+          showPageSummary={false}
+        />
+      );
+    }
 
   if (mediaType === 'document') {
     return (

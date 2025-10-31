@@ -507,7 +507,7 @@ export interface ApiRecordRecord extends Struct.CollectionTypeSchema {
     mediaSource: Schema.Attribute.Enumeration<['upload', 'externalEmbed']> &
       Schema.Attribute.DefaultTo<'upload'>;
     mediaType: Schema.Attribute.Enumeration<
-      ['image', 'video', 'audio', 'pdf', 'document']
+      ['image', 'video', 'audio', 'pdf', 'document', 'link']
     >;
     publishDate: Schema.Attribute.Date;
     publishedAt: Schema.Attribute.DateTime;

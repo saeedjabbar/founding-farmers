@@ -102,7 +102,7 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
                   </span>
                 )}
               </p>
-              <h1 className="theme-text-primary text-xl uppercase tracking-[0.08em] leading-snug max-w-3xl">{story.title}</h1>
+              <h1 className="theme-text-primary text-xl uppercase tracking-[0.08em] leading-snug">{story.title}</h1>
             </div>
 
             {story.heroMedia?.url && (
@@ -119,7 +119,7 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
             )}
 
             {(story.snippet || story.blurb) && (
-              <div className="max-w-3xl space-y-6">
+              <div className="space-y-6">
                 {story.snippet && (
                   <StrapiRichText
                     content={story.snippet}
