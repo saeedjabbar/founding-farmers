@@ -174,10 +174,10 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
                   </div>
 
                   <div className="space-y-3 mt-4 md:mt-0">
-                    {entry.records.length === 0 && (
-                      <div className="theme-border theme-surface border rounded-lg shadow-sm px-4 py-3 text-xs theme-text-muted">
-                        No source records attached to this milestone yet.
-                      </div>
+                    {entry.records.length === 0 && (''
+                      // <div className="theme-border theme-surface border rounded-lg shadow-sm px-4 py-3 text-xs theme-text-muted">
+                      //   No source records attached to this milestone yet.
+                      // </div>
                     )}
                     {entry.records.map((record) => (
                       <SourceCard
