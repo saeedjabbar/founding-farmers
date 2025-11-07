@@ -1,0 +1,94 @@
+name: Deploy Sync to Separate Repos
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+
+jobs:
+  sync-frontend:
+    name: Sync Frontend to Deployment Repo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git subtree
+          token: ${{ secrets.DEPLOY_PAT }}
+
+      - name: Check for frontend changes
+        id: check-frontend
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^frontend/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure git
+        if: steps.check-frontend.outputs.changed == 'true'
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Push to frontend deployment repo
+        if: steps.check-frontend.outputs.changed == 'true'
+        run: |
+          cd frontend
+          git init
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          # Add all files
+          git add .
+          git commit -m "Sync from monorepo: ${{ github.event.head_commit.message }}"
+
+          # Force push to deployment repo
+          git remote add deploy https://${{ secrets.DEPLOY_PAT }}@github.com/saeedjabbar/founding-farmers-frontend.git
+          git push -f deploy HEAD:main
+
+  sync-backend:
+    name: Sync Backend to Deployment Repo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git subtree
+          token: ${{ secrets.DEPLOY_PAT }}
+
+      - name: Check for backend changes
+        id: check-backend
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^backend/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure git
+        if: steps.check-backend.outputs.changed == 'true'
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Push to backend deployment repo
+        if: steps.check-backend.outputs.changed == 'true'
+        run: |
+          cd backend
+          git init
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          # Add all files
+          git add .
+          git commit -m "Sync from monorepo: ${{ github.event.head_commit.message }}"
+
+          # Force push to deployment repo
+          git remote add deploy https://${{ secrets.DEPLOY_PAT }}@github.com/saeedjabbar/founding-farmers-backend.git
+          git push -f deploy HEAD:main
