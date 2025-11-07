@@ -20,6 +20,7 @@ export default ({ env }) => [
       origin: [
         env('CORS_ORIGIN', 'http://localhost:3000'),
         env('CORS_ORIGIN_ALT', 'http://127.0.0.1:3000'),
+        'https://founding-farmers-frontend.vercel.app',
       ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
       headers: '*',
