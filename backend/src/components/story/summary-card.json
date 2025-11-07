@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_story_summary_cards",
+  "info": {
+    "displayName": "Summary Card",
+    "description": "Optional story summary containing narrative and bullet highlights"
+  },
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Summary"
+    },
+    "body": {
+      "type": "blocks"
+    },
+    "bulletsText": {
+      "type": "text",
+      "default": ""
+    }
+  }
+}

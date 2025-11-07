@@ -1,0 +1,33 @@
+{
+  "kind": "singleType",
+  "collectionName": "standards",
+  "info": {
+    "singularName": "standard",
+    "pluralName": "standards",
+    "displayName": "Standards Page",
+    "description": "Editorial standards and project rules"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "webtools": {
+      "enabled": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "blocks",
+      "required": true
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false
+    }
+  }
+}
