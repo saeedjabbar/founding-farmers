@@ -1,4 +1,5 @@
 const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const DEFAULT_DATE_LOCALE = 'en-US';
 
 interface ParsedDate {
   date: Date;
@@ -24,7 +25,8 @@ export function parseStrapiDate(value?: string | null): ParsedDate | null {
 
 export function formatStrapiDate(
   value?: string | null,
-  formatterOptions?: Intl.DateTimeFormatOptions
+  formatterOptions?: Intl.DateTimeFormatOptions,
+  locale: string = DEFAULT_DATE_LOCALE
 ): string | null {
   const parsed = parseStrapiDate(value);
   if (!parsed) {
@@ -33,7 +35,8 @@ export function formatStrapiDate(
 
   try {
     const { date, isDateOnly } = parsed;
-    return new Intl.DateTimeFormat(undefined, {
+    const resolvedLocale = locale?.trim() || DEFAULT_DATE_LOCALE;
+    return new Intl.DateTimeFormat(resolvedLocale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
