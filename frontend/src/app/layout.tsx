@@ -1,5 +1,7 @@
-import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { getSiteBaseUrl } from '@/lib/seo';
 import PosthogProvider from '@/components/providers/PosthogProvider';
 import './globals.css';
@@ -25,6 +27,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Suspense>
           <PosthogProvider>{children}</PosthogProvider>
         </Suspense>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
