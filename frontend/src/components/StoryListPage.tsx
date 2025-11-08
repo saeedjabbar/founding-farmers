@@ -11,13 +11,13 @@ import { useEditorialTheme } from '@/lib/useEditorialTheme';
 import type { Story } from '@/lib/strapi/types';
 
 interface StoryListPageProps {
-  stories: Story[];
+  stories: (Story & { formattedPublishedDate?: string | null })[];
   currentPage: number;
   pageCount: number;
   basePath: string;
 }
 
-const formatDisplayDate = (date?: string | null) => formatStrapiDate(date);
+const formatDisplayDate = (date?: string | null, formatted?: string | null) => formatted ?? formatStrapiDate(date);
 
 function buildPageHref(basePath: string, page: number): string {
   if (page <= 1) {
@@ -47,7 +47,7 @@ export function StoryListPage({
   const disabledClasses = 'pointer-events-none opacity-50 cursor-not-allowed theme-text-muted';
 
   return (
-    <div className={`min-h-screen theme-bg ${themes[theme].className}`}>
+    <div className={`min-h-screen theme-bg ${themes[theme].className}`} suppressHydrationWarning>
       <SiteHeader isDark={isDark} onToggleTheme={toggleTheme} />
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-14">
@@ -62,7 +62,10 @@ export function StoryListPage({
           <section>
             <div>
               {stories.map((story) => {
-                const publishedOn = formatDisplayDate(story.publishedDate ?? story.publishedAt);
+                const publishedOn = formatDisplayDate(
+                  story.publishedDate ?? story.publishedAt,
+                  story.formattedPublishedDate
+                );
                 const hero = story.heroMedia?.url;
                 const snippetContent = story.snippet ?? story.blurb;
 

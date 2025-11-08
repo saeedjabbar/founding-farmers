@@ -299,7 +299,7 @@ export function RecordDetailPage({ record, featuredIn = [] }: RecordDetailPagePr
   const hasSearchableContent = hasBlocksContent(record.searchableContent);
 
   return (
-    <div className={`min-h-screen theme-bg ${themes[theme].className}`}>
+    <div className={`min-h-screen theme-bg ${themes[theme].className}`} suppressHydrationWarning>
       <SiteHeader isDark={isDark} onToggleTheme={toggleTheme} />
 
       <main className="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-14 space-y-10">

@@ -1,5 +1,6 @@
 import { StoryListPage } from '@/components/StoryListPage';
 import { getStories } from '@/lib/strapi/queries';
+import { formatStrapiDate } from '@/lib/dates';
 
 export const revalidate = 120;
 
@@ -27,9 +28,15 @@ export default async function StoriesPage({ searchParams }: StoriesPageProps) {
 
   const { stories, pagination } = result;
 
+  // Format dates on the server to avoid hydration mismatches
+  const storiesWithFormattedDates = stories.map((story) => ({
+    ...story,
+    formattedPublishedDate: formatStrapiDate(story.publishedDate ?? story.publishedAt),
+  }));
+
   return (
     <StoryListPage
-      stories={stories}
+      stories={storiesWithFormattedDates}
       currentPage={pagination.page}
       pageCount={pagination.pageCount}
       basePath="/stories"

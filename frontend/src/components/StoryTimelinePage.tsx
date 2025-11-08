@@ -87,7 +87,7 @@ export function StoryTimelinePage({ story }: StoryTimelinePageProps) {
   };
 
   return (
-    <div className={`min-h-screen theme-bg ${themes[theme].className}`}>
+    <div className={`min-h-screen theme-bg ${themes[theme].className}`} suppressHydrationWarning>
       <SiteHeader isDark={isDark} onToggleTheme={toggleTheme} />
 
       <article>
