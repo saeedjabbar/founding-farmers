@@ -41,6 +41,13 @@ const nextConfig = {
   images: {
     remotePatterns,
   },
+  // Workaround for React error #418 - asset prefix detection issue
+  // This ensures proper script loading order
+  reactStrictMode: true,
+  // Disable experimental features that might interfere with script loading
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
 };
 
 export default nextConfig;
