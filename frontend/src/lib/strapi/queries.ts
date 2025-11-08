@@ -135,7 +135,7 @@ export async function getStories(options: GetStoriesOptions = {}): Promise<Story
         sort: ['publishedDate:desc', 'publishedAt:desc'],
         pagination: { page, pageSize },
       }),
-      cache: 'no-store',
+      next: { revalidate: 3600 },
     });
 
     const stories = sortStoriesByPublishedDate(response.data.map(mapStory));
@@ -215,7 +215,7 @@ export async function getRecords(options: GetRecordsOptions = {}): Promise<Recor
         sort: ['publishDate:desc', 'publishedAt:desc', 'createdAt:desc'],
         pagination: { page, pageSize },
       }),
-      cache: 'no-store',
+      next: { revalidate: 3600 },
     });
 
     const records =
@@ -268,7 +268,7 @@ export async function getStoryBySlug(slug: string): Promise<Story | null> {
         filters: { slug: { $eq: slug } },
         pagination: { page: 1, pageSize: 1 },
       }),
-      cache: 'no-store',
+      next: { revalidate: 3600 },
     });
 
     const [story] = response.data;
@@ -287,7 +287,7 @@ export async function getRecordBySlug(slug: string): Promise<SourceRecord | null
         filters: { slug: { $eq: slug } },
         pagination: { page: 1, pageSize: 1 },
       }),
-      cache: 'no-store',
+      next: { revalidate: 3600 },
     });
 
     const [record] = response.data;
@@ -313,7 +313,7 @@ export async function getStoriesFeaturingRecord(recordSlug: string): Promise<Sto
         pagination: { page: 1, pageSize: 50 },
         sort: ['publishedDate:desc', 'publishedAt:desc'],
       }),
-      cache: 'no-store',
+      next: { revalidate: 3600 },
     });
 
     const summaries = response.data.map(mapStorySummary);
@@ -337,7 +337,7 @@ export async function getStandardsPage(): Promise<StandardsPage | null> {
           ...SEO_FIELDS_POPULATE,
         },
       }),
-      cache: 'no-store',
+      next: { revalidate: 3600 },
     });
 
     return mapStandardsPage(response.data);
@@ -355,7 +355,7 @@ export async function getPrivacyPolicyPage(): Promise<PrivacyPolicyPage | null> 
           ...SEO_FIELDS_POPULATE,
         },
       }),
-      cache: 'no-store',
+      next: { revalidate: 3600 },
     });
 
     return mapPrivacyPolicyPage(response.data);
