@@ -28,4 +28,5 @@
   ```
 
   Restart the dev server after changing these values so the environment variables propagate correctly.
-  
+
+<!-- Deployed via GitHub Actions -->
